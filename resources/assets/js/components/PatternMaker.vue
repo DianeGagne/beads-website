@@ -32,8 +32,11 @@
                         <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
                     </div>
 
+
+                    <zoom ref="zoomControl" :panHorizontal.sync="panHorizontal" :panVertical.sync="panVertical"
+                          :scaleFactor.sync="scaleFactor"></zoom>
                     <button id="clear" @click="clear">Clear</button>
-                    <zoom ref="zoomControl" :panHorizontal.sync="panHorizontal" :panVertical.sync="panVertical" :scaleFactor.sync="scaleFactor"></zoom>
+                    <button id="save" @click="save">Save</button>
                 </div>
             </div>
         </div>
@@ -106,7 +109,7 @@
                 this.currY = event.clientY;
 
                 if (this.drag) {
-                    if(this.zoomChild != null) {
+                    if (this.zoomChild != null) {
                         this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
                         this.prevX = this.currX;
                         this.prevY = this.currY;
@@ -119,7 +122,7 @@
                     this.beadX = (this.currX - (this.leftOffset * this.scaleFactor) - rect.left - ((this.currX - (this.leftOffset * this.scaleFactor) - rect.left) % (this.beadWidth * this.scaleFactor))) / (this.beadWidth * this.scaleFactor) + 1;
                     this.beadY = (this.currY - (this.topOffset * this.scaleFactor) - rect.top - ((this.currY - (this.topOffset * this.scaleFactor) - rect.top) % (this.beadHeight * this.scaleFactor))) / (this.beadHeight * this.scaleFactor) + 1;
 
-                    if (this.beadX <= 0 || this.beadX > this.gridWidth || this.beadY <= 0 || this.beadY > this.gridHeight){
+                    if (this.beadX <= 0 || this.beadX > this.gridWidth || this.beadY <= 0 || this.beadY > this.gridHeight) {
                         this.beadX = '';
                         this.beadY = '';
                         return;
@@ -136,7 +139,7 @@
             },
             drawBead: function (beadX, beadY, color) {
                 this.ctx.fillStyle = color;
-                if(beadX === '' || beadY === '')
+                if (beadX === '' || beadY === '')
                     return;
                 if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight)
                     return;
@@ -146,13 +149,26 @@
                 this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
                 this.beadMatrix[beadX][beadY] = color;
             },
-            handleScroll: function(event){
+            handleScroll: function (event) {
                 this.zoomChild.handleScroll(event);
             },
             clear: function () {
                 this.beadMatrix = null;
                 this.zoomChild.resetZoom();
                 this.drawNewGrid();
+            },
+            save: function () {
+                axios.post('/pattern/save', {
+                    'height': this.gridHeight,
+                    'width': this.gridWidth,
+                    'bead_type': this.beadType,
+                    'jsonPattern': this.beadMatrix
+                })
+                    .then(function (response) {
+                        console.log(response)
+                    }).catch(function (response) {
+                    console.log('catch');
+                });
             },
             drawNewGrid: function () {
                 this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -218,23 +234,30 @@
                 }
                 this.ctx.stroke();
             }
-        },
+        }
+        ,
+
         watch: {
             gridWidth: function () {
                 this.drawNewGrid();
-            },
+            }
+            ,
             gridHeight: function () {
                 this.drawNewGrid();
-            },
-            panHorizontal: function() {
+            }
+            ,
+            panHorizontal: function () {
                 this.drawNewGrid();
-            },
-            panVertical: function() {
+            }
+            ,
+            panVertical: function () {
                 this.drawNewGrid();
-            },
-            scaleFactor: function() {
+            }
+            ,
+            scaleFactor: function () {
                 this.drawNewGrid();
-            },
+            }
+            ,
             beadType: function () {
                 if (this.beadType == 'round') {
                     this.beadAspect = .63;

@@ -15,4 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('pattern', 'CreatePatternController@drawPattern');
+Route::post('pattern/save', 'PatternsController@savePattern');
+Route::get('pattern', 'PatternsController@drawPattern');

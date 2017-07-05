@@ -21,6 +21,7 @@ Vue.component('color-picker', require('./components/ColorPicker.vue'));
 Vue.component('grid-size', require('./components/GridSize.vue'));
 Vue.component('zoom', require('./components/Zoom.vue'));
 
+
 const app = new Vue({
     el: '#app',
 });

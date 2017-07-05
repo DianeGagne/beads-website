@@ -41673,6 +41673,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -41769,7 +41772,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         drawBead: function drawBead(beadX, beadY, color) {
             this.ctx.fillStyle = color;
-            if (!beadX || !beadY) return;
+            if (beadX === '' || beadY === '') return;
             if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
 
             var boxX = this.leftOffset + beadX * this.beadWidth + 1;
@@ -41784,6 +41787,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.beadMatrix = null;
             this.zoomChild.resetZoom();
             this.drawNewGrid();
+        },
+        save: function save() {
+            axios.post('/pattern/save', {
+                'height': this.gridHeight,
+                'width': this.gridWidth,
+                'bead_type': this.beadType,
+                'jsonPattern': this.beadMatrix
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (response) {
+                console.log('catch');
+            });
         },
         drawNewGrid: function drawNewGrid() {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -41850,22 +41865,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.ctx.stroke();
         }
     },
+
     watch: {
         gridWidth: function gridWidth() {
             this.drawNewGrid();
         },
+
         gridHeight: function gridHeight() {
             this.drawNewGrid();
         },
+
         panHorizontal: function panHorizontal() {
             this.drawNewGrid();
         },
+
         panVertical: function panVertical() {
             this.drawNewGrid();
         },
+
         scaleFactor: function scaleFactor() {
             this.drawNewGrid();
         },
+
         beadType: function beadType() {
             if (this.beadType == 'round') {
                 this.beadAspect = .63;
@@ -42056,14 +42077,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.beadType = "round"
       }
     }
-  }), _vm._v("Round (Czech)")])]), _vm._v(" "), _c('button', {
-    attrs: {
-      "id": "clear"
-    },
-    on: {
-      "click": _vm.clear
-    }
-  }, [_vm._v("Clear")]), _vm._v(" "), _c('zoom', {
+  }), _vm._v("Round (Czech)")])]), _vm._v(" "), _c('zoom', {
     ref: "zoomControl",
     attrs: {
       "panHorizontal": _vm.panHorizontal,
@@ -42081,7 +42095,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.scaleFactor = $event
       }
     }
-  })], 1)])])])
+  }), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "clear"
+    },
+    on: {
+      "click": _vm.clear
+    }
+  }, [_vm._v("Clear")]), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "save"
+    },
+    on: {
+      "click": _vm.save
+    }
+  }, [_vm._v("Save")])], 1)])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
