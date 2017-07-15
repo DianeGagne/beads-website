@@ -16,7 +16,9 @@ window.Vue = require('vue');
  */
 
 Vue.component('example', require('./components/Example.vue'));
+Vue.component('scrollpattern', require('./components/ScrollPatterns.vue'));
 Vue.component('patternmaker', require('./components/PatternMaker.vue'));
+Vue.component('patternshow', require('./components/PatternShow.vue'));
 Vue.component('color-picker', require('./components/ColorPicker.vue'));
 Vue.component('grid-size', require('./components/GridSize.vue'));
 Vue.component('zoom', require('./components/Zoom.vue'));

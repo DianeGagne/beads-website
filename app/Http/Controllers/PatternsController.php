@@ -7,6 +7,7 @@
  */
 
 namespace App\Http\Controllers;
+
 use App\Patterns;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Input;
@@ -14,7 +15,15 @@ use Illuminate\Support\Facades\Input;
 
 class PatternsController extends BaseController
 {
-    public function savePattern(){
+
+    public function showFirst()
+    {
+        $data['pattern'] = Patterns::first();
+        return view('welcome', $data);
+    }
+
+    public function savePattern()
+    {
         $patternInfo = Input::all();
 
         $pattern = new Patterns();
@@ -25,7 +34,13 @@ class PatternsController extends BaseController
         $pattern->save();
     }
 
-  public function drawPattern(){
-      return view('patterns.patternMaker');
-  }
+    public function drawPattern()
+    {
+        return view('patterns.patternMaker');
+    }
+
+    public function next()
+    {
+        return Patterns::all()->random();
+    }
 }

@@ -870,7 +870,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(10);
-module.exports = __webpack_require__(52);
+module.exports = __webpack_require__(58);
 
 
 /***/ }),
@@ -895,10 +895,12 @@ window.Vue = __webpack_require__(36);
  */
 
 Vue.component('example', __webpack_require__(37));
-Vue.component('patternmaker', __webpack_require__(40));
-Vue.component('color-picker', __webpack_require__(43));
-Vue.component('grid-size', __webpack_require__(46));
-Vue.component('zoom', __webpack_require__(49));
+Vue.component('scrollpattern', __webpack_require__(40));
+Vue.component('patternmaker', __webpack_require__(43));
+Vue.component('patternshow', __webpack_require__(46));
+Vue.component('color-picker', __webpack_require__(49));
+Vue.component('grid-size', __webpack_require__(52));
+Vue.component('zoom', __webpack_require__(55));
 
 var app = new Vue({
   el: '#app'
@@ -41603,6 +41605,190 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
+Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/ScrollPatterns.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ScrollPatterns.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-10522f25", Component.options)
+  } else {
+    hotAPI.reload("data-v-10522f25", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            prevPattern: {
+                width: 5,
+                height: 6,
+                beadMatrix: null
+
+            },
+            current: {
+                width: 7,
+                height: 7,
+                beadMatrix: null
+            },
+            nextPattern: {
+                width: 8,
+                height: 8,
+                beadMatrix: null
+            }
+        };
+    },
+    mounted: function mounted() {},
+
+    methods: {
+        swapPattern: function swapPattern(prevPattern, nextPattern) {
+            console.log(prevPattern);
+            console.log(nextPattern);
+            prevPattern.width = nextPattern.width;
+            prevPattern.height = nextPattern.height;
+            prevPattern.beadMatrix = nextPattern.beadMatrix;
+        },
+        scrollLeft: function scrollLeft() {
+            var self = this;
+            axios.get('/pattern/next').then(function (response) {
+                console.log(response);
+                //cycle current to prevPattern, nextPattern to current & get the nextPattern
+                self.swapPattern(self.prevPattern, self.current);
+                self.swapPattern(self.current, self.nextPattern);
+
+                self.nextPattern.width = response.data.width;
+                self.nextPattern.height = response.data.height;
+                self.nextPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
+            });
+        },
+        scrollRight: function scrollRight() {
+            var self = this;
+            axios.get('/pattern/next').then(function (response) {
+                console.log(response);
+                //cycle current to prevPattern, nextPattern to current & get the nextPattern
+                self.swapPattern(self.nextPattern, self.current);
+                self.swapPattern(self.current, self.prevPattern);
+
+                self.prevPattern.width = response.data.width;
+                self.prevPattern.height = response.data.height;
+                self.prevPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "container"
+  }, [_c('div', {
+    attrs: {
+      "id": "scrollPattern"
+    }
+  }, [_c('div', {
+    staticStyle: {
+      "display": "flex"
+    }
+  }, [_c('button', {
+    attrs: {
+      "id": "scroll-left"
+    },
+    on: {
+      "click": _vm.scrollLeft
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-arrow-left"
+  })]), _vm._v(" "), _c('patternshow', {
+    attrs: {
+      "canvas-name": "prev_pattern",
+      "grid-width": _vm.prevPattern.width,
+      "grid-height": _vm.prevPattern.height,
+      "bead-matrix": _vm.prevPattern.beadMatrix
+    }
+  }), _vm._v(" "), _c('patternshow', {
+    attrs: {
+      "canvas-name": "current_pattern",
+      "grid-width": _vm.current.width,
+      "grid-height": _vm.current.height,
+      "bead-matrix": _vm.current.beadMatrix
+    }
+  }), _vm._v(" "), _c('patternshow', {
+    attrs: {
+      "canvas-name": "next_pattern",
+      "grid-width": _vm.nextPattern.width,
+      "grid-height": _vm.nextPattern.height,
+      "bead-matrix": _vm.nextPattern.beadMatrix
+    }
+  }), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "scroll-right"
+    },
+    on: {
+      "click": _vm.scrollRight
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-arrow-right"
+  })])], 1)])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-10522f25", module.exports)
+  }
+}
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(44),
+  /* template */
+  __webpack_require__(45),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
 Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/PatternMaker.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] PatternMaker.vue: functional components are not supported with templates, they should use render functions.")}
@@ -41627,7 +41813,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41899,7 +42085,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42120,15 +42306,231 @@ if (false) {
 }
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(44),
+  __webpack_require__(47),
   /* template */
-  __webpack_require__(45),
+  __webpack_require__(48),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/PatternShow.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] PatternShow.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0c7f8fb0", Component.options)
+  } else {
+    hotAPI.reload("data-v-0c7f8fb0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        canvasName: { default: 'canvas' },
+        gridWidth: { default: '8' },
+        gridHeight: { default: '8' },
+        beadMatrix: { default: null }
+    },
+    data: function data() {
+        return {
+            currX: null,
+            currY: null,
+            prevX: null,
+            prevY: null,
+            beadX: null,
+            beadY: null,
+            drawing: false,
+            drag: false,
+            canvas: null,
+            ctx: null,
+            leftOffset: 0,
+            topOffset: 0,
+            beadWidth: 20,
+            beadHeight: 20,
+            beadAspect: 1,
+            zoomChild: null,
+            scaleFactor: 1,
+            panHorizontal: 0,
+            panVertical: 0,
+            canvasWidth: 300,
+            canvasHeight: 300,
+            color: 'black',
+            beadType: 'delica'
+        };
+    },
+
+    mounted: function mounted() {
+        this.canvas = document.getElementById(this.canvasName);
+        this.ctx = this.canvas.getContext('2d');
+        this.beadMatrix = JSON.parse(this.beadMatrix);
+
+        this.drawNewGrid();
+    },
+
+    methods: {
+        drawBead: function drawBead(beadX, beadY, color) {
+            this.ctx.fillStyle = color;
+            if (beadX === '' || beadY === '') return;
+            if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
+
+            var boxX = this.leftOffset + beadX * this.beadWidth + 1;
+            var boxY = this.topOffset + beadY * this.beadHeight + 1;
+            this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
+        },
+
+        drawNewGrid: function drawNewGrid() {
+            console.log('draw new grid');
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.ctx.scale(this.scaleFactor, this.scaleFactor);
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = 'black';
+
+            //calculate bead size
+            var widthOffset = void 0;
+            var heightOffset = void 0;
+            if (this.gridWidth * this.beadAspect < this.gridHeight) {
+                //height is larger
+                heightOffset = this.canvasHeight / this.scaleFactor % this.gridHeight / 2;
+                this.beadHeight = (this.canvasHeight - heightOffset) / this.gridHeight;
+                this.beadWidth = this.beadHeight * this.beadAspect;
+            } else {
+                widthOffset = this.canvasWidth / this.scaleFactor % (this.gridWidth * this.beadAspect) / 2;
+                this.beadWidth = (this.canvasWidth - widthOffset) / (this.gridWidth * this.beadAspect);
+                this.beadHeight = this.beadWidth / this.beadAspect;
+            }
+            widthOffset = this.canvasWidth / this.scaleFactor - this.gridWidth * this.beadWidth;
+            heightOffset = this.canvasHeight / this.scaleFactor - this.gridHeight * this.beadHeight;
+            this.leftOffset = widthOffset / 2 + this.panHorizontal;
+            this.topOffset = heightOffset / 2 + this.panVertical;
+            var rightOffset = widthOffset - this.leftOffset;
+            var bottomOffset = heightOffset - this.topOffset;
+
+            //draw horizontal lines
+            var division = this.topOffset;
+            for (var beadCount = 0; beadCount <= this.gridHeight; beadCount++) {
+                this.ctx.moveTo(this.leftOffset, division);
+                this.ctx.lineTo(this.canvasWidth / this.scaleFactor - rightOffset, division);
+                division += this.beadHeight;
+            }
+            //draw vertical
+            division = this.leftOffset;
+            for (var _beadCount = 0; _beadCount <= this.gridWidth; _beadCount++) {
+                this.ctx.moveTo(division, this.topOffset);
+                this.ctx.lineTo(division, this.canvasHeight / this.scaleFactor - bottomOffset);
+                division += this.beadWidth;
+            }
+
+            console.log('lines drawn');
+            if (this.beadMatrix) {
+                //go through our previous bead matrix, and draw out the beads stored there
+                for (var width = 0; width < this.gridWidth; width++) {
+                    for (var height = 0; height < this.gridHeight; height++) {
+                        if (this.beadMatrix[width]) {
+                            var setColor = this.beadMatrix[width][height];
+                            if (setColor) {
+                                this.drawBead(width, height, setColor);
+                            }
+                        }
+                    }
+                }
+            }
+            console.log('stroke');
+            this.ctx.stroke();
+        }
+    },
+    watch: {
+        beadMatrix: function beadMatrix() {
+            this.drawNewGrid();
+        }
+
+    }
+});
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "container"
+  }, [_c('div', {
+    attrs: {
+      "id": "patternShow"
+    }
+  }, [_c('div', {
+    staticStyle: {
+      "display": "flex"
+    }
+  }, [_c('canvas', {
+    staticStyle: {
+      "border": "1px solid black"
+    },
+    attrs: {
+      "id": _vm.canvasName,
+      "height": _vm.canvasHeight,
+      "width": _vm.canvasWidth
+    }
+  })])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0c7f8fb0", module.exports)
+  }
+}
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(50),
+  /* template */
+  __webpack_require__(51),
   /* styles */
   null,
   /* scopeId */
@@ -42160,7 +42562,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 44 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42194,7 +42596,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 45 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42230,15 +42632,15 @@ if (false) {
 }
 
 /***/ }),
-/* 46 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(47),
+  __webpack_require__(53),
   /* template */
-  __webpack_require__(48),
+  __webpack_require__(54),
   /* styles */
   null,
   /* scopeId */
@@ -42270,7 +42672,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 47 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42312,7 +42714,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 48 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42365,15 +42767,15 @@ if (false) {
 }
 
 /***/ }),
-/* 49 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(50),
+  __webpack_require__(56),
   /* template */
-  __webpack_require__(51),
+  __webpack_require__(57),
   /* styles */
   null,
   /* scopeId */
@@ -42405,7 +42807,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42515,7 +42917,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 51 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42601,7 +43003,7 @@ if (false) {
 }
 
 /***/ }),
-/* 52 */
+/* 58 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

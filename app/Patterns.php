@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Patterns extends Model
 {
-
     protected $fillable = [
         'width',
         'height',
