@@ -41773,6 +41773,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -41792,8 +41799,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 width: 8,
                 height: 8,
                 beadMatrix: null
-            }
+            },
+            centerSize: 400
+
         };
+    },
+    created: function created() {
+        var vm = this;
+        window.addEventListener('keydown', function (event) {
+            if (event.keyCode === 37) {
+                vm.scrollLeft();
+            }
+            if (event.keyCode === 39) {
+                vm.scrollRight();
+            }
+            if (event.keyCode === 32) {
+                vm.zoomPattern();
+            }
+        });
+        window.addEventListener('keyup', function (event) {
+            if (event.keyCode === 32) {
+                vm.removeZoomPattern();
+            }
+        });
     },
     mounted: function mounted() {},
 
@@ -41830,6 +41858,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 self.prevPattern.height = response.data.height;
                 self.prevPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
             });
+        },
+        zoomPattern: function zoomPattern() {
+            this.centerSize = 600;
+        },
+        removeZoomPattern: function removeZoomPattern() {
+            this.centerSize = 400;
         }
     }
 });
@@ -41861,23 +41895,31 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })]), _vm._v(" "), _c('patternshow', {
     attrs: {
       "canvas-name": "prev_pattern",
-      "grid-width": _vm.prevPattern.width,
-      "grid-height": _vm.prevPattern.height,
-      "bead-matrix": _vm.prevPattern.beadMatrix
+      "canvas-height": 200,
+      "canvas-width": 200,
+      "patternInfo": _vm.prevPattern
     }
   }), _vm._v(" "), _c('patternshow', {
     attrs: {
       "canvas-name": "current_pattern",
-      "grid-width": _vm.current.width,
-      "grid-height": _vm.current.height,
-      "bead-matrix": _vm.current.beadMatrix
+      "canvas-height": _vm.centerSize,
+      "canvas-width": _vm.centerSize,
+      "patternInfo": _vm.current
+    },
+    nativeOn: {
+      "mouseenter": function($event) {
+        _vm.zoomPattern($event)
+      },
+      "mouseleave": function($event) {
+        _vm.removeZoomPattern($event)
+      }
     }
   }), _vm._v(" "), _c('patternshow', {
     attrs: {
       "canvas-name": "next_pattern",
-      "grid-width": _vm.nextPattern.width,
-      "grid-height": _vm.nextPattern.height,
-      "bead-matrix": _vm.nextPattern.beadMatrix
+      "canvas-height": 200,
+      "canvas-width": 200,
+      "patternInfo": _vm.nextPattern
     }
   }), _vm._v(" "), _c('button', {
     attrs: {
@@ -42492,10 +42534,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
+        patternInfo: {
+            default: {
+                width: 7,
+                height: 7,
+                beadMatrix: null
+            }
+        },
         canvasName: { default: 'canvas' },
-        gridWidth: { default: '8' },
-        gridHeight: { default: '8' },
-        beadMatrix: { default: null }
+        canvasWidth: { default: "100%" },
+        canvasHeight: { default: "100%" }
     },
     data: function data() {
         return {
@@ -42518,8 +42566,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             scaleFactor: 1,
             panHorizontal: 0,
             panVertical: 0,
-            canvasWidth: 300,
-            canvasHeight: 300,
             color: 'black',
             beadType: 'delica'
         };
@@ -42528,7 +42574,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mounted: function mounted() {
         this.canvas = document.getElementById(this.canvasName);
         this.ctx = this.canvas.getContext('2d');
-        this.beadMatrix = JSON.parse(this.beadMatrix);
+        this.patternInfo.beadMatrix = JSON.parse(this.patternInfo.beadMatrix);
 
         this.drawNewGrid();
     },
@@ -42537,7 +42583,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         drawBead: function drawBead(beadX, beadY, color) {
             this.ctx.fillStyle = color;
             if (beadX === '' || beadY === '') return;
-            if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
+            if (beadX < 0 || beadX >= this.patternInfo.width || beadY < 0 || beadY >= this.patternInfo.height) return;
 
             var boxX = this.leftOffset + beadX * this.beadWidth + 1;
             var boxY = this.topOffset + beadY * this.beadHeight + 1;
@@ -42545,28 +42591,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         drawNewGrid: function drawNewGrid() {
-            console.log('draw new grid');
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.scale(this.scaleFactor, this.scaleFactor);
             this.ctx.beginPath();
             this.ctx.strokeStyle = 'black';
+            console.log('begin drawing grid');
 
             //calculate bead size
             var widthOffset = void 0;
             var heightOffset = void 0;
-            if (this.gridWidth * this.beadAspect < this.gridHeight) {
+            if (this.patternInfo.width * this.beadAspect < this.patternInfo.height) {
                 //height is larger
-                heightOffset = this.canvasHeight / this.scaleFactor % this.gridHeight / 2;
-                this.beadHeight = (this.canvasHeight - heightOffset) / this.gridHeight;
+                heightOffset = this.canvas.height / this.scaleFactor % this.patternInfo.height / 2;
+                this.beadHeight = (this.canvas.height - heightOffset) / this.patternInfo.height;
                 this.beadWidth = this.beadHeight * this.beadAspect;
             } else {
-                widthOffset = this.canvasWidth / this.scaleFactor % (this.gridWidth * this.beadAspect) / 2;
-                this.beadWidth = (this.canvasWidth - widthOffset) / (this.gridWidth * this.beadAspect);
+                widthOffset = this.canvas.width / this.scaleFactor % (this.patternInfo.width * this.beadAspect) / 2;
+                this.beadWidth = (this.canvas.width - widthOffset) / (this.patternInfo.width * this.beadAspect);
                 this.beadHeight = this.beadWidth / this.beadAspect;
             }
-            widthOffset = this.canvasWidth / this.scaleFactor - this.gridWidth * this.beadWidth;
-            heightOffset = this.canvasHeight / this.scaleFactor - this.gridHeight * this.beadHeight;
+            widthOffset = this.canvas.width / this.scaleFactor - this.patternInfo.width * this.beadWidth;
+            heightOffset = this.canvas.height / this.scaleFactor - this.patternInfo.height * this.beadHeight;
             this.leftOffset = widthOffset / 2 + this.panHorizontal;
             this.topOffset = heightOffset / 2 + this.panVertical;
             var rightOffset = widthOffset - this.leftOffset;
@@ -42574,26 +42620,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             //draw horizontal lines
             var division = this.topOffset;
-            for (var beadCount = 0; beadCount <= this.gridHeight; beadCount++) {
+            for (var beadCount = 0; beadCount <= this.patternInfo.height; beadCount++) {
                 this.ctx.moveTo(this.leftOffset, division);
-                this.ctx.lineTo(this.canvasWidth / this.scaleFactor - rightOffset, division);
+                this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
                 division += this.beadHeight;
             }
             //draw vertical
             division = this.leftOffset;
-            for (var _beadCount = 0; _beadCount <= this.gridWidth; _beadCount++) {
+            for (var _beadCount = 0; _beadCount <= this.patternInfo.width; _beadCount++) {
                 this.ctx.moveTo(division, this.topOffset);
-                this.ctx.lineTo(division, this.canvasHeight / this.scaleFactor - bottomOffset);
+                this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
                 division += this.beadWidth;
             }
 
-            console.log('lines drawn');
-            if (this.beadMatrix) {
+            if (this.patternInfo.beadMatrix) {
                 //go through our previous bead matrix, and draw out the beads stored there
-                for (var width = 0; width < this.gridWidth; width++) {
-                    for (var height = 0; height < this.gridHeight; height++) {
-                        if (this.beadMatrix[width]) {
-                            var setColor = this.beadMatrix[width][height];
+                for (var width = 0; width < this.patternInfo.width; width++) {
+                    for (var height = 0; height < this.patternInfo.height; height++) {
+                        if (this.patternInfo.beadMatrix[width]) {
+                            var setColor = this.patternInfo.beadMatrix[width][height];
                             if (setColor) {
                                 this.drawBead(width, height, setColor);
                             }
@@ -42606,8 +42651,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     watch: {
-        beadMatrix: function beadMatrix() {
+        "patternInfo.height": function patternInfoHeight() {
             this.drawNewGrid();
+        },
+        canvasHeight: function canvasHeight() {
+            var self = this;
+            //use a callback because this is called before the DOM redraws the canvas with the new width/height
+            setTimeout(function () {
+                self.drawNewGrid();
+            }, 30);
         }
 
     }

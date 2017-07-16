@@ -13,10 +13,16 @@
 <script>
     export default {
         props: {
+            patternInfo: {
+                default: {
+                    width: 7,
+                    height: 7,
+                    beadMatrix: null,
+                }
+            },
             canvasName: {default: 'canvas'},
-            gridWidth: {default: '8'},
-            gridHeight: {default: '8'},
-            beadMatrix: {default: null}
+            canvasWidth: {default: "100%"},
+            canvasHeight: {default: "100%"},
         },
         data: function () {
             return {
@@ -39,8 +45,6 @@
                 scaleFactor: 1,
                 panHorizontal: 0,
                 panVertical: 0,
-                canvasWidth: 300,
-                canvasHeight: 300,
                 color: 'black',
                 beadType: 'delica',
             }
@@ -49,7 +53,8 @@
         mounted() {
             this.canvas = document.getElementById(this.canvasName);
             this.ctx = this.canvas.getContext('2d');
-            this.beadMatrix = JSON.parse(this.beadMatrix);
+            this.patternInfo.beadMatrix = JSON.parse(this.patternInfo.beadMatrix);
+
 
             this.drawNewGrid();
         },
@@ -58,7 +63,7 @@
                 this.ctx.fillStyle = color;
                 if (beadX === '' || beadY === '')
                     return;
-                if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight)
+                if (beadX < 0 || beadX >= this.patternInfo.width || beadY < 0 || beadY >= this.patternInfo.height)
                     return;
 
                 let boxX = (this.leftOffset) + ((beadX) * this.beadWidth) + 1;
@@ -67,28 +72,28 @@
             },
 
             drawNewGrid: function () {
-                console.log('draw new grid');
                 this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.ctx.scale(this.scaleFactor, this.scaleFactor);
                 this.ctx.beginPath();
                 this.ctx.strokeStyle = 'black';
+                console.log('begin drawing grid');
 
                 //calculate bead size
                 let widthOffset;
                 let heightOffset;
-                if ((this.gridWidth * this.beadAspect) < this.gridHeight) {
+                if ((this.patternInfo.width * this.beadAspect) < this.patternInfo.height) {
                     //height is larger
-                    heightOffset = ((this.canvasHeight / this.scaleFactor) % (this.gridHeight)) / 2;
-                    this.beadHeight = (this.canvasHeight - heightOffset) / this.gridHeight;
+                    heightOffset = ((this.canvas.height / this.scaleFactor) % (this.patternInfo.height)) / 2;
+                    this.beadHeight = (this.canvas.height - heightOffset) / this.patternInfo.height;
                     this.beadWidth = this.beadHeight * this.beadAspect;
                 } else {
-                    widthOffset = ((this.canvasWidth / this.scaleFactor) % (this.gridWidth * this.beadAspect)) / 2;
-                    this.beadWidth = (this.canvasWidth - widthOffset) / (this.gridWidth * this.beadAspect);
+                    widthOffset = ((this.canvas.width / this.scaleFactor) % (this.patternInfo.width * this.beadAspect)) / 2;
+                    this.beadWidth = (this.canvas.width - widthOffset) / (this.patternInfo.width * this.beadAspect);
                     this.beadHeight = this.beadWidth / this.beadAspect;
                 }
-                widthOffset = (this.canvasWidth / this.scaleFactor) - (this.gridWidth * this.beadWidth);
-                heightOffset = (this.canvasHeight / this.scaleFactor) - (this.gridHeight * this.beadHeight);
+                widthOffset = (this.canvas.width / this.scaleFactor) - (this.patternInfo.width * this.beadWidth);
+                heightOffset = (this.canvas.height / this.scaleFactor) - (this.patternInfo.height * this.beadHeight);
                 this.leftOffset = widthOffset / 2 + this.panHorizontal;
                 this.topOffset = heightOffset / 2 + this.panVertical;
                 let rightOffset = widthOffset - this.leftOffset;
@@ -96,26 +101,25 @@
 
                 //draw horizontal lines
                 let division = this.topOffset;
-                for (let beadCount = 0; beadCount <= (this.gridHeight); beadCount++) {
+                for (let beadCount = 0; beadCount <= (this.patternInfo.height); beadCount++) {
                     this.ctx.moveTo(this.leftOffset, division);
-                    this.ctx.lineTo(this.canvasWidth / this.scaleFactor - rightOffset, division);
+                    this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
                     division += this.beadHeight;
                 }
                 //draw vertical
                 division = this.leftOffset;
-                for (let beadCount = 0; beadCount <= (this.gridWidth); beadCount++) {
+                for (let beadCount = 0; beadCount <= (this.patternInfo.width); beadCount++) {
                     this.ctx.moveTo(division, this.topOffset);
-                    this.ctx.lineTo(division, this.canvasHeight / this.scaleFactor - bottomOffset);
+                    this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
                     division += this.beadWidth;
                 }
 
-                console.log('lines drawn');
-                if (this.beadMatrix) {
+                if (this.patternInfo.beadMatrix) {
                     //go through our previous bead matrix, and draw out the beads stored there
-                    for (let width = 0; width < this.gridWidth; width++) {
-                        for (let height = 0; height < this.gridHeight; height++) {
-                            if (this.beadMatrix[width]) {
-                                let setColor = this.beadMatrix[width][height];
+                    for (let width = 0; width < this.patternInfo.width; width++) {
+                        for (let height = 0; height < this.patternInfo.height; height++) {
+                            if (this.patternInfo.beadMatrix[width]) {
+                                let setColor = this.patternInfo.beadMatrix[width][height];
                                 if (setColor) {
                                     this.drawBead(width, height, setColor);
                                 }
@@ -128,8 +132,16 @@
             },
         },
         watch: {
-            beadMatrix: function () {
+            "patternInfo.height": function () {
                 this.drawNewGrid();
+            },
+            canvasHeight: function () {
+                let self = this;
+                //use a callback because this is called before the DOM redraws the canvas with the new width/height
+                setTimeout(
+                    function () {
+                        self.drawNewGrid()
+                    }, 30);
             }
 
         }

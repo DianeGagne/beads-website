@@ -2,11 +2,18 @@
     <div class="container">
         <div id="scrollPattern">
             <div style="display: flex;">
-                <button id="scroll-left" @click="scrollLeft"><span class="glyphicon glyphicon-arrow-left"></span></button>
-                <patternshow canvas-name="prev_pattern" :grid-width=prevPattern.width :grid-height=prevPattern.height :bead-matrix=prevPattern.beadMatrix ></patternshow>
-                <patternshow canvas-name="current_pattern" :grid-width=current.width :grid-height=current.height :bead-matrix=current.beadMatrix ></patternshow>
-                <patternshow canvas-name="next_pattern" :grid-width=nextPattern.width :grid-height=nextPattern.height :bead-matrix=nextPattern.beadMatrix ></patternshow>
-                <button id="scroll-right" @click="scrollRight"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                <button id="scroll-left" @click="scrollLeft"><span class="glyphicon glyphicon-arrow-left"></span>
+                </button>
+                <patternshow canvas-name="prev_pattern" :canvas-height=200 :canvas-width=200 :patternInfo=prevPattern
+                ></patternshow>
+                <patternshow canvas-name="current_pattern" :canvas-height=centerSize :canvas-width=centerSize
+                             :patternInfo=current
+                             @mouseenter.native="zoomPattern"
+                             @mouseleave.native="removeZoomPattern"></patternshow>
+                <patternshow canvas-name="next_pattern" :canvas-height=200 :canvas-width=200
+                             :patternInfo=nextPattern></patternshow>
+                <button id="scroll-right" @click="scrollRight"><span class="glyphicon glyphicon-arrow-right"></span>
+                </button>
             </div>
         </div>
     </div>
@@ -30,14 +37,35 @@
                     width: 8,
                     height: 8,
                     beadMatrix: null,
-                }
+                },
+                centerSize: 400,
+
             }
+        },
+        created: function () {
+            var vm = this;
+            window.addEventListener('keydown', function(event){
+                if(event.keyCode === 37){
+                    vm.scrollLeft();
+                }
+                if(event.keyCode === 39){
+                    vm.scrollRight();
+                }
+                if(event.keyCode === 32){
+                    vm.zoomPattern();
+                }
+            });
+            window.addEventListener('keyup', function(event){
+                if(event.keyCode === 32){
+                    vm.removeZoomPattern();
+                }
+            });
         },
         mounted() {
 
         },
         methods: {
-            swapPattern: function(prevPattern, nextPattern) {
+            swapPattern: function (prevPattern, nextPattern) {
                 console.log(prevPattern);
                 console.log(nextPattern);
                 prevPattern.width = nextPattern.width;
@@ -72,6 +100,12 @@
                         self.prevPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
                     });
             },
+            zoomPattern: function () {
+                this.centerSize = 600;
+            },
+            removeZoomPattern: function () {
+                this.centerSize = 400;
+            }
         }
     }
 </script>
