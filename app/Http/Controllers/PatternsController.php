@@ -19,7 +19,7 @@ class PatternsController extends BaseController
     public function showFirst()
     {
         $data['pattern'] = Patterns::first();
-        return view('welcome', $data);
+        return view('home', $data);
     }
 
     public function savePattern()

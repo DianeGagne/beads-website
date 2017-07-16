@@ -16,3 +16,8 @@ Route::get('/', 'PatternsController@showFirst');
 Route::post('pattern/save', 'PatternsController@savePattern');
 Route::get('pattern', 'PatternsController@drawPattern');
 Route::get('pattern/next', 'PatternsController@next');
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

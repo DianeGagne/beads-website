@@ -15,7 +15,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+Vue.component('register', require('./components/register.vue'));
 Vue.component('scrollpattern', require('./components/ScrollPatterns.vue'));
 Vue.component('patternmaker', require('./components/PatternMaker.vue'));
 Vue.component('patternshow', require('./components/PatternShow.vue'));
@@ -26,4 +26,5 @@ Vue.component('zoom', require('./components/Zoom.vue'));
 
 const app = new Vue({
     el: '#app',
+
 });

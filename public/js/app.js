@@ -894,7 +894,7 @@ window.Vue = __webpack_require__(36);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', __webpack_require__(37));
+Vue.component('register', __webpack_require__(37));
 Vue.component('scrollpattern', __webpack_require__(40));
 Vue.component('patternmaker', __webpack_require__(43));
 Vue.component('patternshow', __webpack_require__(46));
@@ -904,6 +904,7 @@ Vue.component('zoom', __webpack_require__(55));
 
 var app = new Vue({
   el: '#app'
+
 });
 
 /***/ }),
@@ -41507,9 +41508,9 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/Example.vue"
+Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/register.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] Example.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] register.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -41518,9 +41519,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c4e84c36", Component.options)
+    hotAPI.createRecord("data-v-a76bf5d0", Component.options)
   } else {
-    hotAPI.reload("data-v-c4e84c36", Component.options)
+    hotAPI.reload("data-v-a76bf5d0", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -41552,10 +41553,65 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
+
+    computed: {
+        form_method: function form_method() {
+            return this.$el.method.toLowerCase();
+        },
+        form_action: function form_action() {
+            return this.$el.action.toLowerCase();
+        }
+    },
+
+    methods: {
+        onSubmit: function onSubmit(event) {
+            var formData = new FormData(this.$el);
+
+            this.$http[this.form_method](this.form_action, formData).then(this.successCallBack, this.errorCallBack);
+        },
+
+        successCallBack: function successCallBack(response) {
+            console.log('AjaxForm submission: SUCCESS');
+        },
+
+        errorCallBack: function errorCallBack(response) {
+            console.log('AjaxForm submission: ERROR');
+        }
     }
 });
 
@@ -41564,27 +41620,97 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "container"
   }, [_c('div', {
-    staticClass: "row"
+    attrs: {
+      "id": "register"
+    }
+  }, [_c('form', {
+    staticClass: "form-horizontal",
+    attrs: {
+      "id": "signin-form"
+    }
+  }, [_c('fieldset', [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _c('div', {
+    staticClass: "control-group"
   }, [_c('div', {
-    staticClass: "col-md-8 col-md-offset-2"
+    staticClass: "controls"
+  }, [_c('button', {
+    staticClass: "btn btn-success",
+    attrs: {
+      "id": "signin-button",
+      "name": "signin"
+    },
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        _vm.onSubmit($event)
+      }
+    }
+  }, [_vm._v("Sign In\n                        ")])])])])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "control-group"
+  }, [_c('label', {
+    staticClass: "control-label",
+    attrs: {
+      "for": "userid"
+    }
+  }, [_vm._v("Alias:")]), _vm._v(" "), _c('div', {
+    staticClass: "controls"
+  }, [_c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "id": "userid",
+      "name": "userid",
+      "type": "text",
+      "placeholder": "JoeSixpack",
+      "required": ""
+    }
+  })])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "control-group"
+  }, [_c('label', {
+    staticClass: "control-label",
+    attrs: {
+      "for": "passwordinput"
+    }
+  }, [_vm._v("Password:")]), _vm._v(" "), _c('div', {
+    staticClass: "controls"
+  }, [_c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "id": "passwordinput",
+      "name": "passwordinput",
+      "type": "password",
+      "placeholder": "********"
+    }
+  })])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "control-group"
   }, [_c('div', {
-    staticClass: "panel panel-default"
-  }, [_c('div', {
-    staticClass: "panel-heading"
-  }, [_vm._v("Example Component")]), _vm._v(" "), _c('div', {
-    staticClass: "panel-body"
-  }, [_vm._v("\n                    I'm an example component!\n                ")])])])])])
+    staticClass: "controls"
+  }, [_c('label', {
+    staticClass: "checkbox inline",
+    attrs: {
+      "for": "rememberme-0"
+    }
+  }, [_c('input', {
+    attrs: {
+      "type": "checkbox",
+      "name": "rememberme",
+      "id": "rememberme-0",
+      "value": "Remember me"
+    }
+  }), _vm._v("\n                            Remember me\n                        ")])])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-c4e84c36", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-a76bf5d0", module.exports)
   }
 }
 
