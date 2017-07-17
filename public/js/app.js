@@ -42030,6 +42030,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42059,7 +42063,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             canvasHeight: 600,
             color: 'black',
             beadType: 'delica',
-            beadMatrix: null
+            beadMatrix: null,
+            lastState: null
         };
     },
 
@@ -42072,7 +42077,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         start: function start(event) {
-            this.drawing = true;
 
             this.ctx.beginPath();
 
@@ -42088,6 +42092,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.drag = true;
             }
             if (!this.drag) {
+                this.lastState = JSON.stringify(this.beadMatrix);
+                this.drawing = true;
                 this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
             }
         },
@@ -42153,6 +42159,63 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).catch(function (response) {
                 console.log('catch');
             });
+        },
+        undo: function undo() {
+            this.beadMatrix = JSON.parse(this.lastState);
+            this.drawNewGrid();
+        },
+        rotateLeft: function rotateLeft() {
+            console.log('rotate left');
+            var oldMatrix = this.beadMatrix;
+
+            this.beadMatrix = new Array(this.gridHeight);
+            for (var i = 0; i < this.gridHeight; i++) {
+                this.beadMatrix[i] = new Array(this.gridWidth);
+            }
+
+            console.log('grid width ' + this.gridWidth);
+            if (oldMatrix) {
+                //go through our previous bead matrix, and draw out the beads stored there
+                for (var width = 0; width < this.gridWidth; width++) {
+                    for (var height = 0; height < this.gridHeight; height++) {
+                        if (oldMatrix[this.gridWidth - width]) {
+                            this.beadMatrix[height][width] = oldMatrix[this.gridWidth - width][height];
+                        }
+                    }
+                }
+            }
+
+            var oldHeight = this.gridHeight;
+            this.gridHeight = this.gridWidth;
+            this.gridWidth = oldHeight;
+
+            this.drawNewGrid();
+        },
+        rotateRight: function rotateRight() {
+            console.log('rotate left');
+            var oldMatrix = this.beadMatrix;
+
+            this.beadMatrix = new Array(this.gridHeight);
+            for (var i = 0; i < this.gridHeight; i++) {
+                this.beadMatrix[i] = new Array(this.gridWidth);
+            }
+
+            if (oldMatrix) {
+                //go through our previous bead matrix, and draw out the beads stored there
+                for (var width = 0; width < this.gridWidth; width++) {
+                    for (var height = 0; height < this.gridHeight; height++) {
+                        if (oldMatrix[width]) {
+                            this.beadMatrix[height][width] = oldMatrix[width][this.gridHeight - height];
+                        }
+                    }
+                }
+            }
+
+            var oldHeight = this.gridHeight;
+            this.gridHeight = this.gridWidth;
+            this.gridWidth = oldHeight;
+
+            this.drawNewGrid();
         },
         drawNewGrid: function drawNewGrid() {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -42431,7 +42494,34 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.beadType = "round"
       }
     }
-  }), _vm._v("Round (Czech)")])]), _vm._v(" "), _c('zoom', {
+  }), _vm._v("Round (Czech)")])]), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "undo"
+    },
+    on: {
+      "click": _vm.undo
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-share-alt gly-flip-horizontal"
+  })]), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "rotate-left"
+    },
+    on: {
+      "click": _vm.rotateLeft
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-repeat gly-flip-horizontal"
+  })]), _vm._v(" "), _c('button', {
+    attrs: {
+      "id": "rotate-right"
+    },
+    on: {
+      "click": _vm.rotateRight
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-repeat"
+  })]), _vm._v(" "), _c('zoom', {
     ref: "zoomControl",
     attrs: {
       "panHorizontal": _vm.panHorizontal,

@@ -32,6 +32,10 @@
                         <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
                     </div>
 
+                    <button id="undo" @click="undo"><span class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
+
+                    <button id="rotate-left" @click="rotateLeft"><span class="glyphicon glyphicon-repeat gly-flip-horizontal"></span></button>
+                    <button id="rotate-right" @click="rotateRight"><span class="glyphicon glyphicon-repeat"></span></button>
 
                     <zoom ref="zoomControl" :panHorizontal.sync="panHorizontal" :panVertical.sync="panVertical"
                           :scaleFactor.sync="scaleFactor"></zoom>
@@ -72,6 +76,7 @@
                 color: 'black',
                 beadType: 'delica',
                 beadMatrix: null,
+                lastState: null,
             }
         },
 
@@ -83,7 +88,7 @@
         },
         methods: {
             start: function (event) {
-                this.drawing = true;
+
 
                 this.ctx.beginPath();
 
@@ -100,6 +105,8 @@
                     this.drag = true;
                 }
                 if (!this.drag) {
+                    this.lastState = JSON.stringify(this.beadMatrix);
+                    this.drawing = true;
                     this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
                 }
 
@@ -169,6 +176,63 @@
                     }).catch(function (response) {
                     console.log('catch');
                 });
+            },
+            undo: function() {
+                this.beadMatrix = JSON.parse(this.lastState);
+                this.drawNewGrid();
+            },
+            rotateLeft: function() {
+                this.lastState = JSON.stringify(this.beadMatrix);
+                let oldMatrix = this.beadMatrix;
+
+                this.beadMatrix = new Array(this.gridHeight);
+                for (let i = 0; i < this.gridHeight; i++) {
+                    this.beadMatrix[i] = new Array(this.gridWidth);
+                }
+
+                console.log('grid width '+this.gridWidth);
+                if (oldMatrix) {
+                    //go through our previous bead matrix, and draw out the beads stored there
+                    for (let width = 0; width < this.gridWidth; width++) {
+                        for (let height = 0; height < this.gridHeight; height++) {
+                            if (oldMatrix[this.gridWidth - width]) {
+                                this.beadMatrix[height][width] = oldMatrix[this.gridWidth - width][height];
+                            }
+                        }
+                    }
+                }
+
+                let oldHeight = this.gridHeight;
+                this.gridHeight = this.gridWidth;
+                this.gridWidth = oldHeight;
+
+                this.drawNewGrid();
+            },
+            rotateRight: function() {
+                this.lastState = JSON.stringify(this.beadMatrix);
+                let oldMatrix = this.beadMatrix;
+
+                this.beadMatrix = new Array(this.gridHeight);
+                for (let i = 0; i < this.gridHeight; i++) {
+                    this.beadMatrix[i] = new Array(this.gridWidth);
+                }
+
+                if (oldMatrix) {
+                    //go through our previous bead matrix, and draw out the beads stored there
+                    for (let width = 0; width < this.gridWidth; width++) {
+                        for (let height = 0; height < this.gridHeight; height++) {
+                            if (oldMatrix[width]) {
+                                this.beadMatrix[height][width] = oldMatrix[width][this.gridHeight - height];
+                            }
+                        }
+                    }
+                }
+
+                let oldHeight = this.gridHeight;
+                this.gridHeight = this.gridWidth;
+                this.gridWidth = oldHeight;
+
+                this.drawNewGrid();
             },
             drawNewGrid: function () {
                 this.ctx.setTransform(1, 0, 0, 1, 0, 0);
