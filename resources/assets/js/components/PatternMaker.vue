@@ -27,8 +27,7 @@
                     <grid-size :gridWidth.sync="gridWidth" :gridHeight.sync="gridHeight"></grid-size>
                     <div class="radio">
                         <label><input type="radio" id="delica" value="delica" v-model="beadType">Delica</label>
-                    </div>
-                    <div class="radio">
+                    </div>                    <div class="radio">
                         <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
                     </div>
 
@@ -77,6 +76,7 @@
                 beadType: 'delica',
                 beadMatrix: null,
                 lastState: null,
+                offset: 0,
             }
         },
 

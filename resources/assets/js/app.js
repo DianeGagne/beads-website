@@ -19,6 +19,7 @@ Vue.component('register', require('./components/register.vue'));
 Vue.component('scrollpattern', require('./components/ScrollPatterns.vue'));
 Vue.component('patternmaker', require('./components/PatternMaker.vue'));
 Vue.component('patternshow', require('./components/PatternShow.vue'));
+Vue.component('patternRowSelector', require('./components/PatternRowSelector.vue'));
 Vue.component('color-picker', require('./components/ColorPicker.vue'));
 Vue.component('grid-size', require('./components/GridSize.vue'));
 Vue.component('zoom', require('./components/Zoom.vue'));

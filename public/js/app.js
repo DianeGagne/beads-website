@@ -870,7 +870,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(10);
-module.exports = __webpack_require__(58);
+module.exports = __webpack_require__(61);
 
 
 /***/ }),
@@ -898,9 +898,10 @@ Vue.component('register', __webpack_require__(37));
 Vue.component('scrollpattern', __webpack_require__(40));
 Vue.component('patternmaker', __webpack_require__(43));
 Vue.component('patternshow', __webpack_require__(46));
-Vue.component('color-picker', __webpack_require__(49));
-Vue.component('grid-size', __webpack_require__(52));
-Vue.component('zoom', __webpack_require__(55));
+Vue.component('patternRowSelector', __webpack_require__(49));
+Vue.component('color-picker', __webpack_require__(52));
+Vue.component('grid-size', __webpack_require__(55));
+Vue.component('zoom', __webpack_require__(58));
 
 var app = new Vue({
   el: '#app'
@@ -42034,6 +42035,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42064,7 +42066,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             color: 'black',
             beadType: 'delica',
             beadMatrix: null,
-            lastState: null
+            lastState: null,
+            offset: 0
         };
     },
 
@@ -42165,7 +42168,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.drawNewGrid();
         },
         rotateLeft: function rotateLeft() {
-            console.log('rotate left');
+            this.lastState = JSON.stringify(this.beadMatrix);
             var oldMatrix = this.beadMatrix;
 
             this.beadMatrix = new Array(this.gridHeight);
@@ -42192,7 +42195,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.drawNewGrid();
         },
         rotateRight: function rotateRight() {
-            console.log('rotate left');
+            this.lastState = JSON.stringify(this.beadMatrix);
             var oldMatrix = this.beadMatrix;
 
             this.beadMatrix = new Array(this.gridHeight);
@@ -42330,7 +42333,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "display": "flex"
     }
-  }, [_c('canvas', {
+  }, [_c('button', {
+    style: ({
+      backgroundColor: this.color,
+      paddingLeft: this.offset
+    }),
+    attrs: {
+      "id": "fillRow"
+    },
+    on: {
+      "click": _vm.fillRow
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-circle-arrow-down"
+  })]), _vm._v(" "), _c('canvas', {
     staticStyle: {
       "border": "1px solid black"
     },
@@ -42806,6 +42822,129 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
+Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/PatternRowSelector.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] PatternRowSelector.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-57e6797e", Component.options)
+  } else {
+    hotAPI.reload("data-v-57e6797e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        color: { default: 'black' },
+        gridSize: 20,
+        beadWidth: 'delica'
+    },
+    data: function data() {
+        return {
+            offset: 0,
+            visible: true
+        };
+    },
+
+    mounted: function mounted() {},
+
+    methods: {
+        fillRow: function fillRow() {
+            console.log('fill a row');
+        }
+    },
+
+    watch: {
+        gridSize: function gridSize() {},
+        color: function color() {}
+
+    }
+});
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "container"
+  }, [_c('div', {
+    attrs: {
+      "id": "patternRowSelector"
+    }
+  }, [_c('div', {
+    staticStyle: {
+      "width": "600px"
+    }
+  }, [_c('button', {
+    style: ({
+      backgroundColor: this.color,
+      paddingLeft: this.offset
+    }),
+    attrs: {
+      "id": "fillRow"
+    },
+    on: {
+      "click": _vm.fillRow
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-circle-arrow-down"
+  })])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-57e6797e", module.exports)
+  }
+}
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(53),
+  /* template */
+  __webpack_require__(54),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
 Component.options.__file = "/home/vagrant/Beads/resources/assets/js/components/ColorPicker.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ColorPicker.vue: functional components are not supported with templates, they should use render functions.")}
@@ -42830,7 +42969,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42864,7 +43003,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42900,15 +43039,15 @@ if (false) {
 }
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(53),
+  __webpack_require__(56),
   /* template */
-  __webpack_require__(54),
+  __webpack_require__(57),
   /* styles */
   null,
   /* scopeId */
@@ -42940,7 +43079,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42982,7 +43121,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -43035,15 +43174,15 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(56),
+  __webpack_require__(59),
   /* template */
-  __webpack_require__(57),
+  __webpack_require__(60),
   /* styles */
   null,
   /* scopeId */
@@ -43075,7 +43214,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -43185,7 +43324,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -43271,7 +43410,7 @@ if (false) {
 }
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
