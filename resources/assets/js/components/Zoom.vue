@@ -1,6 +1,5 @@
 <template>
-    <div class="container">
-        <div id="color-picker">
+        <div id="zoom-picker">
             <div style="display: flex;">
                 <button id="zoom-in" @click="zoomIn"><span class="glyphicon glyphicon-zoom-in"></span></button>
                 <button id="zoom-out" @click="zoomOut"><span class="glyphicon glyphicon-zoom-out"></span></button>
@@ -17,7 +16,6 @@
                 <button id="resetZoom" @click="resetZoom">Reset Zoom</button>
             </div>
         </div>
-    </div>
 </template>
 <script>
     export default {

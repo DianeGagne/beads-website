@@ -72,25 +72,27 @@ class BeadsController extends Controller
      */
     public function getBeads()
     {
-
         $beads = Beads::all();
 
         $userFavorites = Auth::user()->userFavorites;
         $data['beads'] = $beads;
-        $data['userFavorites'] = $userFavorites;
         $data['finishes'] = Finishes::all();
 
         return view('beads.beads')->with($data);
     }
 
-    public function addFavorites()
+    /**
+     * Get an array of all the beads for the pattern maker
+     * @return array
+     */
+    public function allBeadsSelect()
     {
-        $favorites = new userFavorites();
+        $beads = Beads::all();
 
-        $favorites->user_id = Auth::user()->id;
-        $favorites->beads_id = Input::get('bead_id');
-        $favorites->save();
-        return redirect('beads');
+        $beadsArray = ($beads->map(function($input){
+            return ['color' => '#'.dechex($input->color), 'image' => $input->image_file, 'key' => $input->id];
+        }))->toArray();
+        return json_encode($beadsArray);
     }
 
     public function finish($id)

@@ -1,16 +1,18 @@
 <template>
-    <div class="container">
-        <div id="color-picker">
-            <div style="display: flex;">
-                <div style="width: 100px; height: 30px;" v-bind:style="{backgroundColor: this.color}" @click="returnColor"></div>
+        <div id="color-picker" style="flex:auto; display:inline-block; padding:1px; width:80px; height:30px;">
+                <div style="width: 100%; height: 100%;" v-bind:style="{backgroundColor: this.info.color}"
+                     @click="returnColor"></div>
             </div>
-        </div>
-    </div>
 </template>
 <script>
     export default {
         props: {
-            color: {default: 'black'}
+            info: {
+                default: {
+                    color: 'black',
+                    image: 'newName',
+                }
+            },
         },
         data: function () {
             return {
@@ -21,7 +23,7 @@
         },
         methods: {
             returnColor: function () {
-                this.$emit('update:color', this.color)
+                this.$emit('update:color', this.info.color)
             }
         }
     }

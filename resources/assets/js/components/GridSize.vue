@@ -1,6 +1,5 @@
 <template>
-    <div class="container">
-        <div id="color-picker">
+        <div id="grid-size">
             <div style="display: flex;">
                 <div style="width: 100px">
                 <input title="Width" type="number" value=20 id="beadsWidth" @change="returnWidth">
@@ -10,7 +9,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </template>
 <script>
     export default {

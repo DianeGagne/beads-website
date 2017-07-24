@@ -42034,8 +42034,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42067,20 +42065,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             beadType: 'delica',
             beadMatrix: null,
             lastState: null,
-            offset: 0
+            offset: 0,
+            childrenColors: [{ image: 'red', color: '1975079', key: 1 }, { image: 'blue', color: 1985079, key: 2 }]
         };
     },
 
     mounted: function mounted() {
         this.canvas = document.getElementById('canvas');
         this.ctx = canvas.getContext('2d');
-        this.drawNewGrid();
+
+        //resize the canvas
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+        this.canvasWidth = this.canvas.width;
+        this.canvasHeight = this.canvas.height;
+
         this.zoomChild = this.$refs.zoomControl;
+        this.drawNewGrid();
+
+        this.replace();
+        this.drawNewGrid();
     },
 
     methods: {
+        replace: function replace() {
+            var self = this;
+            axios.get('/beads/all').then(function (response) {
+                console.log(response);
+                self.childrenColors = response.data;
+            });
+        },
         start: function start(event) {
-
             this.ctx.beginPath();
 
             this.prevX = this.currX;
@@ -42176,7 +42191,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.beadMatrix[i] = new Array(this.gridWidth);
             }
 
-            console.log('grid width ' + this.gridWidth);
             if (oldMatrix) {
                 //go through our previous bead matrix, and draw out the beads stored there
                 for (var width = 0; width < this.gridWidth; width++) {
@@ -42222,7 +42236,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         drawNewGrid: function drawNewGrid() {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.scale(this.scaleFactor, this.scaleFactor);
             this.ctx.beginPath();
             this.ctx.strokeStyle = 'black';
@@ -42230,18 +42244,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //calculate bead size
             var widthOffset = void 0;
             var heightOffset = void 0;
-            if (this.gridWidth * this.beadAspect < this.gridHeight) {
+            if (this.gridWidth * this.canvas.height * this.beadAspect < this.gridHeight * this.canvas.width) {
                 //height is larger
-                heightOffset = this.canvasHeight / this.scaleFactor % this.gridHeight / 2;
-                this.beadHeight = (this.canvasHeight - heightOffset) / this.gridHeight;
+                heightOffset = this.canvas.height / this.scaleFactor % this.gridHeight / 2;
+                this.beadHeight = (this.canvas.height - heightOffset) / this.gridHeight;
                 this.beadWidth = this.beadHeight * this.beadAspect;
             } else {
-                widthOffset = this.canvasWidth / this.scaleFactor % (this.gridWidth * this.beadAspect) / 2;
-                this.beadWidth = (this.canvasWidth - widthOffset) / (this.gridWidth * this.beadAspect);
+                widthOffset = this.canvas.width / this.scaleFactor % (this.gridWidth * this.beadAspect) / 2;
+                this.beadWidth = (this.canvas.width - widthOffset) / (this.gridWidth * this.beadAspect);
                 this.beadHeight = this.beadWidth / this.beadAspect;
             }
-            widthOffset = this.canvasWidth / this.scaleFactor - this.gridWidth * this.beadWidth;
-            heightOffset = this.canvasHeight / this.scaleFactor - this.gridHeight * this.beadHeight;
+            widthOffset = this.canvas.width / this.scaleFactor - this.gridWidth * this.beadWidth;
+            heightOffset = this.canvas.height / this.scaleFactor - this.gridHeight * this.beadHeight;
             this.leftOffset = widthOffset / 2 + this.panHorizontal;
             this.topOffset = heightOffset / 2 + this.panVertical;
             var rightOffset = widthOffset - this.leftOffset;
@@ -42251,14 +42265,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var division = this.topOffset;
             for (var beadCount = 0; beadCount <= this.gridHeight; beadCount++) {
                 this.ctx.moveTo(this.leftOffset, division);
-                this.ctx.lineTo(this.canvasWidth / this.scaleFactor - rightOffset, division);
+                this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
                 division += this.beadHeight;
             }
             //draw vertical
             division = this.leftOffset;
             for (var _beadCount = 0; _beadCount <= this.gridWidth; _beadCount++) {
                 this.ctx.moveTo(division, this.topOffset);
-                this.ctx.lineTo(division, this.canvasHeight / this.scaleFactor - bottomOffset);
+                this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
                 division += this.beadWidth;
             }
 
@@ -42324,31 +42338,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
-  }, [_c('div', {
+    staticStyle: {
+      "height": "88vh"
+    },
     attrs: {
       "id": "patternMaker"
     }
   }, [_c('div', {
     staticStyle: {
-      "display": "flex"
+      "display": "flex",
+      "height": "100%"
     }
-  }, [_c('button', {
-    style: ({
-      backgroundColor: this.color,
-      paddingLeft: this.offset
-    }),
-    attrs: {
-      "id": "fillRow"
-    },
-    on: {
-      "click": _vm.fillRow
-    }
-  }, [_c('span', {
-    staticClass: "glyphicon glyphicon-circle-arrow-down"
-  })]), _vm._v(" "), _c('canvas', {
+  }, [_c('canvas', {
     staticStyle: {
-      "border": "1px solid black"
+      "border": "1px solid black",
+      "width": "80%",
+      "margin-left": "15px",
+      "margin-right": "15px"
     },
     attrs: {
       "id": "canvas",
@@ -42370,90 +42376,31 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('div', {
     staticStyle: {
-      "min-width": "200px",
-      "overflow": "scroll"
-    }
-  }, [_c('div', [_vm._v("\n                    " + _vm._s((_vm.drawing ? 'drawing ' : '') + _vm.beadX + ', ' + _vm.beadY) + "\n                ")]), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "red"
+      "overflow-y": "scroll"
     },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
-    }
-  }), _vm._v(" "), _c('color-picker', {
     attrs: {
-      "color": _vm.color,
-      "color": "orange"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
+      "id": "actions_bar"
     }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "yellow"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
+  }, [_c('div', {
+    staticClass: "colorpicker",
+    staticStyle: {
+      "height": "60%",
+      "overflow-x": "scroll"
     }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "green"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
+  }, _vm._l((_vm.childrenColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      attrs: {
+        "color": _vm.color,
+        "info": child
+      },
+      on: {
+        "update:color": function($event) {
+          _vm.color = $event
+        }
       }
-    }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "blue"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
-    }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "purple"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
-    }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "black"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
-    }
-  }), _vm._v(" "), _c('color-picker', {
-    attrs: {
-      "color": _vm.color,
-      "color": "white"
-    },
-    on: {
-      "update:color": function($event) {
-        _vm.color = $event
-      }
-    }
-  }), _vm._v(" "), _c('grid-size', {
+    })
+  })), _vm._v(" "), _c('div', [_vm._v("\n                " + _vm._s((_vm.drawing ? 'drawing ' : '') + _vm.beadX + ', ' + _vm.beadY) + "\n            ")]), _vm._v(" "), _c('grid-size', {
     attrs: {
       "gridWidth": _vm.gridWidth,
       "gridHeight": _vm.gridHeight
@@ -42512,6 +42459,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v("Round (Czech)")])]), _vm._v(" "), _c('button', {
     attrs: {
+      "id": "replace"
+    },
+    on: {
+      "click": _vm.replace
+    }
+  }, [_vm._v("Replace beads")]), _vm._v(" "), _c('button', {
+    attrs: {
       "id": "undo"
     },
     on: {
@@ -42569,7 +42523,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.save
     }
-  }, [_vm._v("Save")])], 1)])])])
+  }, [_vm._v("Save")])], 1)])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -42980,13 +42934,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
-        color: { default: 'black' }
+        info: {
+            default: {
+                color: 'black',
+                image: 'newName'
+            }
+        }
     },
     data: function data() {
         return {
@@ -42997,7 +42953,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         returnColor: function returnColor() {
-            this.$emit('update:color', this.color);
+            this.$emit('update:color', this.info.color);
         }
     }
 });
@@ -43008,27 +42964,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
-  }, [_c('div', {
+    staticStyle: {
+      "flex": "auto",
+      "display": "inline-block",
+      "padding": "1px",
+      "width": "80px",
+      "height": "30px"
+    },
     attrs: {
       "id": "color-picker"
     }
   }, [_c('div', {
     staticStyle: {
-      "display": "flex"
-    }
-  }, [_c('div', {
-    staticStyle: {
-      "width": "100px",
-      "height": "30px"
+      "width": "100%",
+      "height": "100%"
     },
     style: ({
-      backgroundColor: this.color
+      backgroundColor: this.info.color
     }),
     on: {
       "click": _vm.returnColor
     }
-  })])])])
+  })])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -43096,8 +43053,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -43126,10 +43081,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
-  }, [_c('div', {
     attrs: {
-      "id": "color-picker"
+      "id": "grid-size"
     }
   }, [_c('div', {
     staticStyle: {
@@ -43163,7 +43116,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "change": _vm.returnHeight
     }
-  })])])])])
+  })])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -43219,8 +43172,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
 //
 //
 //
@@ -43329,10 +43280,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
-  }, [_c('div', {
     attrs: {
-      "id": "color-picker"
+      "id": "zoom-picker"
     }
   }, [_c('div', {
     staticStyle: {
@@ -43356,7 +43305,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     staticClass: "glyphicon glyphicon-zoom-out"
-  })]), _vm._v("\n            " + _vm._s(_vm.scaleFactor) + "\n            "), _c('br'), _vm._v(" "), _c('button', {
+  })]), _vm._v("\n        " + _vm._s(_vm.scaleFactor) + "\n        "), _c('br'), _vm._v(" "), _c('button', {
     attrs: {
       "id": "pan-left"
     },
@@ -43374,7 +43323,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     staticClass: "glyphicon glyphicon-arrow-right"
-  })]), _vm._v("\n            " + _vm._s(_vm.panHorizontal) + "\n            "), _c('br'), _vm._v(" "), _c('button', {
+  })]), _vm._v("\n        " + _vm._s(_vm.panHorizontal) + "\n        "), _c('br'), _vm._v(" "), _c('button', {
     attrs: {
       "id": "pan-up"
     },
@@ -43392,14 +43341,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     staticClass: "glyphicon glyphicon-arrow-down"
-  })]), _vm._v("\n            " + _vm._s(_vm.panVertical) + "\n            "), _c('br'), _vm._v(" "), _c('button', {
+  })]), _vm._v("\n        " + _vm._s(_vm.panVertical) + "\n        "), _c('br'), _vm._v(" "), _c('button', {
     attrs: {
       "id": "resetZoom"
     },
     on: {
       "click": _vm.resetZoom
     }
-  }, [_vm._v("Reset Zoom")])])])])
+  }, [_vm._v("Reset Zoom")])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

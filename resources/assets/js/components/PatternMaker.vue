@@ -1,10 +1,9 @@
 <template>
-    <div class="container">
-        <div id="patternMaker">
-            <div style="display: flex;">
+        <div id="patternMaker" style="height:88vh;">
+            <div style="display: flex; height:100%;">
                 <canvas
                         id="canvas"
-                        :height=canvasHeight :width=canvasWidth style="border: 1px solid black;"
+                        :height=canvasHeight :width=canvasWidth style="border: 1px solid black; width:80%; margin-left:15px; margin-right:15px;"
                         @mousedown="start"
                         @mousemove="move"
                         @mouseup="drag=false,drawing=false"
@@ -12,29 +11,31 @@
                         @keyup.ctrl="drag=false"
                         @wheel="handleScroll"
                 ></canvas>
-                <div style="min-width: 200px; overflow:scroll">
+                <div id="actions_bar" style="overflow-y:scroll">
+
+                    <div class="colorpicker" style="height:60%; overflow-x:scroll">
+                    <color-picker v-for="child in childrenColors" :color.sync="color" key="colorInfo.key" v-bind:info="child"></color-picker>
+                    </div>
                     <div>
                         {{ (drawing ? 'drawing ' : '') + beadX + ', ' + beadY }}
                     </div>
-                    <color-picker :color.sync="color" color="red"></color-picker>
-                    <color-picker :color.sync="color" color="orange"></color-picker>
-                    <color-picker :color.sync="color" color="yellow"></color-picker>
-                    <color-picker :color.sync="color" color="green"></color-picker>
-                    <color-picker :color.sync="color" color="blue"></color-picker>
-                    <color-picker :color.sync="color" color="purple"></color-picker>
-                    <color-picker :color.sync="color" color="black"></color-picker>
-                    <color-picker :color.sync="color" color="white"></color-picker>
                     <grid-size :gridWidth.sync="gridWidth" :gridHeight.sync="gridHeight"></grid-size>
                     <div class="radio">
                         <label><input type="radio" id="delica" value="delica" v-model="beadType">Delica</label>
-                    </div>                    <div class="radio">
+                    </div>
+                    <div class="radio">
                         <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
                     </div>
 
-                    <button id="undo" @click="undo"><span class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
+                    <button id="replace" @click="replace">Replace beads</button>
 
-                    <button id="rotate-left" @click="rotateLeft"><span class="glyphicon glyphicon-repeat gly-flip-horizontal"></span></button>
-                    <button id="rotate-right" @click="rotateRight"><span class="glyphicon glyphicon-repeat"></span></button>
+                    <button id="undo" @click="undo"><span
+                            class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
+
+                    <button id="rotate-left" @click="rotateLeft"><span
+                            class="glyphicon glyphicon-repeat gly-flip-horizontal"></span></button>
+                    <button id="rotate-right" @click="rotateRight"><span class="glyphicon glyphicon-repeat"></span>
+                    </button>
 
                     <zoom ref="zoomControl" :panHorizontal.sync="panHorizontal" :panVertical.sync="panVertical"
                           :scaleFactor.sync="scaleFactor"></zoom>
@@ -43,7 +44,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </template>
 <script>
     export default {
@@ -77,19 +77,38 @@
                 beadMatrix: null,
                 lastState: null,
                 offset: 0,
+                childrenColors: [
+                    {image: 'red', color: '1975079', key: 1},
+                    {image: 'blue', color: 1985079, key: 2},
+                    ],
             }
         },
 
         mounted() {
             this.canvas = document.getElementById('canvas');
             this.ctx = canvas.getContext('2d');
-            this.drawNewGrid();
+
+            //resize the canvas
+            this.canvas.width = this.canvas.clientWidth;
+            this.canvas.height = this.canvas.clientHeight;
+            this.canvasWidth = this.canvas.width;
+            this.canvasHeight = this.canvas.height;
+
             this.zoomChild = this.$refs.zoomControl;
+            this.drawNewGrid();
+
+            this.replace();
         },
         methods: {
+            replace: function(){
+                let self = this;
+                axios.get('/beads/all')
+                    .then(function (response) {
+                        console.log(response);
+                        self.childrenColors = response.data;
+                    });
+            },
             start: function (event) {
-
-
                 this.ctx.beginPath();
 
                 this.prevX = this.currX;
@@ -109,6 +128,7 @@
                     this.drawing = true;
                     this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
                 }
+
 
             },
             move: function (event) {
@@ -177,11 +197,11 @@
                     console.log('catch');
                 });
             },
-            undo: function() {
+            undo: function () {
                 this.beadMatrix = JSON.parse(this.lastState);
                 this.drawNewGrid();
             },
-            rotateLeft: function() {
+            rotateLeft: function () {
                 this.lastState = JSON.stringify(this.beadMatrix);
                 let oldMatrix = this.beadMatrix;
 
@@ -190,7 +210,6 @@
                     this.beadMatrix[i] = new Array(this.gridWidth);
                 }
 
-                console.log('grid width '+this.gridWidth);
                 if (oldMatrix) {
                     //go through our previous bead matrix, and draw out the beads stored there
                     for (let width = 0; width < this.gridWidth; width++) {
@@ -208,7 +227,7 @@
 
                 this.drawNewGrid();
             },
-            rotateRight: function() {
+            rotateRight: function () {
                 this.lastState = JSON.stringify(this.beadMatrix);
                 let oldMatrix = this.beadMatrix;
 
@@ -236,7 +255,7 @@
             },
             drawNewGrid: function () {
                 this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.ctx.scale(this.scaleFactor, this.scaleFactor);
                 this.ctx.beginPath();
                 this.ctx.strokeStyle = 'black';
@@ -244,18 +263,18 @@
                 //calculate bead size
                 let widthOffset;
                 let heightOffset;
-                if ((this.gridWidth * this.beadAspect) < this.gridHeight) {
+                if ((this.gridWidth * this.canvas.height * this.beadAspect) < this.gridHeight * this.canvas.width) {
                     //height is larger
-                    heightOffset = ((this.canvasHeight / this.scaleFactor) % (this.gridHeight)) / 2;
-                    this.beadHeight = (this.canvasHeight - heightOffset) / this.gridHeight;
+                    heightOffset = ((this.canvas.height / this.scaleFactor) % (this.gridHeight)) / 2;
+                    this.beadHeight = (this.canvas.height - heightOffset) / this.gridHeight;
                     this.beadWidth = this.beadHeight * this.beadAspect;
                 } else {
-                    widthOffset = ((this.canvasWidth / this.scaleFactor) % (this.gridWidth * this.beadAspect)) / 2;
-                    this.beadWidth = (this.canvasWidth - widthOffset) / (this.gridWidth * this.beadAspect);
+                    widthOffset = ((this.canvas.width / this.scaleFactor) % (this.gridWidth * this.beadAspect)) / 2;
+                    this.beadWidth = (this.canvas.width - widthOffset) / (this.gridWidth * this.beadAspect);
                     this.beadHeight = this.beadWidth / this.beadAspect;
                 }
-                widthOffset = (this.canvasWidth / this.scaleFactor) - (this.gridWidth * this.beadWidth);
-                heightOffset = (this.canvasHeight / this.scaleFactor) - (this.gridHeight * this.beadHeight);
+                widthOffset = (this.canvas.width / this.scaleFactor) - (this.gridWidth * this.beadWidth);
+                heightOffset = (this.canvas.height / this.scaleFactor) - (this.gridHeight * this.beadHeight);
                 this.leftOffset = widthOffset / 2 + this.panHorizontal;
                 this.topOffset = heightOffset / 2 + this.panVertical;
                 let rightOffset = widthOffset - this.leftOffset;
@@ -265,14 +284,14 @@
                 let division = this.topOffset;
                 for (let beadCount = 0; beadCount <= (this.gridHeight); beadCount++) {
                     this.ctx.moveTo(this.leftOffset, division);
-                    this.ctx.lineTo(this.canvasWidth / this.scaleFactor - rightOffset, division);
+                    this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
                     division += this.beadHeight;
                 }
                 //draw vertical
                 division = this.leftOffset;
                 for (let beadCount = 0; beadCount <= (this.gridWidth); beadCount++) {
                     this.ctx.moveTo(division, this.topOffset);
-                    this.ctx.lineTo(division, this.canvasHeight / this.scaleFactor - bottomOffset);
+                    this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
                     division += this.beadWidth;
                 }
 
