@@ -42066,7 +42066,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             beadMatrix: null,
             lastState: null,
             offset: 0,
-            childrenColors: [{ image: 'red', color: '1975079', key: 1 }, { image: 'blue', color: 1985079, key: 2 }]
+            childrenColors: []
         };
     },
 
@@ -42084,7 +42084,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.drawNewGrid();
 
         this.replace();
-        this.drawNewGrid();
     },
 
     methods: {
@@ -42934,6 +42933,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -42946,10 +42946,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     data: function data() {
         return {
-            color: null
+            color: null,
+            imageUrl: ''
         };
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        //load the image
+        var imgSrc = '/assets/delica11/' + this.image + '.jpg';
+        this.imageUrl = 'background-image: url(' + imgSrc + ');';
+    },
 
     methods: {
         returnColor: function returnColor() {
@@ -42980,8 +42985,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "height": "100%"
     },
     style: ({
-      backgroundColor: this.info.color
+      backgroundColor: this.info.color,
+      backgroundImage: 'url(/assets/delica11/' + this.info.image + '.jpg)'
     }),
+    attrs: {
+      "id": this.info.image
+    },
     on: {
       "click": _vm.returnColor
     }
@@ -43234,8 +43243,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$emit('update:scaleFactor', this.scaleFactor);
         },
         zoomOut: function zoomOut() {
-            this.scaleFactor -= .25;
-            this.$emit('update:scaleFactor', this.scaleFactor);
+            if (!this.scaleFactor == 0) {
+                this.scaleFactor -= .25;
+                this.$emit('update:scaleFactor', this.scaleFactor);
+            }
         },
         panLeft: function panLeft() {
             this.panHorizontal -= 25;
@@ -43246,7 +43257,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$emit('update:panHorizontal', this.panHorizontal);
         },
         panUp: function panUp() {
-            console.log('panup');
             this.panVertical -= 25;
             this.$emit('update:panVertical', this.panVertical);
         },

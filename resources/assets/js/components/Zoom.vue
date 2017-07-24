@@ -60,8 +60,10 @@
                 this.$emit('update:scaleFactor', this.scaleFactor);
             },
             zoomOut: function () {
-                this.scaleFactor -= .25;
-                this.$emit('update:scaleFactor', this.scaleFactor);
+                if(!this.scaleFactor == 0) {
+                    this.scaleFactor -= .25;
+                    this.$emit('update:scaleFactor', this.scaleFactor);
+                }
             },
             panLeft: function () {
                 this.panHorizontal -= 25;
@@ -72,7 +74,6 @@
                 this.$emit('update:panHorizontal', this.panHorizontal);
             },
             panUp: function () {
-                console.log('panup');
                 this.panVertical -= 25;
                 this.$emit('update:panVertical', this.panVertical);
             },

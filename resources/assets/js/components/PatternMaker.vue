@@ -78,8 +78,6 @@
                 lastState: null,
                 offset: 0,
                 childrenColors: [
-                    {image: 'red', color: '1975079', key: 1},
-                    {image: 'blue', color: 1985079, key: 2},
                     ],
             }
         },
@@ -128,8 +126,6 @@
                     this.drawing = true;
                     this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
                 }
-
-
             },
             move: function (event) {
                 this.currX = event.clientX;

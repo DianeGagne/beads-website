@@ -1,7 +1,8 @@
 <template>
         <div id="color-picker" style="flex:auto; display:inline-block; padding:1px; width:80px; height:30px;">
-                <div style="width: 100%; height: 100%;" v-bind:style="{backgroundColor: this.info.color}"
-                     @click="returnColor"></div>
+                <div :id=this.info.image style="width: 100%; height: 100%;" v-bind:style="{backgroundColor: this.info.color,  backgroundImage:'url(/assets/delica11/'+this.info.image+'.jpg)'}"
+                     @click="returnColor">
+                </div>
             </div>
 </template>
 <script>
@@ -16,7 +17,8 @@
         },
         data: function () {
             return {
-                color: null
+                color: null,
+                imageUrl: '',
             }
         },
         mounted() {
