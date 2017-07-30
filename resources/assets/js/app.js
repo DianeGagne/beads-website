@@ -9,6 +9,10 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import VueTabs from 'vue-nav-tabs'
+import 'vue-nav-tabs/themes/vue-tabs.css'
+Vue.use(VueTabs)
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -20,6 +24,7 @@ Vue.component('scrollpattern', require('./components/ScrollPatterns.vue'));
 Vue.component('patternmaker', require('./components/PatternMaker.vue'));
 Vue.component('patternshow', require('./components/PatternShow.vue'));
 Vue.component('patternRowSelector', require('./components/PatternRowSelector.vue'));
+Vue.component('color-section', require('./components/ColorSection.vue'));
 Vue.component('color-picker', require('./components/ColorPicker.vue'));
 Vue.component('grid-size', require('./components/GridSize.vue'));
 Vue.component('zoom', require('./components/Zoom.vue'));

@@ -9,7 +9,9 @@ use App\Beads;
 use App\Finishes;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
 class BeadsController extends Controller
@@ -89,25 +91,49 @@ class BeadsController extends Controller
     {
         $beads = Beads::all();
 
-        $beadsArray = ($beads->map(function($input){
-            return ['color' => '#'.dechex($input->color), 'image' => $input->image_file, 'key' => $input->id];
-        }))->toArray();
-        return json_encode($beadsArray);
+        return $this->mapBeadsForDisplay($beads);
     }
 
-    public function finish($id)
+    public function byFinishSelect()
     {
+        $finishes = Input::get('finishes');
 
-        $finish = Finishes::findOrFail($id);
+        if (!$finishes)
+            return [];
 
-        $beads = $finish->beads;
+        $beads = Beads::join('beads_finishes', 'beads_finishes.beads_id', '=', 'beads.id')
+            ->whereIn('beads_finishes.finishes_id', $finishes)
+            ->get();
 
-       // dd($beads);
-        $userFavorites = Auth::user()->userFavorites;
-        $data['beads'] = $beads;
-        $data['userFavorites'] = $userFavorites;
-        $data['finishes'] = Finishes::all();
+        //todo: this should be ordered so beads with multiple of the marked off finishes come first
+        return $this->mapBeadsForDisplay($beads);
+    }
 
-        return view('beads.beads')->with($data);
+    public function byColorSelect()
+    {
+        $color = json_decode(Input::get('color'));
+
+        if (!$color)
+            return [];
+
+        $beads = Beads::join('beads_finishes', 'beads_finishes.beads_id', '=', 'beads.id')
+            ->get();
+
+        $filteredBeads = $beads->reject(function ($input) use ($color) {
+            return ((2 * ($input->red - $color->r) * ($input->red - $color->r) +
+                    4 * (($input->green - $color->g) * ($input->green - $color->g)) +
+                    3 * (($input->blue - $color->b) * ($input->blue - $color->b))) > 8000);
+        });
+
+        return $this->mapBeadsForDisplay($filteredBeads);
+    }
+
+
+    private function mapBeadsForDisplay($beads)
+    {
+        $beadsArray = ($beads->map(function ($input) {
+            return ['color' => '#' . dechex($input->color), 'image' => $input->image_file, 'key' => $input->id];
+        }))->toArray();
+        return json_encode($beadsArray);
     }
 }

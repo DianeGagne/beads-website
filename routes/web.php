@@ -17,6 +17,9 @@ Route::post('pattern/save', 'PatternsController@savePattern');
 Route::get('pattern', 'PatternsController@drawPattern');
 Route::get('pattern/next', 'PatternsController@next');
 Route::get('beads/all', 'Beads\BeadsController@allBeadsSelect');
+Route::get('beads/finish', 'Beads\BeadsController@byFinishSelect');
+Route::get('beads/color', 'Beads\BeadsController@byColorSelect');
+Route::get('finishes/all', 'Beads\FinishesController@allFinishesSelect');
 
 Auth::routes();
 

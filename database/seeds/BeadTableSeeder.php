@@ -993,7 +993,5 @@ class BeadTableSeeder extends Seeder
         DB::table('beads')->insert(['name' => 'DB1850','name_description' => 'Duracoat Galvanized','image_file' => 'db1850','color' => 0x232531,'red' =>35,'green' => 37,'blue'=>49,]);
         DB::table('beads')->insert(['name' => 'DB1851','name_description' => 'Duracoat Galvanized','image_file' => 'db1851','color' => 0x595556,'red' =>89,'green' => 85,'blue'=>86,]);
         DB::table('beads')->insert(['name' => 'DB1852','name_description' => 'Duracoat Galvanized','image_file' => 'db1852','color' => 0x252422,'red' =>37,'green' => 36,'blue'=>34,]);
-
-
     }
 }

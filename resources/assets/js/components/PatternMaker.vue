@@ -13,9 +13,8 @@
                 ></canvas>
                 <div id="actions_bar" style="overflow-y:scroll">
 
-                    <div class="colorpicker" style="height:60%; overflow-x:scroll">
-                    <color-picker v-for="child in childrenColors" :color.sync="color" key="colorInfo.key" v-bind:info="child"></color-picker>
-                    </div>
+                    <color-section :color.sync="color" style="height:66%; overflow-y:scroll"></color-section>
+
                     <div>
                         {{ (drawing ? 'drawing ' : '') + beadX + ', ' + beadY }}
                     </div>
@@ -26,8 +25,6 @@
                     <div class="radio">
                         <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
                     </div>
-
-                    <button id="replace" @click="replace">Replace beads</button>
 
                     <button id="undo" @click="undo"><span
                             class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
@@ -77,8 +74,7 @@
                 beadMatrix: null,
                 lastState: null,
                 offset: 0,
-                childrenColors: [
-                    ],
+
             }
         },
 
@@ -95,17 +91,10 @@
             this.zoomChild = this.$refs.zoomControl;
             this.drawNewGrid();
 
-            this.replace();
+
         },
         methods: {
-            replace: function(){
-                let self = this;
-                axios.get('/beads/all')
-                    .then(function (response) {
-                        console.log(response);
-                        self.childrenColors = response.data;
-                    });
-            },
+
             start: function (event) {
                 this.ctx.beginPath();
 
