@@ -43379,7 +43379,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             panVertical: 0,
             canvasWidth: 600,
             canvasHeight: 600,
-            color: 'black',
+            bead: null,
             beadType: 'delica',
             beadMatrix: null,
             lastState: null,
@@ -43421,7 +43421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (!this.drag) {
                 this.lastState = JSON.stringify(this.beadMatrix);
                 this.drawing = true;
-                this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
+                this.drawBead(this.beadX - 1, this.beadY - 1, this.bead);
             }
         },
         move: function move(event) {
@@ -43447,9 +43447,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     this.beadY = '';
                     return;
                 }
-
                 if (this.drawing) {
-                    this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
+                    this.drawBead(this.beadX - 1, this.beadY - 1, this.bead);
                 }
             }
         },
@@ -43457,15 +43456,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.drawing = false;
             this.drag = false;
         },
-        drawBead: function drawBead(beadX, beadY, color) {
-            this.ctx.fillStyle = color;
+        drawBead: function drawBead(beadX, beadY, bead) {
+            this.ctx.fillStyle = bead.color;
             if (beadX === '' || beadY === '') return;
             if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
 
             var boxX = this.leftOffset + beadX * this.beadWidth + 1;
             var boxY = this.topOffset + beadY * this.beadHeight + 1;
             this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
-            this.beadMatrix[beadX][beadY] = color;
+            this.beadMatrix[beadX][beadY] = bead;
         },
         handleScroll: function handleScroll(event) {
             this.zoomChild.handleScroll(event);
@@ -43543,6 +43542,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.drawNewGrid();
         },
+
+        /**
+         * After any change to the pattern, simply erase it and draw a new one from the grid.
+         * This destroys all current data on the canvas and redraws a new one with new values.
+         */
         drawNewGrid: function drawNewGrid() {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -43696,11 +43700,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "overflow-y": "scroll"
     },
     attrs: {
-      "color": _vm.color
+      "bead": _vm.bead,
+      "beadMatrix": _vm.beadMatrix
     },
     on: {
-      "update:color": function($event) {
-        _vm.color = $event
+      "update:bead": function($event) {
+        _vm.bead = $event
       }
     }
   }), _vm._v(" "), _c('div', [_vm._v("\n                " + _vm._s((_vm.drawing ? 'drawing ' : '') + _vm.beadX + ', ' + _vm.beadY) + "\n            ")]), _vm._v(" "), _c('grid-size', {
@@ -44246,6 +44251,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -44257,20 +44276,23 @@ var defaultProps = {
         vSelect: __WEBPACK_IMPORTED_MODULE_0_vue_select___default.a,
         'slider-picker': __WEBPACK_IMPORTED_MODULE_1_vue_color__["Slider"]
     },
-    props: {},
+    props: {
+        beadMatrix: { default: null }
+    },
     data: function data() {
         return {
             colors: defaultProps,
-            color: null,
+            bead: null,
             childrenColors: [],
+            finishColors: [],
+            colorColors: [],
             selected: null,
-            finishOptions: []
+            finishOptions: [],
+            paletteColors: []
         };
     },
     mounted: function mounted() {
         this.replace();
-        console.log(this.color);
-        console.log(this.colors);
     },
 
     methods: {
@@ -44294,7 +44316,7 @@ var defaultProps = {
             }
             axios.get('/beads/finish', { params: { finishes: data } }).then(function (response) {
                 console.log(response);
-                self.childrenColors = response.data;
+                self.finishColors = response.data;
             });
         },
         findColors: function findColors(val) {
@@ -44302,16 +44324,41 @@ var defaultProps = {
             var data = this.colors.rgba;
             axios.get('/beads/color', { params: { color: data } }).then(function (response) {
                 console.log(response);
-                self.childrenColors = response.data;
+                self.colorColors = response.data;
             });
         }
     },
     watch: {
-        color: function color() {
-            this.$emit('update:color', this.color);
+        bead: function bead() {
+            this.$emit('update:bead', this.bead);
         },
         colors: function colors() {
             this.findColors();
+        },
+        beadMatrix: function beadMatrix() {
+            //create the palette
+            var newPalette = [];
+
+            //search each row for beads
+            for (var row in this.beadMatrix) {
+                //search each column for beads
+                for (var column in this.beadMatrix[row]) {
+                    //search the existing palette to make sure the bead is not yet in it
+                    var draw = true;
+                    for (var paletteBead in newPalette) {
+                        if (this.beadMatrix[row][column].key == newPalette[paletteBead].key) {
+                            //if it is in the palette skip adding this bead and go back to the next bead
+                            draw = false;
+                            break;
+                        }
+                    }
+                    //if we have not yet seen this bead, add it to the palette
+                    if (draw) {
+                        newPalette.push(this.beadMatrix[row][column]);
+                    }
+                }
+            }
+            this.paletteColors = newPalette;
         }
     }
 });
@@ -44345,7 +44392,26 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "title": "All"
     }
-  }), _vm._v(" "), _c('v-tab', {
+  }, [_c('div', {
+    staticClass: "colorpicker",
+    staticStyle: {
+      "height": "100%",
+      "overflow-x": "scroll"
+    }
+  }, _vm._l((_vm.childrenColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))]), _vm._v(" "), _c('v-tab', {
     attrs: {
       "title": "Finishes"
     }
@@ -44361,11 +44427,33 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.selected = $event
       }
     }
-  })], 1), _vm._v(" "), _c('v-tab', {
+  }), _vm._v(" "), _c('div', {
+    staticClass: "colorpicker",
+    staticStyle: {
+      "height": "100%",
+      "overflow-x": "scroll"
+    }
+  }, _vm._l((_vm.finishColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))], 1), _vm._v(" "), _c('v-tab', {
     attrs: {
       "title": "Colors"
     }
   }, [_c('slider-picker', {
+    staticStyle: {
+      "width": "auto"
+    },
     model: {
       value: (_vm.colors),
       callback: function($$v) {
@@ -44373,30 +44461,49 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "colors"
     }
-  })], 1), _vm._v(" "), _c('v-tab', {
-    attrs: {
-      "title": "Palette"
-    }
   }), _vm._v(" "), _c('div', {
     staticClass: "colorpicker",
     staticStyle: {
       "height": "100%",
       "overflow-x": "scroll"
     }
-  }, _vm._l((_vm.childrenColors), function(child) {
+  }, _vm._l((_vm.colorColors), function(child) {
     return _c('color-picker', {
       key: "colorInfo.key",
       attrs: {
-        "color": _vm.color,
+        "bead": _vm.bead,
         "info": child
       },
       on: {
-        "update:color": function($event) {
-          _vm.color = $event
+        "update:bead": function($event) {
+          _vm.bead = $event
         }
       }
     })
-  }))], 1)], 1)
+  }))], 1), _vm._v(" "), _c('v-tab', {
+    attrs: {
+      "title": "Palette"
+    }
+  }, [_c('div', {
+    staticClass: "colorpicker",
+    staticStyle: {
+      "height": "100%",
+      "overflow-x": "scroll"
+    }
+  }, _vm._l((_vm.paletteColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))])], 1)], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -44479,7 +44586,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         returnColor: function returnColor() {
-            this.$emit('update:color', this.info.color);
+            //this.$emit('update:color', this.info.color)
+            this.$emit('update:bead', this.info);
         }
     }
 });

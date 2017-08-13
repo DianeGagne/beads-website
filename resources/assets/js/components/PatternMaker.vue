@@ -13,7 +13,7 @@
                 ></canvas>
                 <div id="actions_bar" style="overflow-y:scroll">
 
-                    <color-section :color.sync="color" style="height:66%; overflow-y:scroll"></color-section>
+                    <color-section :bead.sync="bead" :beadMatrix="beadMatrix" style="height:66%; overflow-y:scroll"></color-section>
 
                     <div>
                         {{ (drawing ? 'drawing ' : '') + beadX + ', ' + beadY }}
@@ -69,7 +69,7 @@
                 panVertical: 0,
                 canvasWidth: 600,
                 canvasHeight: 600,
-                color: 'black',
+                bead: null,
                 beadType: 'delica',
                 beadMatrix: null,
                 lastState: null,
@@ -113,7 +113,7 @@
                 if (!this.drag) {
                     this.lastState = JSON.stringify(this.beadMatrix);
                     this.drawing = true;
-                    this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
+                    this.drawBead(this.beadX - 1, this.beadY - 1, this.bead);
                 }
             },
             move: function (event) {
@@ -139,9 +139,8 @@
                         this.beadY = '';
                         return;
                     }
-
                     if (this.drawing) {
-                        this.drawBead(this.beadX - 1, this.beadY - 1, this.color);
+                        this.drawBead(this.beadX - 1, this.beadY - 1, this.bead);
                     }
                 }
             },
@@ -149,8 +148,8 @@
                 this.drawing = false;
                 this.drag = false;
             },
-            drawBead: function (beadX, beadY, color) {
-                this.ctx.fillStyle = color;
+            drawBead: function (beadX, beadY, bead) {
+                this.ctx.fillStyle = bead.color;
                 if (beadX === '' || beadY === '')
                     return;
                 if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight)
@@ -159,7 +158,7 @@
                 let boxX = (this.leftOffset) + ((beadX) * this.beadWidth) + 1;
                 let boxY = (this.topOffset) + ((beadY) * this.beadHeight) + 1;
                 this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
-                this.beadMatrix[beadX][beadY] = color;
+                this.beadMatrix[beadX][beadY] = bead;
             },
             handleScroll: function (event) {
                 this.zoomChild.handleScroll(event);
@@ -238,6 +237,11 @@
 
                 this.drawNewGrid();
             },
+
+            /**
+             * After any change to the pattern, simply erase it and draw a new one from the grid.
+             * This destroys all current data on the canvas and redraws a new one with new values.
+             */
             drawNewGrid: function () {
                 this.ctx.setTransform(1, 0, 0, 1, 0, 0);
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

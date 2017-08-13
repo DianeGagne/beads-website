@@ -128,6 +128,20 @@ class BeadsController extends Controller
         return $this->mapBeadsForDisplay($filteredBeads);
     }
 
+    public function byIdSelect()
+    {
+        $keys = json_decode(Input::get('keys'));
+
+        if (!$keys)
+            return [];
+
+        $beads = Beads::join('beads_finishes', 'beads_finishes.beads_id', '=', 'beads.id')
+            ->whereIn('beads.id', $keys)
+            ->get();
+
+        return $this->mapBeadsForDisplay($beads);
+    }
+
 
     private function mapBeadsForDisplay($beads)
     {

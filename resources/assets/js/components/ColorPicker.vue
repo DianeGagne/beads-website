@@ -25,7 +25,8 @@
         },
         methods: {
             returnColor: function () {
-                this.$emit('update:color', this.info.color)
+                //this.$emit('update:color', this.info.color)
+                this.$emit('update:bead', this.info)
             }
         }
     }
