@@ -1,46 +1,35 @@
 <template>
-        <div id="patternMaker" style="height:88vh;">
-            <div style="display: flex; height:100%;">
+    <div id="patternMaker" style="height:87vh;">
+
+        <div style="display: flex; height:100%;">
+            <div class="canvasBlock" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%;">
                 <canvas
-                        id="canvas"
-                        :height=canvasHeight :width=canvasWidth style="border: 1px solid black; width:80%; margin-left:15px; margin-right:15px;"
+                        id="canvas" style="width:100%; height:100%;"
                         @mousedown="start"
                         @mousemove="move"
                         @mouseup="drag=false,drawing=false"
                         @mouseout="finishMove"
                         @keyup.ctrl="drag=false"
                         @wheel="handleScroll"
+
                 ></canvas>
-                <div id="actions_bar" style="overflow-y:scroll">
-
-                    <color-section :bead.sync="bead" :beadMatrix="beadMatrix" style="height:66%; overflow-y:scroll"></color-section>
-
-                    <div>
-                        {{ (drawing ? 'drawing ' : '') + beadX + ', ' + beadY }}
-                    </div>
-                    <grid-size :gridWidth.sync="gridWidth" :gridHeight.sync="gridHeight"></grid-size>
-                    <div class="radio">
-                        <label><input type="radio" id="delica" value="delica" v-model="beadType">Delica</label>
-                    </div>
-                    <div class="radio">
-                        <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
-                    </div>
-
-                    <button id="undo" @click="undo"><span
-                            class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
-
-                    <button id="rotate-left" @click="rotateLeft"><span
-                            class="glyphicon glyphicon-repeat gly-flip-horizontal"></span></button>
-                    <button id="rotate-right" @click="rotateRight"><span class="glyphicon glyphicon-repeat"></span>
-                    </button>
-
-                    <zoom ref="zoomControl" :panHorizontal.sync="panHorizontal" :panVertical.sync="panVertical"
-                          :scaleFactor.sync="scaleFactor"></zoom>
-                    <button id="clear" @click="clear">Clear</button>
-                    <button id="save" @click="save">Save</button>
-                </div>
             </div>
+
+            <actionsbar
+                    style="height:100%; right:0"
+                    :panHorizontal.sync="panHorizontal"
+                    :panVertical.sync="panVertical"
+                    :scaleFactor.sync="scaleFactor"
+                    :gridWidth.sync="gridWidth"
+                    :gridHeight.sync="gridHeight"
+                    :bead.sync="bead"
+                    :beadType.sync="beadType"
+                    :beadMatrix.sync="beadMatrix"
+            ></actionsbar>
         </div>
+
+    </div>
+
 </template>
 <script>
     export default {
@@ -60,21 +49,18 @@
                 gridHeight: 20,
                 leftOffset: 0,
                 topOffset: 0,
-                beadWidth: 20,
-                beadHeight: 20,
+                beadWidth: 2,
+                beadHeight: 2,
                 beadAspect: 1,
                 zoomChild: null,
                 scaleFactor: 1,
                 panHorizontal: 0,
                 panVertical: 0,
-                canvasWidth: 600,
-                canvasHeight: 600,
                 bead: null,
                 beadType: 'delica',
                 beadMatrix: null,
                 lastState: null,
                 offset: 0,
-
             }
         },
 
@@ -85,16 +71,27 @@
             //resize the canvas
             this.canvas.width = this.canvas.clientWidth;
             this.canvas.height = this.canvas.clientHeight;
-            this.canvasWidth = this.canvas.width;
-            this.canvasHeight = this.canvas.height;
+
+            console.log('add resize listener');
+            window.addEventListener('resize', this.onResize)
 
             this.zoomChild = this.$refs.zoomControl;
             this.drawNewGrid();
-
-
+        },
+        beforeDestroy: function () {
+            window.removeEventListener('resize', this.onResize)
         },
         methods: {
+            onResize: function () {
+                console.log('resize');
+                this.beadWidth = 1;
+                this.beadHeight = 1;
 
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+                this.drawNewGrid();
+
+            },
             start: function (event) {
                 this.ctx.beginPath();
 

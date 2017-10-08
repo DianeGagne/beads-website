@@ -1,11 +1,12 @@
 <template>
-    <div id="zoom-picker">
+    <div id="rotate-picker">
         <div style="display: flex;">
-            <div class="zoom-section" id="zoom">
+            <div class="rotate-section" id="rotate">
                 <div class="buttons">
-                    <button id="zoom-in" class="btn btn-sm btn-default" @click="zoomIn"><span class="glyphicon glyphicon-zoom-in"></span></button>
-                    <button id="zoom-out" class="btn btn-sm btn-default" @click="zoomOut"><span class="glyphicon glyphicon-zoom-out"></span></button>
-                    <button id="resetZoom" class="btn btn-sm btn-default" @click="resetZoom"><span class="glyphicon glyphicon-fullscreen"></span></button>
+                    <button id="rotate-left" @click="rotateLeft"><span
+                            class="glyphicon glyphicon-repeat gly-flip-horizontal"></span></button>
+                    <button id="rotate-right" @click="rotateRight"><span class="glyphicon glyphicon-repeat"></span>
+                    </button>
                 </div>
             </div>
         </div>

@@ -9,9 +9,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import VueTabs from 'vue-nav-tabs'
-import 'vue-nav-tabs/themes/vue-tabs.css'
-Vue.use(VueTabs)
+import VueTabs from 'vue-nav-tabs';
+import 'vue-nav-tabs/themes/vue-tabs.css';
+
+
+Vue.use(VueTabs);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -19,18 +21,20 @@ Vue.use(VueTabs)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+
 Vue.component('register', require('./components/register.vue'));
 Vue.component('scrollpattern', require('./components/ScrollPatterns.vue'));
 Vue.component('patternmaker', require('./components/PatternMaker.vue'));
 Vue.component('patternshow', require('./components/PatternShow.vue'));
+Vue.component('actionsbar', require('./components/ActionsBar.vue'));
 Vue.component('patternRowSelector', require('./components/PatternRowSelector.vue'));
 Vue.component('color-section', require('./components/ColorSection.vue'));
 Vue.component('color-picker', require('./components/ColorPicker.vue'));
 Vue.component('grid-size', require('./components/GridSize.vue'));
 Vue.component('zoom', require('./components/Zoom.vue'));
-
+Vue.component('pan', require('./components/Pan.vue'));
+Vue.component("resizer", require ("vue-resize-handle/unidirectional"));
 
 const app = new Vue({
     el: '#app',
-
 });

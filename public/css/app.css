@@ -8350,3 +8350,136 @@ button.close {
   }
 }
 
+.color-picker {
+  display: inline-block;
+  margin: 3px;
+  width: 4em;
+  height: 4em;
+  -webkit-box-shadow: 1px 1px 1px #888888;
+          box-shadow: 1px 1px 1px #888888;
+}
+
+.color-picker.selected {
+  -webkit-box-shadow: 4px 4px 3px #888888;
+          box-shadow: 4px 4px 3px #888888;
+}
+
+.color-picker .color-image {
+  width: 100%;
+  height: 100%;
+}
+
+.color-picker .color-details {
+  display: none;
+}
+
+#color-section {
+  background-color: #fff;
+  overflow-y: auto;
+  height: 50vh;
+}
+
+#color-section > div > div.nav-tabs-navigation > div > ul {
+  background-color: #f5f8fa;
+  margin-bottom: 8px;
+  border-radius: 3px;
+}
+
+#color-section > div > div.nav-tabs-navigation > div > ul > li {
+  margin-left: 3px;
+}
+
+#color-section > div > div.nav-tabs-navigation > div > ul > li a {
+  background-color: #d3e0e9;
+  padding: 5px;
+}
+
+#color-section > div > div.nav-tabs-navigation > div > ul > li a:hover,
+#color-section > div > div.nav-tabs-navigation > div > ul > li a:focus {
+  background-color: #fff;
+}
+
+#color-section > div > div.nav-tabs-navigation > div > ul > li.active > a {
+  background-color: #fff;
+}
+
+#color-section > div > div.tab-content > section > div.dropdown,
+#color-section > div > div.tab-content > section > div.vue-color__slider {
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#actions_bar {
+  overflow-x: hidden;
+  height: 100%;
+  right: 0px;
+  top: 50px;
+  display: inline-block;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  background: lightgray;
+}
+
+.move-bar {
+  background-color: white;
+  border: 2px solid darkgray;
+  padding: 3px;
+  margin: 0px 3px;
+  cursor: e-resize;
+}
+
+.move-bar.vertical {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+  float: left;
+  height: 100%;
+}
+
+.closeButton {
+  position: absolute;
+  z-index: 15;
+  border-radius: 30px;
+  padding: 1px 6px;
+  margin-left: -24px;
+  margin-top: 2px;
+}
+
+@media screen and (max-width: 1024px) {
+  #actions_bar {
+    position: fixed;
+  }
+}
+
+#zoom-picker {
+  display: inline-block;
+}
+
+#zoom-picker #zoom {
+  margin-left: 10px;
+}
+
+#zoom-picker #zoom .buttons button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#pan-picker {
+  display: inline-block;
+}
+
+#pan-picker #up,
+#pan-picker #down {
+  text-align: center;
+}
+
+#pan-picker #pan-center {
+  margin-left: -4px;
+  margin-right: -3px;
+}
+

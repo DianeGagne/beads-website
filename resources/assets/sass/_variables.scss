@@ -1,6 +1,8 @@
 
 // Body
 $body-bg: #f5f8fa;
+$action-bar-bg: darken($body-bg, 10%);
+$action-bar-selected: #fff;
 
 // Borders
 $laravel-border-color: darken($body-bg, 10%);

@@ -8,6 +8,10 @@
                 <input title="Height" type="number" value=20 id="beadsHeight" @change="returnHeight">
                 </div>
             </div>
+            <div class="size-descriptions">
+                2x25 cm
+                196 beads (8g)
+            </div>
         </div>
 </template>
 <script>

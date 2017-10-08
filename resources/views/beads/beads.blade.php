@@ -13,8 +13,6 @@
                     </div>
 
                     <div class="bead-name">{{ $bead->name }}</div>
-
-
                     <div class="image-block">
                         <img src={{asset($bead->image())}}>
                     </div>

@@ -1,9 +1,13 @@
 <template>
-        <div id="color-picker" style="flex:auto; display:inline-block; padding:1px; width:75px; height:30px;">
-                <div :id=this.info.image style="width: 100%; height: 100%;" v-bind:style="{backgroundColor: this.info.color,  backgroundImage:'url(/assets/delica11/'+this.info.image+'.jpg)'}"
-                     @click="returnColor">
-                </div>
-            </div>
+    <div id="color-picker" class="color-picker">
+        <div class="color-image" :id=this.info.image
+             v-bind:style="{backgroundColor: this.info.color,  backgroundImage:'url(/assets/delica11/'+this.info.image+'.jpg)'}"
+             @click="returnColor">
+        </div>
+        <div class="color-details">
+            {{info.image}}
+        </div>
+    </div>
 </template>
 <script>
     export default {

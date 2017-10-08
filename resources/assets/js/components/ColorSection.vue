@@ -2,28 +2,32 @@
     <div id="color-section">
         <vue-tabs>
             <v-tab title="All">
-                <div class="colorpicker" style="height:100%; overflow-x:scroll">
+                <div class="colorpicker">
                     <color-picker v-for="child in childrenColors" :bead.sync="bead" key="colorInfo.key"
+                                  v-bind:class="{selected: child === bead}"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Finishes">
                 <v-select multiple :on-change=findFinishes :value.sync="selected" :options="finishOptions"></v-select>
-                <div class="colorpicker" style="height:100%; overflow-x:scroll">
+                <div class="colorpicker">
                     <color-picker v-for="child in finishColors" :bead.sync="bead" key="colorInfo.key"
+                                  v-bind:class="{selected: child === bead}"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Colors">
                 <slider-picker v-model="colors" style="width:auto;"/>
-                <div class="colorpicker" style="height:100%; overflow-x:scroll">
+                <div class="colorpicker">
                     <color-picker v-for="child in colorColors" :bead.sync="bead" key="colorInfo.key"
+                                  v-bind:class="{selected: child === bead}"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Palette">
-                <div class="colorpicker" style="height:100%; overflow-x:scroll">
+                <div class="colorpicker">
                     <color-picker v-for="child in paletteColors" :bead.sync="bead" key="colorInfo.key"
+                                  v-bind:class="{selected: child === bead}"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
