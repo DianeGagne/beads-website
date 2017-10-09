@@ -5,6 +5,14 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+.glyphicon-flip-horizontal {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  -ms-filter: "FlipH";
+}
+
 //Color pickers
 .color-picker {
   display: inline-block;
@@ -74,7 +82,7 @@
 
 }
 
-#actions_bar {
+#action-bar {
   overflow-x: hidden;
   height: 100%;
   right: 0px;

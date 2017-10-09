@@ -1,6 +1,7 @@
 <template>
     <div id="patternMaker" style="height:87vh;">
 
+
         <div style="display: flex; height:100%;">
             <div class="canvasBlock" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%;">
                 <canvas
@@ -15,7 +16,7 @@
                 ></canvas>
             </div>
 
-            <actionsbar
+            <action-bar
                     style="height:100%; right:0"
                     :panHorizontal.sync="panHorizontal"
                     :panVertical.sync="panVertical"
@@ -25,10 +26,11 @@
                     :bead.sync="bead"
                     :beadType.sync="beadType"
                     :beadMatrix.sync="beadMatrix"
-            ></actionsbar>
+            ></action-bar>
         </div>
 
     </div>
+
 
 </template>
 <script>

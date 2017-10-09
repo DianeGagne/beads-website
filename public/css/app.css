@@ -8350,6 +8350,12 @@ button.close {
   }
 }
 
+.glyphicon-flip-horizontal {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  -ms-filter: "FlipH";
+}
+
 .color-picker {
   display: inline-block;
   margin: 3px;
@@ -8410,7 +8416,7 @@ button.close {
   margin-right: 10px;
 }
 
-#actions_bar {
+#action-bar {
   overflow-x: hidden;
   height: 100%;
   right: 0px;
