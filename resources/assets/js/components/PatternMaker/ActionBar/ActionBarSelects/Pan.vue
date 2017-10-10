@@ -19,12 +19,14 @@
 </template>
 <script>
     export default {
+        props: {
+            pan: {
+                type: Object,
+            },
+        },
         data: function () {
             return {
-                pan: {
-                    horizontal: 0,
-                    vertical: 0,
-                }
+                pan: this.pan,
             }
         },
         created: function () {
@@ -48,7 +50,6 @@
         },
         methods: {
             panLeft: function () {
-                console.log('pan left');
                 this.pan.horizontal -= 25;
                 this.$emit('update:pan', this.pan);
             },

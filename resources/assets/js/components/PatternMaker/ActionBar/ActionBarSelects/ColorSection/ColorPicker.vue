@@ -1,11 +1,8 @@
 <template>
     <div id="color-picker" class="color-picker">
         <div class="color-image" :id=this.info.image
-             v-bind:style="{backgroundColor: this.info.color,  backgroundImage:'url(/assets/delica11/'+this.info.image+'.jpg)'}"
+             v-bind:style="{backgroundColor: this.info.color,  backgroundImage:this.imageUrl}"
              @click="returnColor">
-        </div>
-        <div class="color-details">
-            {{info.image}}
         </div>
     </div>
 </template>
@@ -22,14 +19,13 @@
         data: function () {
             return {
                 color: null,
-                imageUrl: '',
+                imageUrl: 'url(/assets/delica11/'+this.info.image+'.jpg)',
             }
         },
         mounted() {
         },
         methods: {
             returnColor: function () {
-                //this.$emit('update:color', this.info.color)
                 this.$emit('update:bead', this.info)
             }
         }

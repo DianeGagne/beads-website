@@ -33,8 +33,8 @@ Vue.component('update-pattern-modal', require('./components/PatternMaker/Modals/
 
 Vue.component('action-bar', require('./components/PatternMaker/ActionBar/ActionBar.vue'));
 Vue.component('action-bar-controls', require('./components/PatternMaker/ActionBar/ActionBarControls.vue'));
-Vue.component('color-section', require('./components/PatternMaker/ActionBar/ActionBarSelects/ColorSection.vue'));
-Vue.component('color-picker', require('./components/PatternMaker/ActionBar/ActionBarSelects/ColorPicker.vue'));
+Vue.component('color-section', require('./components/PatternMaker/ActionBar/ActionBarSelects/ColorSection/ColorSection.vue'));
+Vue.component('color-picker', require('./components/PatternMaker/ActionBar/ActionBarSelects/ColorSection/ColorPicker.vue'));
 Vue.component('selected-bead', require('./components/PatternMaker/ActionBar/ActionBarSelects/SelectedBead.vue'));
 Vue.component('rotate', require('./components/PatternMaker/ActionBar/ActionBarSelects/Rotate.vue'));
 Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSelects/Zoom.vue'));

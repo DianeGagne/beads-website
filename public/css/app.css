@@ -8356,6 +8356,10 @@ button.close {
   -ms-filter: "FlipH";
 }
 
+.hide {
+  display: none;
+}
+
 .color-picker {
   display: inline-block;
   margin: 3px;
@@ -8379,55 +8383,34 @@ button.close {
   display: none;
 }
 
-#color-section {
-  background-color: #fff;
-  overflow-y: auto;
-  height: 50vh;
-}
-
-#color-section > div > div.nav-tabs-navigation > div > ul {
-  background-color: #f5f8fa;
-  margin-bottom: 8px;
-  border-radius: 3px;
-}
-
-#color-section > div > div.nav-tabs-navigation > div > ul > li {
-  margin-left: 3px;
-}
-
-#color-section > div > div.nav-tabs-navigation > div > ul > li a {
-  background-color: #d3e0e9;
-  padding: 5px;
-}
-
-#color-section > div > div.nav-tabs-navigation > div > ul > li a:hover,
-#color-section > div > div.nav-tabs-navigation > div > ul > li a:focus {
-  background-color: #fff;
-}
-
-#color-section > div > div.nav-tabs-navigation > div > ul > li.active > a {
-  background-color: #fff;
-}
-
-#color-section > div > div.tab-content > section > div.dropdown,
-#color-section > div > div.tab-content > section > div.vue-color__slider {
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
 #action-bar {
   overflow-x: hidden;
   height: 100%;
   right: 0px;
   top: 50px;
-  display: inline-block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-transition: 0.5s;
   transition: 0.5s;
   background: lightgray;
 }
 
-.move-bar {
+#action-bar .actionBarSelects {
+  width: 100%;
+}
+
+#action-bar hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#action-bar #action-bar-controls {
+  width: 20px;
+  height: 100%;
+}
+
+#action-bar #action-bar-controls .move-bar {
   background-color: white;
   border: 2px solid darkgray;
   padding: 3px;
@@ -8435,14 +8418,14 @@ button.close {
   cursor: e-resize;
 }
 
-.move-bar.vertical {
+#action-bar #action-bar-controls .move-bar.vertical {
   border-top-style: hidden;
   border-bottom-style: hidden;
   float: left;
   height: 100%;
 }
 
-.closeButton {
+#action-bar #action-bar-controls .closeButton {
   position: absolute;
   z-index: 15;
   border-radius: 30px;
@@ -8451,21 +8434,91 @@ button.close {
   margin-top: 2px;
 }
 
-@media screen and (max-width: 1024px) {
-  #actions_bar {
-    position: fixed;
-  }
+#action-bar #action-bar-controls .beadDisplayButton {
+  position: absolute;
+  z-index: 10;
+  border-radius: 10px 0 0 10px;
+  margin-left: -56px;
+  margin-top: 4px;
+  width: 45px;
+  height: 45px;
 }
 
-#zoom-picker {
+#action-bar #color-section {
+  background-color: #fff;
+  overflow-y: auto;
+  height: 50vh;
+}
+
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul {
+  background-color: #f5f8fa;
+  margin-bottom: 8px;
+  border-radius: 3px;
+}
+
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul > li {
+  margin-left: 3px;
+}
+
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul > li a {
+  background-color: #d3e0e9;
+  padding: 5px;
+}
+
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul > li a:hover,
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul > li a:focus {
+  background-color: #fff;
+}
+
+#action-bar #color-section > div > div.nav-tabs-navigation > div > ul > li.active > a {
+  background-color: #fff;
+}
+
+#action-bar #color-section > div > div.tab-content > section > div.dropdown,
+#action-bar #color-section > div > div.tab-content > section > div.vue-color__slider {
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#action-bar #selected-bead {
+  height: 5%;
+  max-height: 250px;
+}
+
+#action-bar #selected-bead .currentBead {
+  height: 100%;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+#action-bar #selected-bead .currentBead .beadDisplay {
+  width: 40%;
+  max-width: 300px;
+  padding: 3px;
+}
+
+#action-bar #panZoom {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+#action-bar #panZoom #zoom-picker {
   display: inline-block;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
 }
 
-#zoom-picker #zoom {
+#action-bar #panZoom #zoom-picker #zoom {
   margin-left: 10px;
 }
 
-#zoom-picker #zoom .buttons button {
+#action-bar #panZoom #zoom-picker #zoom .buttons button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -8475,17 +8528,23 @@ button.close {
           flex-direction: column;
 }
 
-#pan-picker {
+#action-bar #panZoom #pan-picker {
   display: inline-block;
 }
 
-#pan-picker #up,
-#pan-picker #down {
+#action-bar #panZoom #pan-picker #up,
+#action-bar #panZoom #pan-picker #down {
   text-align: center;
 }
 
-#pan-picker #pan-center {
+#action-bar #panZoom #pan-picker #pan-center {
   margin-left: -4px;
   margin-right: -3px;
+}
+
+@media screen and (max-width: 1024px) {
+  #actions_bar {
+    position: fixed;
+  }
 }
 

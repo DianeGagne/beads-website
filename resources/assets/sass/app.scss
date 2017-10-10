@@ -5,12 +5,17 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+//general values
 .glyphicon-flip-horizontal {
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
   -ms-filter: "FlipH";
+}
+
+.hide {
+  display:none;
 }
 
 //Color pickers
@@ -20,7 +25,6 @@
   width: 4em;
   height: 4em;
   box-shadow: 1px 1px 1px #888888;
-
 }
 
 .color-picker.selected{
@@ -45,76 +49,158 @@
 //  width: 50%;
 }
 
-#color-section {
-  background-color: $action-bar-selected;
-  overflow-y: auto;
-  height: 50vh;
 
-  > div > div.nav-tabs-navigation > div > ul {
-    background-color: $body-bg;
-    margin-bottom: 8px;
-    border-radius: 3px;
-
-    > li {
-      margin-left: 3px;
-      a {
-        background-color: $action-bar-bg;
-        padding: 5px;
-      }
-      a:hover,
-      a:focus {
-        background-color: $action-bar-selected;
-      }
-    }
-    > li.active > a {
-      background-color: $action-bar-selected;
-    }
-  }
-
-  > div > div.tab-content > section {
-    > div.dropdown,
-    > div.vue-color__slider {
-      margin-bottom: 10px;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-  }
-
-}
-
+//Action Bar styles
 #action-bar {
   overflow-x: hidden;
   height: 100%;
   right: 0px;
   top: 50px;
-  display: inline-block;
+  display: flex;
   transition: 0.5s;
   background: lightgray;
+
+  .actionBarSelects{
+    width:100%;
+  }
+
+  hr {
+    margin-top:5px;
+    margin-bottom:5px;
+  }
+
+  #action-bar-controls {
+    width:20px;
+    height:100%;
+
+    .move-bar {
+      background-color: white;
+      border: 2px solid darkgray;
+      padding: 3px;
+      margin: 0px 3px;
+      cursor: e-resize;
+    }
+
+    .move-bar.vertical {
+      border-top-style: hidden;
+      border-bottom-style: hidden;
+      float: left;
+      height: 100%;
+    }
+
+    .closeButton {
+      position: absolute;
+      z-index: 15;
+      border-radius: 30px;
+      padding: 1px 6px;
+      margin-left: -24px;
+      margin-top: 2px;
+    }
+
+    .beadDisplayButton {
+      position:absolute;
+      z-index:10;
+      border-radius:10px 0 0 10px;
+      margin-left: -56px;
+      margin-top:4px;
+      width:45px;
+      height:45px;
+    }
+  }
+
+
+  //Color section for choosing the next bead
+  #color-section {
+    background-color: $action-bar-selected;
+    overflow-y: auto;
+    height: 50vh;
+
+    > div > div.nav-tabs-navigation > div > ul {
+      background-color: $body-bg;
+      margin-bottom: 8px;
+      border-radius: 3px;
+
+      > li {
+        margin-left: 3px;
+        a {
+          background-color: $action-bar-bg;
+          padding: 5px;
+        }
+        a:hover,
+        a:focus {
+          background-color: $action-bar-selected;
+        }
+      }
+      > li.active > a {
+        background-color: $action-bar-selected;
+      }
+    }
+
+    > div > div.tab-content > section {
+      > div.dropdown,
+      > div.vue-color__slider {
+        margin-bottom: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  //select bead section showing the current bead drawing
+  #selected-bead {
+    height: 5%;
+    max-height: 250px;
+    .currentBead {
+      height: 100%;
+      margin-left:10px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      display:flex;
+      .beadDisplay {
+        width:40%;
+        max-width:300px;
+        padding:3px;
+      }
+    }
+  }
+
+  //Panning and zooming
+  #panZoom {
+    display:flex;
+    #zoom-picker{
+      display:inline-block;
+      align-self: flex-end;
+      #zoom{
+        margin-left:10px;
+        .buttons {
+          button {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+          }
+        }
+      }
+    }
+
+    #pan-picker {
+      display:inline-block;
+      #up,
+      #down {
+        text-align:center;
+      }
+      #pan-center{
+        margin-left:-4px;
+        margin-right:-3px;
+      }
+    }
+  }
 }
 
-.move-bar {
-  background-color: white;
-  border: 2px solid darkgray;
-  padding: 3px;
-  margin: 0px 3px;
-  cursor: e-resize;
-}
 
-.move-bar.vertical {
-  border-top-style: hidden;
-  border-bottom-style: hidden;
-  float: left;
-  height: 100%;
-}
 
-.closeButton {
-  position: absolute;
-  z-index: 15;
-  border-radius: 30px;
-  padding: 1px 6px;
-  margin-left: -24px;
-  margin-top: 2px;
-}
+
+
 
 @media screen and (max-width: 1024px) {
   #actions_bar {
@@ -123,30 +209,3 @@
 }
 
 
-#zoom-picker{
-  display:inline-block;
-  #zoom{
-    margin-left:10px;
-    .buttons {
-      button {
-        display: -webkit-flex;
-        display: flex;
-        -webkit-flex-direction: column;
-        flex-direction: column;
-      }
-    }
-  }
-}
-
-
-#pan-picker {
-  display:inline-block;
-  #up,
-  #down {
-    text-align:center;
-  }
-  #pan-center{
-    margin-left:-4px;
-    margin-right:-3px;
-  }
-}

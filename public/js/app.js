@@ -916,8 +916,8 @@ Vue.component('update-pattern-modal', __webpack_require__(172));
 
 Vue.component('action-bar', __webpack_require__(153));
 Vue.component('action-bar-controls', __webpack_require__(150));
-Vue.component('color-section', __webpack_require__(132));
-Vue.component('color-picker', __webpack_require__(135));
+Vue.component('color-section', __webpack_require__(183));
+Vue.component('color-picker', __webpack_require__(186));
 Vue.component('selected-bead', __webpack_require__(144));
 Vue.component('rotate', __webpack_require__(147));
 Vue.component('zoom', __webpack_require__(138));
@@ -42282,7 +42282,7 @@ if(false) {
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(156)(undefined);
+exports = module.exports = __webpack_require__(193)(undefined);
 // imports
 
 
@@ -44212,437 +44212,12 @@ if (false) {
 /* 129 */,
 /* 130 */,
 /* 131 */,
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(133),
-  /* template */
-  __webpack_require__(134),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\ActionBar\\ActionBarSelects\\ColorSection.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] ColorSection.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c057995c", Component.options)
-  } else {
-    hotAPI.reload("data-v-c057995c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_select__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_color__ = __webpack_require__(64);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_color__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-var defaultProps = {
-    hex: '#194d33'
-};
-/* harmony default export */ __webpack_exports__["default"] = ({
-    components: {
-        vSelect: __WEBPACK_IMPORTED_MODULE_0_vue_select___default.a,
-        'slider-picker': __WEBPACK_IMPORTED_MODULE_1_vue_color__["Slider"]
-    },
-    props: {
-        beadMatrix: { default: null }
-    },
-    data: function data() {
-        return {
-            colors: defaultProps,
-            bead: null,
-            childrenColors: [],
-            finishColors: [],
-            colorColors: [],
-            selected: null,
-            finishOptions: [],
-            paletteColors: []
-        };
-    },
-    mounted: function mounted() {
-        this.replace();
-    },
-
-    methods: {
-        replace: function replace() {
-            var self = this;
-            axios.get('/beads/all').then(function (response) {
-                console.log(response);
-                self.childrenColors = response.data;
-            });
-
-            axios.get('/finishes/all').then(function (response) {
-                self.finishOptions = response.data;
-            });
-        },
-        findFinishes: function findFinishes(val) {
-            var self = this;
-            var data = [];
-            for (var finish in val) {
-                console.log(finish);
-                data.push(val[finish].value);
-            }
-            axios.get('/beads/finish', { params: { finishes: data } }).then(function (response) {
-                console.log(response);
-                self.finishColors = response.data;
-            });
-        },
-        findColors: function findColors(val) {
-            var self = this;
-            var data = this.colors.rgba;
-            axios.get('/beads/color', { params: { color: data } }).then(function (response) {
-                console.log(response);
-                self.colorColors = response.data;
-            });
-        }
-    },
-    watch: {
-        bead: function bead() {
-            this.$emit('update:bead', this.bead);
-        },
-        colors: function colors() {
-            this.findColors();
-        },
-        beadMatrix: function beadMatrix() {
-            //create the palette
-            var newPalette = [];
-
-            //search each row for beads
-            for (var row in this.beadMatrix) {
-                //search each column for beads
-                for (var column in this.beadMatrix[row]) {
-                    //search the existing palette to make sure the bead is not yet in it
-                    var draw = true;
-                    for (var paletteBead in newPalette) {
-                        if (this.beadMatrix[row][column].key == newPalette[paletteBead].key) {
-                            //if it is in the palette skip adding this bead and go back to the next bead
-                            draw = false;
-                            break;
-                        }
-                    }
-                    //if we have not yet seen this bead, add it to the palette
-                    if (draw) {
-                        newPalette.push(this.beadMatrix[row][column]);
-                    }
-                }
-            }
-            this.paletteColors = newPalette;
-        }
-    }
-});
-
-/***/ }),
-/* 134 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    attrs: {
-      "id": "color-section"
-    }
-  }, [_c('vue-tabs', [_c('v-tab', {
-    attrs: {
-      "title": "All"
-    }
-  }, [_c('div', {
-    staticClass: "colorpicker"
-  }, _vm._l((_vm.childrenColors), function(child) {
-    return _c('color-picker', {
-      key: "colorInfo.key",
-      class: {
-        selected: child === _vm.bead
-      },
-      attrs: {
-        "bead": _vm.bead,
-        "info": child
-      },
-      on: {
-        "update:bead": function($event) {
-          _vm.bead = $event
-        }
-      }
-    })
-  }))]), _vm._v(" "), _c('v-tab', {
-    attrs: {
-      "title": "Finishes"
-    }
-  }, [_c('v-select', {
-    attrs: {
-      "multiple": "",
-      "on-change": _vm.findFinishes,
-      "value": _vm.selected,
-      "options": _vm.finishOptions
-    },
-    on: {
-      "update:value": function($event) {
-        _vm.selected = $event
-      }
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "colorpicker"
-  }, _vm._l((_vm.finishColors), function(child) {
-    return _c('color-picker', {
-      key: "colorInfo.key",
-      class: {
-        selected: child === _vm.bead
-      },
-      attrs: {
-        "bead": _vm.bead,
-        "info": child
-      },
-      on: {
-        "update:bead": function($event) {
-          _vm.bead = $event
-        }
-      }
-    })
-  }))], 1), _vm._v(" "), _c('v-tab', {
-    attrs: {
-      "title": "Colors"
-    }
-  }, [_c('slider-picker', {
-    staticStyle: {
-      "width": "auto"
-    },
-    model: {
-      value: (_vm.colors),
-      callback: function($$v) {
-        _vm.colors = $$v
-      },
-      expression: "colors"
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "colorpicker"
-  }, _vm._l((_vm.colorColors), function(child) {
-    return _c('color-picker', {
-      key: "colorInfo.key",
-      class: {
-        selected: child === _vm.bead
-      },
-      attrs: {
-        "bead": _vm.bead,
-        "info": child
-      },
-      on: {
-        "update:bead": function($event) {
-          _vm.bead = $event
-        }
-      }
-    })
-  }))], 1), _vm._v(" "), _c('v-tab', {
-    attrs: {
-      "title": "Palette"
-    }
-  }, [_c('div', {
-    staticClass: "colorpicker"
-  }, _vm._l((_vm.paletteColors), function(child) {
-    return _c('color-picker', {
-      key: "colorInfo.key",
-      class: {
-        selected: child === _vm.bead
-      },
-      attrs: {
-        "bead": _vm.bead,
-        "info": child
-      },
-      on: {
-        "update:bead": function($event) {
-          _vm.bead = $event
-        }
-      }
-    })
-  }))])], 1)], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-c057995c", module.exports)
-  }
-}
-
-/***/ }),
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(136),
-  /* template */
-  __webpack_require__(137),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\ActionBar\\ActionBarSelects\\ColorPicker.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] ColorPicker.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-43eb6931", Component.options)
-  } else {
-    hotAPI.reload("data-v-43eb6931", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 136 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        info: {
-            default: {
-                color: 'black',
-                image: 'newName'
-            }
-        }
-    },
-    data: function data() {
-        return {
-            color: null,
-            imageUrl: ''
-        };
-    },
-    mounted: function mounted() {},
-
-    methods: {
-        returnColor: function returnColor() {
-            //this.$emit('update:color', this.info.color)
-            this.$emit('update:bead', this.info);
-        }
-    }
-});
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "color-picker",
-    attrs: {
-      "id": "color-picker"
-    }
-  }, [_c('div', {
-    staticClass: "color-image",
-    style: ({
-      backgroundColor: this.info.color,
-      backgroundImage: 'url(/assets/delica11/' + this.info.image + '.jpg)'
-    }),
-    attrs: {
-      "id": this.info.image
-    },
-    on: {
-      "click": _vm.returnColor
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "color-details"
-  }, [_vm._v("\n        " + _vm._s(_vm.info.image) + "\n    ")])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-43eb6931", module.exports)
-  }
-}
-
-/***/ }),
+/* 132 */,
+/* 133 */,
+/* 134 */,
+/* 135 */,
+/* 136 */,
+/* 137 */,
 /* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -44872,12 +44447,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        pan: {
+            type: Object
+        }
+    },
     data: function data() {
         return {
-            pan: {
-                horizontal: 0,
-                vertical: 0
-            }
+            pan: this.pan
         };
     },
     created: function created() {
@@ -44901,7 +44478,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         panLeft: function panLeft() {
-            console.log('pan left');
             this.pan.horizontal -= 25;
             this.$emit('update:pan', this.pan);
         },
@@ -45078,18 +44654,42 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        bead: {
+            type: Object
+        },
+        palette: {
+            type: Object
+        }
+    },
     data: function data() {
         return {
-            bead: null
+            bead: this.bead,
+            palette: this.palette,
+
+            beadName: '',
+            beadFinishes: [],
+            beadColors: ''
         };
     },
     mounted: function mounted() {},
 
-    methods: {}
+    methods: {},
+    watch: {
+        bead: {
+            handler: function handler(bead) {
+                /*
+                axios.get('/beads/get', {params: {key: bead.key}})
+                    .then(function (response) {
+                        console.log(response);
+                    });*/
+            },
+
+            deep: true
+        }
+    }
 });
 
 /***/ }),
@@ -45097,39 +44697,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     attrs: {
       "id": "selected-bead"
     }
   }, [_c('div', {
-    staticClass: "currentBead",
-    staticStyle: {
-      "height": "5%",
-      "margin-left": "15px",
-      "margin-top": "5px",
-      "margin-bottom": "5px",
-      "display": "flex"
-    }
+    staticClass: "currentBead"
   }, [_c('div', {
-    staticClass: "beadDisplay color-image",
-    staticStyle: {
-      "background-color": "rgb(38, 37, 42)",
-      "background-image": "url(/assets/delica11/db0454.jpg)",
-      "width": "40%",
-      "padding": "3px"
-    }
+    staticClass: "beadDisplay",
+    style: ({
+      backgroundColor: this.bead.color,
+      backgroundImage: 'url(/assets/delica11/' + this.bead.image + '.jpg)',
+    })
   }, [_c('div', {
     staticClass: "hotKey",
     staticStyle: {
       "bottom": "3px",
       "right": "3px"
     }
-  }, [_vm._v("\n                A\n            ")]), _vm._v("\n            >\n        ")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                A\n            ")])]), _vm._v(" "), _c('div', {
     staticClass: "beadDescriptions"
-  }, [_vm._v("\n            Delica 0454\n            "), _c('br'), _vm._v("Metallic, Solid, Lustre\n            "), _c('br'), _vm._v("R100 - G234 - B234\n            "), _c('br'), _vm._v("19 (1g)\n\n        ")])])])
-}]}
+  }, [_c('br'), _vm._v(_vm._s(this.beadFinishes) + "\n            "), _c('br'), _vm._v("R100 - G234 - B234\n            "), _c('br'), _vm._v("19 (1g)\n\n        ")])])])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -45200,14 +44789,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        rotations: {
+            type: Object
+        }
+    },
     data: function data() {
         return {
-            rotations: {
-                rotateLeft: false,
-                rotateRight: false,
-                flipX: false,
-                flipY: false
-            }
+            rotations: this.rotations
         };
     },
     watch: {
@@ -45245,7 +44834,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.rotateLeft = true
+        _vm.rotations.rotateLeft = true
       }
     }
   }, [_c('span', {
@@ -45257,7 +44846,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.rotateRight = true
+        _vm.rotations.rotateRight = true
       }
     }
   }, [_c('span', {
@@ -45269,7 +44858,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.flipX = true
+        _vm.rotations.flipX = true
       }
     }
   }, [_c('span', {
@@ -45281,7 +44870,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.flipY = true
+        _vm.rotations.flipY = true
       }
     }
   }, [_c('span', {
@@ -45356,14 +44945,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        bead: {
+            type: Object
+        }
+    },
     data: function data() {
         return {
             //internal variables for controlling the action bar size
-            bead: null,
+            bead: this.bead,
             menuWidth: 500,
-            prevLocation: null
+            prevLocation: null,
+            hideBead: false
         };
     },
     mounted: function mounted() {},
@@ -45376,10 +44973,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.prevLocation = event.clientX;
         },
         resizeMenu: function resizeMenu(event) {
-
             if (this.resize = true) {
                 var change = this.prevLocation - event.clientX;
                 this.menuWidth = this.menuWidth + change;
+            }
+
+            //toggle between showing the bead image or the smaller close button
+            if (this.menuWidth < 50 && this.prevLocation > 50) {
+                this.hideBead = true;
+            } else if (this.menuWidth > 50 && this.prevLocation < 50) {
+                this.hideBead = false;
             }
             this.prevLocation = event.clientX;
         },
@@ -45390,7 +44993,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         close: function close() {
-            this.menuWidth = 30;
+            this.menuWidth = 0;
+            this.hideBead = true;
+        },
+        open: function open() {
+            this.menuWidth = 500;
+            this.hideBead = false;
         }
     },
     watch: {
@@ -45421,20 +45029,25 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('button', {
     staticClass: "closeButton",
+    class: {
+      hide: _vm.hideBead
+    },
     on: {
       "click": _vm.close
     }
   }, [_c('i', {
     staticClass: "glyphicon glyphicon-arrow-right"
-  })]), _vm._v(" "), _c('div', {
-    staticClass: "beadDisplay color-image",
-    staticStyle: {
-      "background-color": "rgb(38, 37, 42)",
-      "background-image": "url(/assets/delica11/db0454.jpg)",
-      "width": "45px",
-      "height": "45px",
-      "left": "-45px",
-      "z-index": "100"
+  })]), _vm._v(" "), _c('button', {
+    staticClass: "beadDisplayButton",
+    class: {
+      hide: !_vm.hideBead
+    },
+    style: ({
+      backgroundColor: this.bead.color,
+      backgroundImage: 'url(/assets/delica11/' + this.bead.image + '.jpg)'
+    }),
+    on: {
+      "click": _vm.open
     }
   })])
 },staticRenderFns: []}
@@ -45515,6 +45128,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -45524,7 +45139,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             //Values set from the action bar for creating the pattern
             actionBarValues: {
-                bead: null,
+                bead: {
+                    color: '#666666',
+                    image: 'db0023',
+                    key: 14,
+                    otherValue: 'something'
+                },
                 signals: {
                     //signals that trigger an action on the main pattern
                     //they will trigger the action on true, then be set to false again.
@@ -45552,7 +45172,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {},
 
-    methods: {},
+    methods: {
+        updateSelectedBead: function updateSelectedBead() {
+            console.log('bead method');
+            console.log(this);
+        }
+
+    },
     watch: {
         actionBarValues: {
             handler: function handler(actionBarValues) {
@@ -45576,13 +45202,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "action-bar"
     }
-  }, [_c('div', {
-    staticClass: "flex"
   }, [_c('action-bar-controls', {
-    staticStyle: {
-      "height": "100%",
-      "width": "20px"
-    },
     attrs: {
       "menuWidth": _vm.menuWidth,
       "bead": _vm.actionBarValues.bead
@@ -45596,27 +45216,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "actionBarSelects"
   }, [_c('color-section', {
     attrs: {
-      "actionBarValues": _vm.bead,
+      "bead": _vm.actionBarValues.bead,
       "palette": _vm.palette
     },
     on: {
-      "update:actionBarValues": function($event) {
-        _vm.bead = $event
-      }
+      "update:bead": [function($event) {
+        _vm.actionBarValues.bead = $event
+      }, _vm.updateSelectedBead]
     }
   }), _vm._v(" "), _c('selected-bead', {
     attrs: {
-      "actionBarValues": _vm.bead,
+      "bead": _vm.actionBarValues.bead,
       "palette": _vm.palette
     }
-  }), _vm._v(" "), _c('button', {
+  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('button', {
     staticClass: "btn btn-default btn-sm",
     attrs: {
       "id": "undo"
     },
     on: {
       "click": function($event) {
-        _vm.undo = true
+        _vm.actionBarValues.signals.undo = true
       }
     }
   }, [_c('span', {
@@ -45628,36 +45248,35 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.redo = true
+        _vm.actionBarValues.signals.redo = true
       }
     }
   }, [_c('span', {
     staticClass: "glyphicon glyphicon-share-alt glyphicon-flip-horizontal"
-  })]), _vm._v(" "), _c('rotate', {
+  })]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('rotate', {
     attrs: {
-      "actionBarValues": _vm.rotations
+      "rotations": _vm.actionBarValues.signals.rotations
     }
-  }), _vm._v(" "), _c('pan', {
+  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('div', {
+    attrs: {
+      "id": "panZoom"
+    }
+  }, [_c('pan', {
     ref: "panControl",
     attrs: {
-      "pan": _vm.pan
-    },
-    on: {
-      "update:pan": function($event) {
-        _vm.pan = $event
-      }
+      "pan": _vm.actionBarValues.panZoom.pan
     }
   }), _vm._v(" "), _c('zoom', {
     ref: "zoomControl",
     attrs: {
-      "scaleFactor": _vm.scaleFactor
+      "scaleFactor": _vm.actionBarValues.panZoom.scaleFactor
     },
     on: {
       "update:scaleFactor": function($event) {
-        _vm.scaleFactor = $event
+        _vm.actionBarValues.panZoom.scaleFactor = $event
       }
     }
-  })], 1)], 1)])
+  })], 1)], 1)], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -45668,88 +45287,7 @@ if (false) {
 }
 
 /***/ }),
-/* 156 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
+/* 156 */,
 /* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -46720,6 +46258,528 @@ if (false) {
      require("vue-hot-reload-api").rerender("data-v-2d25a121", module.exports)
   }
 }
+
+/***/ }),
+/* 175 */,
+/* 176 */,
+/* 177 */,
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
+/* 182 */,
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(184),
+  /* template */
+  __webpack_require__(185),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\ActionBar\\ActionBarSelects\\ColorSection\\ColorSection.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ColorSection.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-10ef476f", Component.options)
+  } else {
+    hotAPI.reload("data-v-10ef476f", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 184 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_select__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_color__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_color___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_color__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+var defaultProps = {
+    hex: '#194d33'
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: {
+        vSelect: __WEBPACK_IMPORTED_MODULE_0_vue_select___default.a,
+        'slider-picker': __WEBPACK_IMPORTED_MODULE_1_vue_color__["Slider"]
+    },
+    props: {
+        bead: {
+            type: Object
+        }
+    },
+    data: function data() {
+        return {
+            colors: defaultProps,
+            childrenColors: [],
+            finishColors: [],
+            colorColors: [],
+            selected: null,
+            finishOptions: [],
+            paletteColors: []
+        };
+    },
+    mounted: function mounted() {
+        this.replace();
+    },
+
+    methods: {
+        replace: function replace() {
+            var self = this;
+            axios.get('/beads/all').then(function (response) {
+                console.log(response);
+                self.childrenColors = response.data;
+            });
+
+            axios.get('/finishes/all').then(function (response) {
+                self.finishOptions = response.data;
+            });
+        },
+        findFinishes: function findFinishes(val) {
+            var self = this;
+            var data = [];
+            for (var finish in val) {
+                console.log(finish);
+                data.push(val[finish].value);
+            }
+            axios.get('/beads/finish', { params: { finishes: data } }).then(function (response) {
+                console.log(response);
+                self.finishColors = response.data;
+            });
+        },
+        findColors: function findColors(val) {
+            var self = this;
+            var data = this.colors.rgba;
+            axios.get('/beads/color', { params: { color: data } }).then(function (response) {
+                console.log(response);
+                self.colorColors = response.data;
+            });
+        }
+    },
+    watch: {
+        bead: function bead() {
+            console.log('bead changed');
+            console.log(this.bead);
+            this.$emit('update:bead', this.bead);
+        },
+        colors: function colors() {
+            this.findColors();
+        },
+        beadMatrix: function beadMatrix() {
+            //create the palette
+            var newPalette = [];
+
+            //search each row for beads
+            for (var row in this.beadMatrix) {
+                //search each column for beads
+                for (var column in this.beadMatrix[row]) {
+                    //search the existing palette to make sure the bead is not yet in it
+                    var draw = true;
+                    for (var paletteBead in newPalette) {
+                        if (this.beadMatrix[row][column].key == newPalette[paletteBead].key) {
+                            //if it is in the palette skip adding this bead and go back to the next bead
+                            draw = false;
+                            break;
+                        }
+                    }
+                    //if we have not yet seen this bead, add it to the palette
+                    if (draw) {
+                        newPalette.push(this.beadMatrix[row][column]);
+                    }
+                }
+            }
+            this.paletteColors = newPalette;
+        }
+    }
+});
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    attrs: {
+      "id": "color-section"
+    }
+  }, [_c('vue-tabs', [_c('v-tab', {
+    attrs: {
+      "title": "All"
+    }
+  }, [_c('div', {
+    staticClass: "colorpicker"
+  }, _vm._l((_vm.childrenColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      class: {
+        selected: child === _vm.bead
+      },
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))]), _vm._v(" "), _c('v-tab', {
+    attrs: {
+      "title": "Finishes"
+    }
+  }, [_c('v-select', {
+    attrs: {
+      "multiple": "",
+      "on-change": _vm.findFinishes,
+      "value": _vm.selected,
+      "options": _vm.finishOptions
+    },
+    on: {
+      "update:value": function($event) {
+        _vm.selected = $event
+      }
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "colorpicker"
+  }, _vm._l((_vm.finishColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      class: {
+        selected: child === _vm.bead
+      },
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))], 1), _vm._v(" "), _c('v-tab', {
+    attrs: {
+      "title": "Colors"
+    }
+  }, [_c('slider-picker', {
+    staticStyle: {
+      "width": "auto"
+    },
+    model: {
+      value: (_vm.colors),
+      callback: function($$v) {
+        _vm.colors = $$v
+      },
+      expression: "colors"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "colorpicker"
+  }, _vm._l((_vm.colorColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      class: {
+        selected: child === _vm.bead
+      },
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))], 1), _vm._v(" "), _c('v-tab', {
+    attrs: {
+      "title": "Palette"
+    }
+  }, [_c('div', {
+    staticClass: "colorpicker"
+  }, _vm._l((_vm.paletteColors), function(child) {
+    return _c('color-picker', {
+      key: "colorInfo.key",
+      class: {
+        selected: child === _vm.bead
+      },
+      attrs: {
+        "bead": _vm.bead,
+        "info": child
+      },
+      on: {
+        "update:bead": function($event) {
+          _vm.bead = $event
+        }
+      }
+    })
+  }))])], 1)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-10ef476f", module.exports)
+  }
+}
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(187),
+  /* template */
+  __webpack_require__(188),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\ActionBar\\ActionBarSelects\\ColorSection\\ColorPicker.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ColorPicker.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-05824518", Component.options)
+  } else {
+    hotAPI.reload("data-v-05824518", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 187 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        info: {
+            default: {
+                color: 'black',
+                image: 'newName'
+            }
+        }
+    },
+    data: function data() {
+        return {
+            color: null,
+            imageUrl: 'url(/assets/delica11/' + this.info.image + '.jpg)'
+        };
+    },
+    mounted: function mounted() {},
+
+    methods: {
+        returnColor: function returnColor() {
+            this.$emit('update:bead', this.info);
+        }
+    }
+});
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "color-picker",
+    attrs: {
+      "id": "color-picker"
+    }
+  }, [_c('div', {
+    staticClass: "color-image",
+    style: ({
+      backgroundColor: this.info.color,
+      backgroundImage: this.imageUrl
+    }),
+    attrs: {
+      "id": this.info.image
+    },
+    on: {
+      "click": _vm.returnColor
+    }
+  })])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-05824518", module.exports)
+  }
+}
+
+/***/ }),
+/* 189 */,
+/* 190 */,
+/* 191 */,
+/* 192 */,
+/* 193 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
 
 /***/ })
 /******/ ]);

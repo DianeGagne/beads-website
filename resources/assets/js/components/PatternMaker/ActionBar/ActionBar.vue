@@ -1,24 +1,26 @@
 <template>
     <div id="action-bar" v-bind:style="{width: this.menuWidth + 'px'}">
-        <div class="flex">
-            <action-bar-controls :menuWidth.sync="menuWidth" :bead="actionBarValues.bead"
-                                 style="height:100%; width:20px;"></action-bar-controls>
+            <action-bar-controls :menuWidth.sync="menuWidth" :bead="actionBarValues.bead"></action-bar-controls>
 
             <div class="actionBarSelects">
-                <color-section :actionBarValues.bead.sync="bead" :palette="palette"></color-section>
-                <selected-bead :actionBarValues.bead="bead" :palette="palette"></selected-bead>
+                <color-section :bead.sync="actionBarValues.bead" :palette="palette" @update:bead="updateSelectedBead"></color-section>
+                <selected-bead :bead="actionBarValues.bead" :palette="palette"></selected-bead>
 
-                <button id="undo" @click="undo=true" class="btn btn-default btn-sm"><span
+                <hr>
+                <button id="undo" @click="actionBarValues.signals.undo=true" class="btn btn-default btn-sm"><span
                         class="glyphicon glyphicon-share-alt"></span></button>
-                <button id="redo" @click="redo=true" class="btn btn-default btn-sm"><span
+                <button id="redo" @click="actionBarValues.signals.redo=true" class="btn btn-default btn-sm"><span
                         class="glyphicon glyphicon-share-alt glyphicon-flip-horizontal"></span></button>
 
-                <rotate :actionBarValues.signals.rotations="rotations"></rotate>
+                <hr>
+                <rotate :rotations="actionBarValues.signals.rotations"></rotate>
 
-                <pan ref="panControl" :pan.sync="pan"></pan>
-                <zoom ref="zoomControl" :scaleFactor.sync="scaleFactor"></zoom>
+                <hr>
+                <div id="panZoom">
+                <pan ref="panControl" :pan="actionBarValues.panZoom.pan"></pan>
+                <zoom ref="zoomControl" :scaleFactor.sync="actionBarValues.panZoom.scaleFactor"></zoom>
+                </div>
             </div>
-        </div>
     </div>
 </template>
 <script>
@@ -30,7 +32,12 @@
 
                 //Values set from the action bar for creating the pattern
                 actionBarValues: {
-                    bead: null,
+                    bead: {
+                        color: '#666666',
+                        image: 'db0023',
+                        key: 14,
+                        otherValue: 'something',
+                    },
                     signals: {
                         //signals that trigger an action on the main pattern
                         //they will trigger the action on true, then be set to false again.
@@ -58,7 +65,14 @@
         },
         mounted() {
         },
-        methods: {},
+        methods: {
+            updateSelectedBead:
+                function() {
+                    console.log('bead method');
+                    console.log(this);
+                }
+            ,
+        },
         watch: {
             actionBarValues: {
                 handler (actionBarValues) {

@@ -1,17 +1,15 @@
 <template>
     <div id="selected-bead">
-        <div class="currentBead" style="height:5%; margin-left:15px; margin-top:5px; margin-bottom:5px; display:flex;">
-            <div class="beadDisplay color-image" style="background-color: rgb(38, 37, 42);
-                                                    background-image: url(/assets/delica11/db0454.jpg);
-                                                    width:40%; padding:3px;">
+        <div class="currentBead">
+            <div class="beadDisplay"
+                 v-bind:style="{backgroundColor: this.bead.color,
+                backgroundImage:'url(/assets/delica11/' + this.bead.image + '.jpg)',}">
                 <div class="hotKey" style="bottom:3px; right:3px;">
                     A
                 </div>
-                >
             </div>
             <div class="beadDescriptions">
-                Delica 0454
-                <br>Metallic, Solid, Lustre
+                <br>{{this.beadFinishes}}
                 <br>R100 - G234 - B234
                 <br>19 (1g)
 
@@ -21,14 +19,38 @@
 </template>
 <script>
     export default {
+        props: {
+            bead: {
+                type: Object,
+            },
+            palette: {
+                type: Object,
+            },
+        },
         data: function () {
             return {
-                bead: null,
+                bead: this.bead,
+                palette: this.palette,
+
+                beadName: '',
+                beadFinishes: [],
+                beadColors: '',
             }
         },
         mounted() {
         },
-        methods: {
+        methods: {},
+        watch: {
+          bead: {
+              handler (bead) {
+                  /*
+                  axios.get('/beads/get', {params: {key: bead.key}})
+                      .then(function (response) {
+                          console.log(response);
+                      });*/
+              },
+              deep: true,
+          },
         },
     }
 </script>

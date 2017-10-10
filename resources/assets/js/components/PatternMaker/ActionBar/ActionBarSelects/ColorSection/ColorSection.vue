@@ -46,12 +46,13 @@
             'slider-picker': Slider
         },
         props: {
-            beadMatrix: {default: null},
+            bead: {
+                type: Object,
+            },
         },
         data: function () {
             return {
                 colors: defaultProps,
-                bead: null,
                 childrenColors: [],
                 finishColors: [],
                 colorColors: [],
@@ -102,6 +103,8 @@
         },
         watch: {
             bead: function () {
+                console.log('bead changed');
+                console.log(this.bead);
                 this.$emit('update:bead', this.bead);
             },
             colors: function () {
