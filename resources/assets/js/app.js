@@ -11,8 +11,10 @@ window.Vue = require('vue');
 
 import VueTabs from 'vue-nav-tabs';
 import 'vue-nav-tabs/themes/vue-tabs.css';
+import vmodal from 'vue-js-modal';
+//import 'vue-resize-handle';
 
-
+Vue.use(vmodal)
 Vue.use(VueTabs);
 
 /**
@@ -28,8 +30,11 @@ Vue.component('scrollpattern', require('./components/PatternDisplays/ScrollPatte
 Vue.component('patternshow', require('./components/PatternDisplays/PatternShow.vue'));
 
 Vue.component('patternmaker', require('./components/PatternMaker/PatternMaker.vue'));
-Vue.component('new-pattern-modal', require('./components/PatternMaker/Modals/NewPattern.vue'));
-Vue.component('update-pattern-modal', require('./components/PatternMaker/Modals/UpdatePattern.vue'));
+Vue.component('new-pattern', require('./components/PatternMaker/Modals/NewPattern.vue'));
+Vue.component('update-pattern', require('./components/PatternMaker/Modals/UpdatePattern.vue'));
+
+Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
+Vue.component('pattern-draw', require('./components/PatternMaker/PatternDraw.vue'));
 
 Vue.component('action-bar', require('./components/PatternMaker/ActionBar/ActionBar.vue'));
 Vue.component('action-bar-controls', require('./components/PatternMaker/ActionBar/ActionBarControls.vue'));
@@ -40,7 +45,7 @@ Vue.component('rotate', require('./components/PatternMaker/ActionBar/ActionBarSe
 Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSelects/Zoom.vue'));
 Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelects/Pan.vue'));
 
-Vue.component('pattern-values', require('./components/PatternMaker/PatternValues/PatternValues.vue'));
+Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));
 Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/PatternType.vue'));
 Vue.component('bead-type', require('./components/PatternMaker/PatternValues/BeadType.vue'));
 Vue.component('pattern-size', require('./components/PatternMaker/PatternValues/PatternSize.vue'));

@@ -1,29 +1,48 @@
 <template>
-    <div class="bead-type">
-        <div class="radio">
-            <label><input type="radio" id="delica" value="delica" v-model="beadType">Delica</label>
-        </div>
-        <div class="radio">
-            <label><input type="radio" id="round" value="round" v-model="beadType">Round (Czech)</label>
+    <div id="bead-type">
+        <label>Bead type</label>
+        <div v-for="type in types">
+            <input type="radio"
+                   :value=type.name
+                   v-model="selected"
+                   v-on:change="changedType()">
+            {{type.displayName}}
         </div>
     </div>
 </template>
 <script>
     export default {
+        props: {
+            beadType: {
+                type: Object,
+            },
+        },
         data: function () {
             return {
-                beadType: 'Delica',
+                selected: this.beadType.name,
+                types: {
+                    delica: {
+                        beadAspect: 1,
+                        name: 'delica',
+                        displayName: 'Delica',
+                        beadWidth: 1.96,
+                        beadHeight: 1.96,
+                        beadWeight: .030,
+                    },
+                    round: {
+                        beadAspect: .6,
+                        name: 'round',
+                        displayName : 'Czech Round',
+                        beadWidth: 1.54,
+                        beadHeight: 2.03,
+                        beadWeight: .032,
+                    },
+                },
             }
         },
-        mounted() {
-        },
         methods: {
-        },
-        watch: {
-            beadType: {
-                handler (size) {
-                    this.$emit('update:beadType', this.beadType)
-                },
+            changedType: function () {
+                this.$emit('update:beadType', this.types[this.selected])
             }
         }
     }

@@ -8542,6 +8542,20 @@ button.close {
   margin-right: -3px;
 }
 
+.settingsModal .pattern-name {
+  width: 100%;
+}
+
+.settingsModal .selectFunctions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.settingsModal .selectFunctions #bead-type {
+  width: 50%;
+}
+
 @media screen and (max-width: 1024px) {
   #actions_bar {
     position: fixed;

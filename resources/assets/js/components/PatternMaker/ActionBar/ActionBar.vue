@@ -25,39 +25,21 @@
 </template>
 <script>
     export default {
+        props: {
+            actionBarValues: {
+                type: Object,
+            },
+            palette: {
+                type: Object,
+            }
+        },
         data: function () {
             return {
                 //Read only from the pattern
                 palette: null,
 
-                //Values set from the action bar for creating the pattern
-                actionBarValues: {
-                    bead: {
-                        color: '#666666',
-                        image: 'db0023',
-                        key: 14,
-                        otherValue: 'something',
-                    },
-                    signals: {
-                        //signals that trigger an action on the main pattern
-                        //they will trigger the action on true, then be set to false again.
-                        rotations: {
-                            rotateLeft: false,
-                            rotateRight: false,
-                            flipX: false,
-                            flipY: false,
-                        },
-                        undo: false,
-                        redo: false,
-                    },
-                    panZoom: {
-                        scaleFactor: 1,
-                        pan: {
-                            horizontal: 0,
-                            vertical: 0,
-                        },
-                    },
-                },
+                actionBarValues: this.actionBarValues,
+
 
                 //internal variables for controlling the action bar size
                 menuWidth: 500,

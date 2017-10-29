@@ -197,7 +197,19 @@
   }
 }
 
+.settingsModal {
+  //css for the Modal itself: size etc
 
+  .pattern-name {
+    width:100%;
+  }
+  .selectFunctions {
+    display: flex;
+    #bead-type {
+      width: 50%;
+    }
+  }
+}
 
 
 

@@ -1,4 +1,5 @@
 <template>
+
     <div class="modal fade" id="updatePattern" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">

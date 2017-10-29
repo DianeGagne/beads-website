@@ -1,44 +1,69 @@
 <template>
-        <div id="grid-size">
-            <div style="display: flex;">
-                <div style="width: 100px">
-                <input title="Width" type="number" value=20 id="beadsWidth" v-modal="size.width">
-                </div>
-                <div style="width: 100px">
-                <input title="Height" type="number" value=20 id="beadsHeight" v-modal="size.height">
-                </div>
+    <div id="pattern-size">
+        <label>Size</label>
+        <div style="display: flex;">
+            <div style="width: 100px">
+                <input type="number" id="beadsWidth" class="form-control" v-model="patternSize.width">
             </div>
-            <div class="size-descriptions">
-                2x25 cm
-                196 beads (8g)
+            <div style="width: 100px">
+                <input type="number" id="beadsHeight" class="form-control" v-model="patternSize.height">
             </div>
         </div>
+        <div class="size-descriptions">
+            <div class="counts">
+            {{this.totalHeight}}x{{this.totalWidth}} cm
+            </div>
+            <div class="totals">
+            {{this.totalBeads}} beads ({{this.totalWeight}}g)
+            </div>
+        </div>
+    </div>
 </template>
 <script>
     export default {
+        props: {
+            patternSize: {
+                type: Object,
+            },
+            beadType: {
+                type: Object,
+            },
+        },
         data: function () {
             return {
-                patternValues: {
-                    beadType: 'delica',
-                    patternType: 'brick',
-                    size: {
-                        height: 20,
-                        width: 20,
-                    }
-                },
+                totalHeight: 0,
+                totalWidth: 0,
+                totalBeads: 0,
+                totalWeight: 0,
             }
         },
-        mounted() {
+        created: function () {
+            this.updateCalcValues();
         },
         methods: {
+            updateCalcValues: function () {
+                this.totalHeight = Math.round(this.patternSize.height * this.beadType.beadHeight)/10;
+                this.totalWidth = Math.round(this.patternSize.width * this.beadType.beadWidth)/10;
+                this.totalBeads = this.patternSize.height * this.patternSize.width;
+                this.totalWeight = Math.ceil(this.totalBeads * this.beadType.beadWeight);
+            }
         },
         watch: {
-            size: {
-                handler (size) {
-                    this.$emit('update:size', this.size)
+            patternSize: {
+                handler () {
+                    this.updateCalcValues();
+                    this.$emit('update:patternSize', this.patternSize)
+                },
+                deep: true,
+            },
+            beadType: {
+                handler () {
+                    this.updateCalcValues();
                 },
                 deep: true,
             }
+
         }
     }
+
 </script>
