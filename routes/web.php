@@ -24,3 +24,5 @@ Route::get('finishes/all', 'Beads\FinishesController@allFinishesSelect');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('pattern/createFromImage', 'CreateController@createFromImage');

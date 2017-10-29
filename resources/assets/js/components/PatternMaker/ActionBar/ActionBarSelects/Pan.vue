@@ -26,7 +26,7 @@
         },
         data: function () {
             return {
-                pan: this.pan,
+                panTotals: this.pan,
             }
         },
         created: function () {
@@ -50,25 +50,25 @@
         },
         methods: {
             panLeft: function () {
-                this.pan.horizontal -= 25;
-                this.$emit('update:pan', this.pan);
+                this.panTotals.horizontal -= 25;
+                this.$emit('update:pan', this.panTotals);
             },
             panRight: function () {
-                this.pan.horizontal += 25;
-                this.$emit('update:pan', this.pan);
+                this.panTotals.horizontal += 25;
+                this.$emit('update:pan', this.panTotals);
             },
             panUp: function () {
-                this.pan.vertical -= 25;
-                this.$emit('update:pan', this.pan);
+                this.panTotals.vertical -= 25;
+                this.$emit('update:pan', this.panTotals);
             },
             panDown: function () {
-                this.pan.vertical += 25;
-                this.$emit('update:pan', this.pan);
+                this.panTotals.vertical += 25;
+                this.$emit('update:pan', this.panTotals);
             },
             panCenter: function () {
-                this.pan.vertical = 0;
-                this.pan.horizontal = 0;
-                this.$emit('update:pan', this.pan);
+                this.panTotals.vertical = 0;
+                this.panTotals.horizontal = 0;
+                this.$emit('update:pan', this.panTotals);
             },
         },
     }

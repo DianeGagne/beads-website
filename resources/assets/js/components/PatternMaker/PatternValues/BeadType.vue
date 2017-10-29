@@ -20,9 +20,10 @@
         data: function () {
             return {
                 selected: this.beadType.name,
+                selectedType: this.beadType,
                 types: {
                     delica: {
-                        beadAspect: 1,
+                        beadAspect: 1, // The number to multiple the width to get the height
                         name: 'delica',
                         displayName: 'Delica',
                         beadWidth: 1.96,
@@ -42,7 +43,7 @@
         },
         methods: {
             changedType: function () {
-                this.$emit('update:beadType', this.types[this.selected])
+                this.$emit('update:beadType', this.types[this.selectedType])
             }
         }
     }

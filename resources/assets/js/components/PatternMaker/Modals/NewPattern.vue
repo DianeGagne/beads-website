@@ -7,8 +7,6 @@
                :draggable="true"
                :adaptive="true"
                :reset="true"
-               :height="600"
-               :clickToClose="false"
                class="settingsModal">
             <div class="modal-header">
                 <h4 class="modal-title">Create New Pattern</h4>
@@ -36,7 +34,9 @@
 
                 <div class="tab-content">
                     <div class="tab-pane login-tab" id="background-image">
-                        <input type="file">
+                        <input id="upload_file" class="form-control" type="file" >
+                        <input id="max_colors" class="form_control" type="number">
+                        <button class="btn btn-default" >Create from file</button>
                     </div>
                     <div class="tab-pane login-tab" id="background-bead">
                         <color-section></color-section>
@@ -66,9 +66,10 @@
         },
         data: function () {
             return {
-                patternValues: this.patternValues,
-                beadMatrix: this.beadMatrix,
-                palette: this.palette,
+                updatedPatternValues: this.patternValues,
+                createdBeadMatrix: this.beadMatrix,
+                createdPalette: this.palette,
+                fileUploadFormData:new FormData(),
             }
         },
         created: function () {
@@ -80,11 +81,9 @@
                 this.$modal.show('new-pattern');
             },
             createPattern: function () {
-                this.$emit('update:patternValues');
-               // this.$emit('update:beadMatrix');
-               // this.$emit('update:palette');
+                this.$emit('update:patternValues', this.updatedPatternValues);
                 this.$modal.hide('new-pattern');
-            }
+            },
         },
 
     }

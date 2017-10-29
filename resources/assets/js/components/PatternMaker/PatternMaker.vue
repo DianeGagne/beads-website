@@ -4,7 +4,6 @@
 
             <pattern-name :patternName.sync="patternValues.patternName"></pattern-name>
 
-            <share-pattern></share-pattern>
             <new-pattern :patternValues.sync="patternValues"
                          :beadMatrix.sync="beadMatrix"
                          :palette.sync="palette"></new-pattern>
@@ -14,6 +13,7 @@
             <pattern-canvas
                     style="height:100%; width:100%;"
                     :actionBarValues.sync="actionBarValues"
+                    :patternValues="patternValues"
                     :beadMatrix.sync="beadMatrix"
                     :palette.sync="palette"
             ></pattern-canvas>

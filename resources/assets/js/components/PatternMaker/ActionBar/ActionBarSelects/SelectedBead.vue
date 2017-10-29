@@ -2,8 +2,8 @@
     <div id="selected-bead">
         <div class="currentBead">
             <div class="beadDisplay"
-                 v-bind:style="{backgroundColor: this.bead.color,
-                backgroundImage:'url(/assets/delica11/' + this.bead.image + '.jpg)',}">
+                 v-bind:style="{backgroundColor: this.currentBead.color,
+                backgroundImage:'url(/assets/delica11/' + this.currentBead.image + '.jpg)',}">
                 <div class="hotKey" style="bottom:3px; right:3px;">
                     A
                 </div>
@@ -29,8 +29,7 @@
         },
         data: function () {
             return {
-                bead: this.bead,
-                palette: this.palette,
+                currentBead: this.bead,
 
                 beadName: '',
                 beadFinishes: [],

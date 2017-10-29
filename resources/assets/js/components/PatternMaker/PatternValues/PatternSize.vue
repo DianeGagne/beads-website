@@ -31,6 +31,7 @@
         },
         data: function () {
             return {
+                patternSize: this.patternSize,
                 totalHeight: 0,
                 totalWidth: 0,
                 totalBeads: 0,

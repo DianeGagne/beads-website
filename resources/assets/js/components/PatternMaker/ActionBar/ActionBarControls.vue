@@ -9,8 +9,8 @@
                 class="glyphicon glyphicon-arrow-right"></i></button>
 
         <button @click="open" class="beadDisplayButton" v-bind:class="{hide: !hideBead}"
-                v-bind:style="{backgroundColor: this.bead.color,
-                backgroundImage:'url(/assets/delica11/' + this.bead.image + '.jpg)'}">
+                v-bind:style="{backgroundColor: this.currentBead.color,
+                backgroundImage:'url(/assets/delica11/' + this.currentBead.image + '.jpg)'}">
         </button>
     </div>
 </template>
@@ -24,7 +24,7 @@
         data: function () {
             return {
                 //internal variables for controlling the action bar size
-                bead: this.bead,
+                currentBead: this.bead,
                 menuWidth: 500,
                 prevLocation: null,
                 hideBead: false,

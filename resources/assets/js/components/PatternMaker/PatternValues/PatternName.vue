@@ -13,6 +13,9 @@
             },
         },
         data: function () {
+            return {
+                name: this.patternName,
+            }
         },
         mounted() {
         },
@@ -20,7 +23,7 @@
         watch: {
             patternName: {
                 handler () {
-                    this.$emit('update:patternName', this.patternName)
+                    this.$emit('update:patternName', this.name)
                 },
             }
         }

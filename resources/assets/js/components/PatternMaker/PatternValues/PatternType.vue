@@ -19,6 +19,7 @@
         },
         data: function () {
             return {
+                selectedStitchType: this.stitchType,
                 selected: this.stitchType.name,
                 types: {
                     brick: {
@@ -34,7 +35,7 @@
         },
         methods: {
             changedType: function () {
-                this.$emit('update:stitchType', this.types[this.selected])
+                this.$emit('update:stitchType', this.types[this.selectedStitchType])
             }
         },
     }

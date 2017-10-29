@@ -1,24 +1,24 @@
 <template>
     <div id="action-bar" v-bind:style="{width: this.menuWidth + 'px'}">
-            <action-bar-controls :menuWidth.sync="menuWidth" :bead="actionBarValues.bead"></action-bar-controls>
+            <action-bar-controls :menuWidth.sync="menuWidth" :bead="values.bead"></action-bar-controls>
 
             <div class="actionBarSelects">
-                <color-section :bead.sync="actionBarValues.bead" :palette="palette" @update:bead="updateSelectedBead"></color-section>
-                <selected-bead :bead="actionBarValues.bead" :palette="palette"></selected-bead>
+                <color-section :bead.sync="values.bead" :palette="palette" @update:bead="updateSelectedBead"></color-section>
+                <selected-bead :bead="values.bead" :palette="palette"></selected-bead>
 
                 <hr>
-                <button id="undo" @click="actionBarValues.signals.undo=true" class="btn btn-default btn-sm"><span
+                <button id="undo" @click="values.signals.undo=true" class="btn btn-default btn-sm"><span
                         class="glyphicon glyphicon-share-alt"></span></button>
-                <button id="redo" @click="actionBarValues.signals.redo=true" class="btn btn-default btn-sm"><span
+                <button id="redo" @click="values.signals.redo=true" class="btn btn-default btn-sm"><span
                         class="glyphicon glyphicon-share-alt glyphicon-flip-horizontal"></span></button>
 
                 <hr>
-                <rotate :rotations="actionBarValues.signals.rotations"></rotate>
+                <rotate :rotations="values.signals.rotations"></rotate>
 
                 <hr>
                 <div id="panZoom">
-                <pan ref="panControl" :pan="actionBarValues.panZoom.pan"></pan>
-                <zoom ref="zoomControl" :scaleFactor.sync="actionBarValues.panZoom.scaleFactor"></zoom>
+                <pan ref="panControl" :pan="values.panZoom.pan"></pan>
+                <zoom ref="zoomControl" :scaleFactor.sync="values.panZoom.scaleFactor"></zoom>
                 </div>
             </div>
     </div>
@@ -35,10 +35,7 @@
         },
         data: function () {
             return {
-                //Read only from the pattern
-                palette: null,
-
-                actionBarValues: this.actionBarValues,
+                values: this.actionBarValues,
 
 
                 //internal variables for controlling the action bar size
@@ -58,7 +55,7 @@
         watch: {
             actionBarValues: {
                 handler (actionBarValues) {
-                    this.$emit('update:actionBarValues', this.actionBarValues)
+                    this.$emit('update:actionBarValues', this.values)
                 },
                 deep: true,
             }

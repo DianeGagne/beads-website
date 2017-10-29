@@ -8542,6 +8542,10 @@ button.close {
   margin-right: -3px;
 }
 
+.settingsModal {
+  height: auto;
+}
+
 .settingsModal .pattern-name {
   width: 100%;
 }
