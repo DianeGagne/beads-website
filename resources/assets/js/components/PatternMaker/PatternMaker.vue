@@ -81,8 +81,18 @@
                     }
                 },
 
-                beadMatrix: null,
+                beadMatrix: [],
                 palette: null,
+            }
+        },
+        mounted: function () {
+            //Initialize beadMatrix with default values for sanity
+            console.log(this.patternValues.patternSize.width);
+            for (let i = 0; i < this.patternValues.patternSize.width; i++) {
+                this.beadMatrix[i] = [];
+                for (let j = 0; j < this.patternValues.patternSize.height; j++) {
+                    this.beadMatrix[i][j] = {};
+                }
             }
         },
 

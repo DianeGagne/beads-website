@@ -920,7 +920,8 @@ Vue.component('new-pattern', __webpack_require__(56));
 Vue.component('update-pattern', __webpack_require__(59));
 
 Vue.component('pattern-canvas', __webpack_require__(62));
-Vue.component('pattern-draw', __webpack_require__(65));
+Vue.component('draw-brick-lines', __webpack_require__(117));
+Vue.component('brick-bead-calc', __webpack_require__(120));
 
 Vue.component('action-bar', __webpack_require__(67));
 Vue.component('action-bar-controls', __webpack_require__(70));
@@ -44538,9 +44539,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             },
 
-            beadMatrix: null,
+            beadMatrix: [],
             palette: null
         };
+    },
+    mounted: function mounted() {
+        //Initialize beadMatrix with default values for sanity
+        console.log(this.patternValues.patternSize.width);
+        for (var i = 0; i < this.patternValues.patternSize.width; i++) {
+            this.beadMatrix[i] = [];
+            for (var j = 0; j < this.patternValues.patternSize.height; j++) {
+                this.beadMatrix[i][j] = {};
+            }
+        }
     },
 
     methods: {},
@@ -44756,7 +44767,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             type: Object
         },
         beadMatrix: {
-            type: Object
+            type: Array
         },
         palette: {
             type: Object
@@ -44778,7 +44789,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$modal.show('new-pattern');
         },
         createPattern: function createPattern() {
+            this.createdBeadMatrix = [];
+            for (var i = 0; i < this.patternValues.patternSize.width; i++) {
+                this.createdBeadMatrix[i] = [];
+                for (var j = 0; j < this.patternValues.patternSize.height; j++) {
+                    this.createdBeadMatrix[i][j] = {};
+                }
+            }
+
             this.$emit('update:patternValues', this.updatedPatternValues);
+            this.$emit('update:beadMatrix', this.createdBeadMatrix);
             this.$modal.hide('new-pattern');
         }
     }
@@ -45128,6 +45148,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -45138,7 +45173,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             type: Object
         },
         beadMatrix: {
-            type: Object
+            type: Array
         },
         patternValues: {
             type: Object
@@ -45152,17 +45187,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             history: null,
             canvasProps: {
                 canvas: null,
-                ctx: null
+                ctx: null,
+                canvasReady: false
             },
-            drawProps: {
-                currX: null,
-                currY: null,
-                prevX: null,
-                prevY: null,
-                beadX: null,
-                beadY: null,
-                drawing: false
-            },
+
+            //The current display settings as calculated when drawing a grid
             displayProps: {
                 beadWidth: 1,
                 beadHeight: 1,
@@ -45170,8 +45199,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 leftOffset: 0,
                 rightOffset: 0,
                 bottomOffset: 0
+            },
+            //Keep track of the current & previous mouse position
+            mouseProps: {
+                currX: null,
+                currY: null,
+                drawing: false
+            },
+            //The bounds of the selected Bead
+            beadProps: {
+                xIndex: null,
+                yIndex: null
             }
-
         };
     },
     mounted: function mounted() {
@@ -45182,8 +45221,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
         this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-        window.addEventListener('resize', this.onResize);
-        this.drawNewGrid();
+        this.canvasProps.canvasReady = true;
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -45196,78 +45234,53 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         onResize: function onResize() {
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
-            this.drawNewGrid();
+
+            this.canvasProps.canvasReady = true;
         },
         start: function start(event) {
             this.canvasProps.ctx.beginPath();
 
-            this.drawProps.prevX = this.drawProps.currX;
-            this.drawProps.prevY = this.drawProps.currY;
+            this.mouseProps.prevX = this.mouseProps.currX;
+            this.mouseProps.prevY = this.mouseProps.currY;
 
             if (event.ctrlKey) {
                 this.drag = true;
             }
-            if (this.drawProps.beadX > this.gridWidth || this.beadX < 0) {
-                this.drag = true;
-            } else if (this.beadY > this.gridHeight || this.beadY < 0) {
-                this.drag = true;
-            }
             if (!this.drag) {
                 this.lastState = JSON.stringify(this.updatableMatrix);
-                this.drawing = true;
-                this.drawBead(this.drawProps.beadX - 1, this.drawProps.beadY - 1, this.actionBarValues.bead);
+                this.mouseProps.drawing = true;
+                this.mouseProps.currX = event.clientX;
+                this.mouseProps.currY = event.clientY;
             }
         },
         move: function move(event) {
-            var currX = event.clientX;
-            var currY = event.clientY;
-
-            var leftOffset = this.displayProps.leftOffset;
-            var topOffset = this.displayProps.topOffset;
-            var scaleFactor = this.actionBarValues.panZoom.scaleFactor;
-            var beadWidth = this.displayProps.beadWidth;
-            var beadHeight = this.displayProps.beadHeight;
+            if (this.mouseProps.drawing) {
+                this.mouseProps.currX = event.clientX;
+                this.mouseProps.currY = event.clientY;
+            }
 
             if (this.drag) {
                 if (this.zoomChild != null) {
                     this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
                     this.prevX = this.currX;
                     this.prevY = this.currY;
-                    this.drawNewGrid();
-                }
-            } else {
-
-                var rect = canvas.getBoundingClientRect();
-
-                this.drawProps.beadX = (currX - leftOffset * scaleFactor - rect.left - (currX - leftOffset * scaleFactor - rect.left) % (beadWidth * scaleFactor)) / (beadWidth * scaleFactor) + 1;
-                this.drawProps.beadY = (currY - topOffset * scaleFactor - rect.top - (currY - topOffset * scaleFactor - rect.top) % (beadHeight * scaleFactor)) / (beadHeight * scaleFactor) + 1;
-
-                if (this.drawProps.beadX <= 0 || this.drawProps.beadX > this.patternValues.patternSize.width || this.drawProps.beadY <= 0 || this.drawProps.beadY > this.patternValues.patternSize.height) {
-                    this.drawProps.beadX = '';
-                    this.drawProps.beadY = '';
-                    return;
-                }
-                if (this.drawing) {
-                    this.drawBead(this.drawProps.beadX - 1, this.drawProps.beadY - 1, this.actionBarValues.bead);
                 }
             }
         },
         finishMove: function finishMove(event) {
-            this.drawing = false;
-            this.drag = false;
+            this.mouseProps.drawing = false;
+            this.mouseProps.drag = false;
         },
-        drawBead: function drawBead(beadX, beadY, bead) {
-            this.canvasProps.ctx.fillStyle = bead.color;
-            if (beadX === '' || beadY === '') return;
-            if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
+        drawBead: function drawBead() {
+            this.canvasProps.ctx.fillStyle = this.actionBarValues.bead.color;
+            if (this.beadProps.xIndex === null) return;
 
-            var boxX = this.displayProps.leftOffset + beadX * this.displayProps.beadWidth + 1;
-            var boxY = this.displayProps.topOffset + beadY * this.displayProps.beadHeight + 1;
-            this.canvasProps.ctx.fillRect(boxX, boxY, this.displayProps.beadWidth - 2, this.displayProps.beadHeight - 2);
-            this.updatableMatrix[beadX][beadY] = bead;
+            var matrixValue = this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex];
+            this.canvasProps.ctx.fillRect(matrixValue.leftBound, matrixValue.topBound, matrixValue.rightBound - matrixValue.leftBound, matrixValue.bottomBound - matrixValue.topBound);
+            this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex].bead = this.actionBarValues.bead;
         },
         handleScroll: function handleScroll(event) {
-            this.zoomChild.handleScroll(event);
+            this.actionBarValues.panZoom.scaleFactor.handleScroll(event);
         },
         clear: function clear() {
             this.updatableMatrix = null;
@@ -45341,164 +45354,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.gridWidth = oldHeight;
 
             this.drawNewGrid();
-        },
-
-        isHeightLimited: function isHeightLimited() {
-            //Calculate the height * width of the pattern - assuming a bead height of 1 taking into account the bead aspect ratio
-            var beadPatternHeight = this.patternValues.patternSize.height;
-            var beadPatternWidth = this.patternValues.patternSize.width * this.patternValues.beadType.beadAspect;
-
-            //calculate proportionOfCanvas that is covered by th3e pattern
-            var canvasHeightCovered = beadPatternHeight * this.canvasProps.canvas.height;
-            var canvasWidthCovered = beadPatternWidth * this.canvasProps.canvas.width;
-
-            return canvasHeightCovered < canvasWidthCovered;
-        },
-
-        /**
-         * Calculate the bead size given the canvas size & pattern size
-         *
-         * Find the direction the beads will squish off screen first
-         * Then find the largest size the beads can be in that direction - while staying a consistent size
-         * Using that size & the aspect ratio calculate the bead size in the other direction
-         * Multiply everything by the scale offset so we zoom in/out as required
-         */
-        calculateBeadSize: function calculateBeadSize() {
-            var scaleFactor = this.actionBarValues.panZoom.scaleFactor;
-            var beadAspectRatio = this.patternValues.beadType.beadAspect;
-
-            //If our pattern takes up more vertical space on our screen than horizontal
-            if (this.isHeightLimited()) {
-                var canvasHeight = this.canvasProps.canvas.height;
-                var gridHeight = this.patternValues.patternSize.height;
-
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var smallestOffsetPossible = canvasHeight % gridHeight / 2;
-                var scaledHeightOffset = smallestOffsetPossible * scaleFactor;
-
-                //Calculate the bead size - based on the smallest offsets possible & the current zoom
-                this.displayProps.beadHeight = (canvasHeight - scaledHeightOffset) / gridHeight;
-                this.displayProps.beadWidth = this.displayProps.beadHeight * beadAspectRatio;
-            } else {
-                var canvasWidth = this.canvasProps.canvas.width;
-                var gridWidth = this.patternValues.patternSize.width;
-
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var _smallestOffsetPossible = canvasWidth % (gridWidth * beadAspectRatio) / 2;
-                var scaledWidthOffset = _smallestOffsetPossible * scaleFactor;
-
-                this.displayProps.beadWidth = (canvasWidth - scaledWidthOffset) / (gridWidth * beadAspectRatio);
-                this.displayProps.beadHeight = this.displayProps.beadWidth / beadAspectRatio;
-            }
-        },
-
-
-        calculateOffset: function calculateOffset(canvasWidth, scaleFactor, beadsAcross, beadWidth) {
-            var scaledTotalWidth = canvasWidth / scaleFactor;
-            var totalPatternWidth = beadsAcross * beadWidth;
-
-            return scaledTotalWidth - totalPatternWidth;
-        },
-
-        /**
-         *  Using the bead sizes, pan & zoom calculate the offset from the sizes of the canvas to
-         *  draw the pattern
-         */
-        calculateOffsets: function calculateOffsets() {
-            var widthOffset = this.calculateOffset(this.canvasProps.canvas.width, this.actionBarValues.panZoom.scaleFactor, this.patternValues.patternSize.width, this.displayProps.beadWidth);
-            var heightOffset = this.calculateOffset(this.canvasProps.canvas.height, this.actionBarValues.panZoom.scaleFactor, this.patternValues.patternSize.height, this.displayProps.beadHeight);
-
-            this.displayProps.leftOffset = widthOffset / 2 + this.actionBarValues.panZoom.pan.horizontal;
-            this.displayProps.topOffset = heightOffset / 2 + this.actionBarValues.panZoom.pan.vertical;
-            this.displayProps.rightOffset = widthOffset - this.displayProps.leftOffset;
-            this.displayProps.bottomOffset = heightOffset - this.displayProps.topOffset;
-        },
-
-        drawHorizontalLines: function drawHorizontalLines() {
-            //draw horizontal lines
-            var division = this.displayProps.topOffset;
-            var patternHeight = this.patternValues.patternSize.height;
-            var beadHeight = this.displayProps.beadHeight;
-            var lineStart = this.displayProps.leftOffset;
-            var lineEnd = this.canvasProps.canvas.width / this.actionBarValues.panZoom.scaleFactor - this.displayProps.rightOffset;
-
-            for (var rowCount = 0; rowCount <= patternHeight; rowCount++) {
-                console.log(rowCount);
-
-                this.canvasProps.ctx.moveTo(lineStart, division);
-                this.canvasProps.ctx.lineTo(lineEnd, division);
-                division += beadHeight;
-            }
-        },
-
-        drawVerticalLines: function drawVerticalLines() {
-            //draw vertical
-            var division = this.displayProps.leftOffset;
-            var patternWidth = this.patternValues.patternSize.width;
-            var beadWidth = this.displayProps.beadWidth;
-            var lineStart = this.displayProps.topOffset;
-            var lineEnd = this.canvasProps.canvas.height / this.actionBarValues.panZoom.scaleFactor - this.displayProps.bottomOffset;
-
-            for (var columnCount = 0; columnCount <= patternWidth; columnCount++) {
-                this.canvasProps.ctx.moveTo(division, lineStart);
-                this.canvasProps.ctx.lineTo(division, lineEnd);
-                division += beadWidth;
-            }
-        },
-
-        drawBeadMatrix: function drawBeadMatrix() {
-            var oldMatrix = this.updatableMatrix;
-
-            var gridWidth = this.patternValues.patternSize.width;
-            var gridHeight = this.patternValues.patternSize.height;
-
-            this.updatableMatrix = new Array(gridWidth);
-            for (var i = 0; i < this.gridWidth; i++) {
-                this.updatableMatrix[i] = new Array(gridHeight);
-            }
-
-            if (oldMatrix) {
-                //go through our previous bead matrix, and draw out the beads stored there
-                for (var width = 0; width < gridWidth; width++) {
-                    for (var height = 0; height < gridHeight; height++) {
-                        if (oldMatrix[width]) {
-                            var setColor = oldMatrix[width][height];
-                            if (setColor) {
-                                this.drawBead(width, height, setColor);
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        /**
-         * After any change to the pattern, simply erase it and draw a new one from the grid.
-         * This destroys all current data on the canvas and redraws a new one with new values.
-         */
-        drawNewGrid: function drawNewGrid() {
-            this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.canvasProps.ctx.clearRect(0, 0, this.canvasProps.canvas.width, this.canvasProps.canvas.height);
-            this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
-            this.canvasProps.ctx.beginPath();
-            this.canvasProps.ctx.strokeStyle = 'black';
-
-            //calculate bead size
-            this.calculateBeadSize();
-            this.calculateOffsets();
-            this.drawHorizontalLines();
-            this.drawVerticalLines();
-            this.drawBeadMatrix();
-
-            this.canvasProps.ctx.stroke();
         }
+
     },
     watch: {
-        'actionBarValues.panZoom': function actionBarValuesPanZoom() {
-            this.drawNewGrid();
+        'patternValues': {
+            handler: function handler() {
+                this.drawNewGrid();
+            }, deep: true
         },
-        'actionBarValues.signals': function actionBarValuesSignals() {
-            this.drawNewGrid();
+        'beadProps': {
+            handler: function handler() {
+                this.drawBead();
+            },
+            deep: true
+        },
+        'beadMatrix': {
+            handler: function handler() {
+                this.updatableMatrix = this.beadMatrix;
+            },
+            deep: true
         }
     }
 });
@@ -45516,7 +45391,37 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "margin-right": "15px",
       "width": "100%"
     }
-  }, [_c('canvas', {
+  }, [_c('draw-brick-lines', {
+    attrs: {
+      "actionBarValues": _vm.actionBarValues,
+      "canvasProps": _vm.canvasProps,
+      "patternValues": _vm.patternValues,
+      "beadMatrix": _vm.updatableMatrix,
+      "displayProps": _vm.displayProps
+    },
+    on: {
+      "update:beadMatrix": function($event) {
+        _vm.updatableMatrix = $event
+      },
+      "update:displayProps": function($event) {
+        _vm.displayProps = $event
+      }
+    }
+  }), _vm._v(" "), _c('brick-bead-calc', {
+    attrs: {
+      "displayProps": _vm.displayProps,
+      "beadProps": _vm.beadProps,
+      "canvasProps": _vm.canvasProps,
+      "panZoom": _vm.actionBarValues.panZoom,
+      "mouseProps": _vm.mouseProps,
+      "patternSize": _vm.patternValues.patternSize
+    },
+    on: {
+      "update:beadProps": function($event) {
+        _vm.beadProps = $event
+      }
+    }
+  }), _vm._v(" "), _c('canvas', {
     staticStyle: {
       "width": "100%",
       "height": "100%"
@@ -45527,17 +45432,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "mousedown": _vm.start,
       "mousemove": _vm.move,
-      "mouseup": function($event) {
-        _vm.drag = false, _vm.drawing = false
-      },
+      "mouseup": _vm.finishMove,
       "mouseout": _vm.finishMove,
       "keyup": function($event) {
         if (!$event.ctrlKey) { return null; }
-        _vm.drag = false
+        _vm.finishMove($event)
       },
       "wheel": _vm.handleScroll
     }
-  })])
+  })], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -45548,333 +45451,8 @@ if (false) {
 }
 
 /***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(66),
-  /* template */
-  null,
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\PatternDraw.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ca83b9be", Component.options)
-  } else {
-    hotAPI.reload("data-v-ca83b9be", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        actionBarValues: {
-            type: Object
-        },
-        palette: {
-            type: Object
-        },
-        beadMatrix: {
-            type: Object
-        }
-    },
-    data: function data() {
-        return {
-            //Read only from the pattern
-            palette: this.palette,
-            actionBarValues: this.actionBarValues,
-            beadMatrix: this.beadMatrix,
-            history: null,
-
-            canvasProps: {
-                canvas: null,
-                ctx: null,
-                leftOffset: 0,
-                topOffset: 0
-            },
-
-            drawProps: {
-                currX: null,
-                currY: null,
-                prevX: null,
-                prevY: null,
-                beadX: null,
-                beadY: null,
-                drawing: false
-            }
-        };
-    },
-    mounted: function mounted() {
-        this.canvasProps.canvas = document.getElementById('canvas');
-        this.ctx = this.canvasProps.canvas.getContext('2d');
-
-        //resize the canvas
-        this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
-        this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
-
-        window.addEventListener('resize', this.onResize);
-        this.drawNewGrid();
-    },
-
-    beforeDestroy: function beforeDestroy() {
-        window.removeEventListener('resize', this.onResize);
-    },
-    methods: {
-        /**
-         * Changing the size of the canvas
-         */
-        onResize: function onResize() {
-            this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
-            this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
-            this.drawNewGrid();
-        }
-    },
-    start: function start(event) {
-        this.canvasProps.ctx.beginPath();
-
-        this.prevX = this.currX;
-        this.prevY = this.currY;
-
-        if (event.ctrlKey) {
-            this.drag = true;
-        }
-        if (this.beadX > this.gridWidth || this.beadX < 0) {
-            this.drag = true;
-        } else if (this.beadY > this.gridHeight || this.beadY < 0) {
-            this.drag = true;
-        }
-        if (!this.drag) {
-            this.lastState = JSON.stringify(this.beadMatrix);
-            this.drawing = true;
-            this.drawBead(this.beadX - 1, this.beadY - 1, this.actionBarValues.bead);
-        }
-    },
-    move: function move(event) {
-        this.currX = event.clientX;
-        this.currY = event.clientY;
-
-        if (this.drag) {
-            if (this.zoomChild != null) {
-                this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
-                this.prevX = this.currX;
-                this.prevY = this.currY;
-                this.drawNewGrid();
-            }
-        } else {
-
-            var rect = canvas.getBoundingClientRect();
-
-            this.beadX = (this.currX - this.leftOffset * this.scaleFactor - rect.left - (this.currX - this.leftOffset * this.scaleFactor - rect.left) % (this.beadWidth * this.scaleFactor)) / (this.beadWidth * this.scaleFactor) + 1;
-            this.beadY = (this.currY - this.topOffset * this.scaleFactor - rect.top - (this.currY - this.topOffset * this.scaleFactor - rect.top) % (this.beadHeight * this.scaleFactor)) / (this.beadHeight * this.scaleFactor) + 1;
-
-            if (this.beadX <= 0 || this.beadX > this.gridWidth || this.beadY <= 0 || this.beadY > this.gridHeight) {
-                this.beadX = '';
-                this.beadY = '';
-                return;
-            }
-            if (this.drawing) {
-                this.drawBead(this.beadX - 1, this.beadY - 1, this.actionBarValues.bead);
-            }
-        }
-    },
-    finishMove: function finishMove(event) {
-        this.drawing = false;
-        this.drag = false;
-    },
-    drawBead: function drawBead(beadX, beadY, bead) {
-        this.ctx.fillStyle = bead.color;
-        if (beadX === '' || beadY === '') return;
-        if (beadX < 0 || beadX >= this.gridWidth || beadY < 0 || beadY >= this.gridHeight) return;
-
-        var boxX = this.leftOffset + beadX * this.beadWidth + 1;
-        var boxY = this.topOffset + beadY * this.beadHeight + 1;
-        this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
-        this.beadMatrix[beadX][beadY] = bead;
-    },
-    handleScroll: function handleScroll(event) {
-        this.zoomChild.handleScroll(event);
-    },
-    clear: function clear() {
-        this.beadMatrix = null;
-        this.zoomChild.resetZoom();
-        this.drawNewGrid();
-    },
-    save: function save() {
-        axios.post('/pattern/save', {
-            'height': this.gridHeight,
-            'width': this.gridWidth,
-            'bead_type': this.beadType,
-            'jsonPattern': this.beadMatrix
-        }).then(function (response) {
-            console.log(response);
-        }).catch(function (response) {
-            console.log('catch');
-        });
-    },
-    undo: function undo() {
-        this.beadMatrix = JSON.parse(this.lastState);
-        this.drawNewGrid();
-    },
-    rotateLeft: function rotateLeft() {
-        this.lastState = JSON.stringify(this.beadMatrix);
-        var oldMatrix = this.beadMatrix;
-
-        this.beadMatrix = new Array(this.gridHeight);
-        for (var i = 0; i < this.gridHeight; i++) {
-            this.beadMatrix[i] = new Array(this.gridWidth);
-        }
-
-        if (oldMatrix) {
-            //go through our previous bead matrix, and draw out the beads stored there
-            for (var width = 0; width < this.gridWidth; width++) {
-                for (var height = 0; height < this.gridHeight; height++) {
-                    if (oldMatrix[this.gridWidth - width]) {
-                        this.beadMatrix[height][width] = oldMatrix[this.gridWidth - width][height];
-                    }
-                }
-            }
-        }
-
-        var oldHeight = this.gridHeight;
-        this.gridHeight = this.gridWidth;
-        this.gridWidth = oldHeight;
-
-        this.drawNewGrid();
-    },
-    rotateRight: function rotateRight() {
-        this.lastState = JSON.stringify(this.beadMatrix);
-        var oldMatrix = this.beadMatrix;
-
-        this.beadMatrix = new Array(this.gridHeight);
-        for (var i = 0; i < this.gridHeight; i++) {
-            this.beadMatrix[i] = new Array(this.gridWidth);
-        }
-
-        if (oldMatrix) {
-            //go through our previous bead matrix, and draw out the beads stored there
-            for (var width = 0; width < this.gridWidth; width++) {
-                for (var height = 0; height < this.gridHeight; height++) {
-                    if (oldMatrix[width]) {
-                        this.beadMatrix[height][width] = oldMatrix[width][this.gridHeight - height];
-                    }
-                }
-            }
-        }
-
-        var oldHeight = this.gridHeight;
-        this.gridHeight = this.gridWidth;
-        this.gridWidth = oldHeight;
-
-        this.drawNewGrid();
-    },
-
-    /**
-     * After any change to the pattern, simply erase it and draw a new one from the grid.
-     * This destroys all current data on the canvas and redraws a new one with new values.
-     */
-    drawNewGrid: function drawNewGrid() {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.scale(this.scaleFactor, this.scaleFactor);
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = 'black';
-
-        //calculate bead size
-        var widthOffset = void 0;
-        var heightOffset = void 0;
-        if (this.gridWidth * this.canvas.height * this.beadAspect < this.gridHeight * this.canvas.width) {
-            //height is larger
-            heightOffset = this.canvas.height / this.scaleFactor % this.gridHeight / 2;
-            this.beadHeight = (this.canvas.height - heightOffset) / this.gridHeight;
-            this.beadWidth = this.beadHeight * this.beadAspect;
-        } else {
-            widthOffset = this.canvas.width / this.scaleFactor % (this.gridWidth * this.beadAspect) / 2;
-            this.beadWidth = (this.canvas.width - widthOffset) / (this.gridWidth * this.beadAspect);
-            this.beadHeight = this.beadWidth / this.beadAspect;
-        }
-        widthOffset = this.canvas.width / this.scaleFactor - this.gridWidth * this.beadWidth;
-        heightOffset = this.canvas.height / this.scaleFactor - this.gridHeight * this.beadHeight;
-        this.leftOffset = widthOffset / 2 + this.actionBarValues.panZoom.pan.horizontal;
-        this.topOffset = heightOffset / 2 + this.actionBarValues.panZoom.pan.vertical;
-        var rightOffset = widthOffset - this.leftOffset;
-        var bottomOffset = heightOffset - this.topOffset;
-
-        //draw horizontal lines
-        var division = this.topOffset;
-        for (var beadCount = 0; beadCount <= this.gridHeight; beadCount++) {
-            this.ctx.moveTo(this.leftOffset, division);
-            this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
-            division += this.beadHeight;
-        }
-        //draw vertical
-        division = this.leftOffset;
-        for (var _beadCount = 0; _beadCount <= this.gridWidth; _beadCount++) {
-            this.ctx.moveTo(division, this.topOffset);
-            this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
-            division += this.beadWidth;
-        }
-
-        var oldMatrix = this.beadMatrix;
-
-        this.beadMatrix = new Array(this.gridWidth);
-        for (var i = 0; i < this.gridWidth; i++) {
-            this.beadMatrix[i] = new Array(this.gridHeight);
-        }
-
-        if (oldMatrix) {
-            //go through our previous bead matrix, and draw out the beads stored there
-            for (var width = 0; width < this.gridWidth; width++) {
-                for (var height = 0; height < this.gridHeight; height++) {
-                    if (oldMatrix[width]) {
-                        var setColor = oldMatrix[width][height];
-                        if (setColor) {
-                            this.drawBead(width, height, setColor);
-                        }
-                    }
-                }
-            }
-        }
-        this.ctx.stroke();
-    },
-
-    watch: {
-        'actionBarValues.panZoom': function actionBarValuesPanZoom() {
-            this.drawNewGrid();
-        },
-        'actionBarValues.signals': function actionBarValuesSignals() {
-            this.drawNewGrid();
-        }
-    }
-});
-
-/***/ }),
+/* 65 */,
+/* 66 */,
 /* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -48168,6 +47746,421 @@ if (module.exports.__esModule) module.exports = module.exports.default
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 109 */,
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */,
+/* 114 */,
+/* 115 */,
+/* 116 */,
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(118),
+  /* template */
+  __webpack_require__(119),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\PatternDraw\\Brick\\DrawBrickLines.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] DrawBrickLines.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7ec5b84e", Component.options)
+  } else {
+    hotAPI.reload("data-v-7ec5b84e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 118 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    /**
+     * When a brick stitch is selected, determine the size & location of the grid, and draw the background grid (thread)
+     *
+     * This will fill in the display within the canvas
+     */
+
+    props: {
+        //We need to be aware & trigger changes when Zoom is updated
+        actionBarValues: {
+            type: Object
+        },
+        patternValues: {
+            type: Object
+        },
+        //Update our grid whenever the Canvas changes
+        canvasProps: {
+            type: Object
+        },
+        //We are in charge of the Display Props & will calculate them when drawing our grid
+        displayProps: {
+            type: Object
+        },
+        //Calculate the edges of each bead
+        beadMatrix: {
+            type: Array
+        }
+    },
+    data: function data() {
+        return {
+            display: this.displayProps,
+            matrix: this.beadMatrix
+        };
+    },
+    methods: {
+        isHeightLimited: function isHeightLimited() {
+            //Calculate the height * width of the pattern - assuming a bead height of 1 taking into account the bead aspect ratio
+            var beadPatternHeight = this.patternValues.patternSize.height;
+            var beadPatternWidth = this.patternValues.patternSize.width * this.patternValues.beadType.beadAspect;
+
+            //calculate proportionOfCanvas that is covered by th3e pattern
+            var canvasHeightCovered = beadPatternHeight * this.canvasProps.canvas.height;
+            var canvasWidthCovered = beadPatternWidth * this.canvasProps.canvas.width;
+
+            return canvasHeightCovered < canvasWidthCovered;
+        },
+
+        /*
+         * Calculate the bead size given the canvas size & pattern size
+         *
+         * Find the direction the beads will squish off screen first
+         * Then find the largest size the beads can be in that direction - while staying a consistent size
+         * Using that size & the aspect ratio calculate the bead size in the other direction
+         * Multiply everything by the scale offset so we zoom in/out as required
+         */
+        calculateBeadSize: function calculateBeadSize() {
+            var scaleFactor = this.actionBarValues.panZoom.scaleFactor;
+            var beadAspectRatio = this.patternValues.beadType.beadAspect;
+
+            var baseBeadHeight = 1;
+            var baseBeadWidth = 1;
+            //If our pattern takes up more vertical space on our screen than horizontal
+            if (this.isHeightLimited()) {
+                var canvasHeight = this.canvasProps.canvas.height;
+                var gridHeight = this.patternValues.patternSize.height;
+
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var smallestOffsetPossible = canvasHeight % gridHeight / 2;
+
+                //Calculate the bead size - based on the smallest offsets possible & the current zoom
+                baseBeadHeight = (canvasHeight - smallestOffsetPossible) / gridHeight;
+                baseBeadWidth = baseBeadHeight * beadAspectRatio;
+            } else {
+                var canvasWidth = this.canvasProps.canvas.width;
+                var gridWidth = this.patternValues.patternSize.width;
+
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var _smallestOffsetPossible = canvasWidth % (gridWidth * beadAspectRatio) / 2;
+
+                baseBeadWidth = (canvasWidth - _smallestOffsetPossible) / (gridWidth * beadAspectRatio);
+                baseBeadHeight = baseBeadWidth / beadAspectRatio;
+            }
+
+            //apply the scale factor to the bead size
+            this.display.beadHeight = baseBeadHeight * scaleFactor;
+            this.display.beadWidth = baseBeadWidth * scaleFactor;
+        },
+
+
+        calculateOffset: function calculateOffset(canvasWidth, beadsAcross, beadWidth) {
+            var totalPatternWidth = beadsAcross * beadWidth;
+            return (canvasWidth - totalPatternWidth) / 2;
+        },
+
+        /**
+         *  Using the bead sizes, pan & zoom calculate the offset from the sizes of the canvas to
+         *  draw the pattern
+         */
+        calculateOffsets: function calculateOffsets() {
+            var widthOffset = this.calculateOffset(this.canvasProps.canvas.width, this.patternValues.patternSize.width, this.display.beadWidth);
+            var heightOffset = this.calculateOffset(this.canvasProps.canvas.height, this.patternValues.patternSize.height, this.display.beadHeight);
+
+            this.display.leftOffset = widthOffset + this.actionBarValues.panZoom.pan.horizontal;
+            this.display.topOffset = heightOffset + this.actionBarValues.panZoom.pan.vertical;
+            this.display.rightOffset = widthOffset - this.actionBarValues.panZoom.pan.horizontal;
+            this.display.bottomOffset = heightOffset - this.actionBarValues.panZoom.pan.vertical;
+        },
+
+        drawHorizontalLines: function drawHorizontalLines() {
+            //draw horizontal lines
+            var division = this.display.topOffset;
+            var patternHeight = this.patternValues.patternSize.height;
+            var beadHeight = this.display.beadHeight;
+            var lineStart = this.display.leftOffset;
+            var lineEnd = this.canvasProps.canvas.width - this.display.rightOffset;
+
+            for (var rowCount = 0; rowCount <= patternHeight; rowCount++) {
+                this.canvasProps.ctx.moveTo(lineStart, division);
+                this.canvasProps.ctx.lineTo(lineEnd, division);
+
+                //While drawing the lines, update the borders of the beads within the beadMatrix
+                if (rowCount < patternHeight) {
+                    for (var beadIndex in this.matrix) {
+                        this.matrix[beadIndex][rowCount].topBound = division;
+                        this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
+                    }
+                }
+
+                division += beadHeight;
+            }
+        },
+
+        drawVerticalLines: function drawVerticalLines() {
+            //draw vertical
+            var division = this.display.leftOffset;
+            var patternWidth = this.patternValues.patternSize.width;
+            var beadWidth = this.display.beadWidth;
+            var lineStart = this.display.topOffset;
+            var lineEnd = this.canvasProps.canvas.height - this.display.bottomOffset;
+
+            for (var columnCount = 0; columnCount <= patternWidth; columnCount++) {
+                this.canvasProps.ctx.moveTo(division, lineStart);
+                this.canvasProps.ctx.lineTo(division, lineEnd);
+
+                //While drawing the lines, update the borders of the beads within the beadMatrix
+                if (columnCount < patternWidth) {
+                    for (var beadIndex in this.matrix[columnCount]) {
+                        this.matrix[columnCount][beadIndex].leftBound = division;
+                        this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
+                    }
+                }
+
+                division += beadWidth;
+            }
+        },
+
+        //Draw all beads currently set in the bead matrix as we have just refreshed the screen
+        drawExistingBeads: function drawExistingBeads() {
+
+            for (var xIndex in this.matrix) {
+                if (this.matrix.hasOwnProperty(xIndex)) {
+                    for (var yIndex in this.matrix[xIndex]) {
+                        if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
+                            if (this.matrix[xIndex][yIndex].bead) {
+                                this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
+                                this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * After any change to the pattern, simply erase it and draw a new one from the grid.
+         * This destroys all current data on the canvas and redraws a new one with new values.
+         */
+        drawNewGrid: function drawNewGrid() {
+            this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.canvasProps.ctx.clearRect(0, 0, this.canvasProps.canvas.width, this.canvasProps.canvas.height);
+            this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
+            this.canvasProps.ctx.beginPath();
+            this.canvasProps.ctx.strokeStyle = 'black';
+
+            //calculate bead size
+            this.calculateBeadSize();
+            this.calculateOffsets();
+            this.drawHorizontalLines();
+            this.drawVerticalLines();
+            this.drawExistingBeads();
+
+            this.canvasProps.ctx.stroke();
+            this.$emit('update:displayProps', this.display);
+            this.$emit('update:beadMatrix', this.matrix);
+        }
+    },
+    watch: {
+        'actionBarValues.panZoom': {
+            handler: function handler() {
+                this.drawNewGrid();
+            },
+            deep: true
+        },
+        'canvasProps.canvasReady': {
+            handler: function handler() {
+                this.drawNewGrid();
+            },
+            deep: true
+        }
+    }
+});
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c("div")
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-7ec5b84e", module.exports)
+  }
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(121),
+  /* template */
+  __webpack_require__(122),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\resources\\assets\\js\\components\\PatternMaker\\PatternDraw\\Brick\\BrickBeadCalc.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] BrickBeadCalc.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-598a9d00", Component.options)
+  } else {
+    hotAPI.reload("data-v-598a9d00", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+
+/**
+ * When a brick stitch is selected, using the mouse position and the grid calculated offsets & bead size
+ * Calculate the bead index given a set of coordinates
+ */
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        displayProps: {
+            type: Object
+        },
+        beadProps: {
+            type: Object
+        },
+        canvasProps: {
+            type: Object
+        },
+        patternSize: {
+            type: Object
+        },
+        mouseProps: {
+            type: Object
+        },
+        panZoom: {
+            type: Object
+        }
+    },
+    data: function data() {
+        return {
+            calculated: this.beadProps
+        };
+    },
+    methods: {
+        calculateIndex: function calculateIndex(pixelCount, scaleFactor, canvasEdge, offset, beadSize, maxCount) {
+            var scaledOffset = offset * scaleFactor;
+            var pixelsFromPatternEdge = pixelCount - scaledOffset - canvasEdge;
+            var pixelsFromBeadStart = pixelsFromPatternEdge % beadSize;
+            var previousBeadStart = pixelsFromPatternEdge - pixelsFromBeadStart;
+            var beadIndex = previousBeadStart / beadSize;
+
+            //Ensure this index is really in the pattern
+            if (beadIndex < 0) return null;
+            if (beadIndex >= maxCount) return null;
+
+            return beadIndex;
+        },
+
+        calculateCurrentProps: function calculateCurrentProps() {
+            var rect = this.canvasProps.canvas.getBoundingClientRect();
+            var scaleFactor = this.panZoom.scaleFactor;
+            var display = this.displayProps;
+            //given the mouse props calculate the indexes
+
+            this.calculated.xIndex = this.calculateIndex(this.mouseProps.currX, scaleFactor, rect.left, display.leftOffset, display.beadWidth, this.patternSize.width);
+            this.calculated.yIndex = this.calculateIndex(this.mouseProps.currY, scaleFactor, rect.top, display.topOffset, display.beadHeight, this.patternSize.height);
+
+            this.$emit('update:beadProps', this.calculated);
+        }
+    },
+    watch: {
+        'mouseProps': {
+            handler: function handler() {
+                this.calculateCurrentProps();
+            },
+            deep: true
+        }
+    }
+});
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c("div")
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-598a9d00", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

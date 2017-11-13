@@ -58,7 +58,7 @@
                 type: Object,
             },
             beadMatrix: {
-                type: Object,
+                type: Array,
             },
             palette: {
                 type: Object,
@@ -81,7 +81,16 @@
                 this.$modal.show('new-pattern');
             },
             createPattern: function () {
+                this.createdBeadMatrix = [];
+                for(let i = 0; i<this.patternValues.patternSize.width; i++){
+                    this.createdBeadMatrix[i] = [];
+                    for(let j = 0; j < this.patternValues.patternSize.height; j++){
+                        this.createdBeadMatrix[i][j] = {};
+                    }
+                }
+
                 this.$emit('update:patternValues', this.updatedPatternValues);
+                this.$emit('update:beadMatrix', this.createdBeadMatrix);
                 this.$modal.hide('new-pattern');
             },
         },
