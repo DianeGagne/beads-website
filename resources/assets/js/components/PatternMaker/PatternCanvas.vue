@@ -23,8 +23,6 @@
                 @mouseup="finishMove"
                 @mouseout="finishMove"
                 @keyup.ctrl="finishMove"
-                @wheel="handleScroll"
-
         ></canvas>
     </div>
 </template>
@@ -145,7 +143,7 @@
                 this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex].bead = this.actionBarValues.bead;
             },
             handleScroll: function (event) {
-                this.actionBarValues.panZoom.scaleFactor.handleScroll(event);
+                this.actionBarValues.zoom.handleScroll(event);
             },
             clear: function () {
                 this.updatableMatrix = null;

@@ -33,8 +33,7 @@
         },
         methods: {
             calculateIndex: function(pixelCount, scaleFactor, canvasEdge, offset, beadSize, maxCount) {
-                let scaledOffset = offset * scaleFactor;
-                let pixelsFromPatternEdge = pixelCount - scaledOffset - canvasEdge;
+                let pixelsFromPatternEdge = pixelCount - offset - canvasEdge;
                 let pixelsFromBeadStart = pixelsFromPatternEdge % beadSize;
                 let previousBeadStart = pixelsFromPatternEdge - pixelsFromBeadStart;
                 let beadIndex = previousBeadStart / beadSize;
@@ -45,7 +44,7 @@
                 if(beadIndex >= maxCount)
                     return null;
 
-                return beadIndex;
+                return Math.round(beadIndex);
             },
 
 

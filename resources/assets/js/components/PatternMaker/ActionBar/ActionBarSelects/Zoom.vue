@@ -18,21 +18,27 @@
                 scaleFactor: 1,
             }
         },
-        created: function () {
+        mounted() {
             var vm = this;
             window.addEventListener('keydown', function (event) {
                 if (event.keyCode === 32) {
                     vm.resetZoom();
                 }
-                if (event.keyCode === 187) {
+                if (event.keyCode === 187 || event.keyCode === 107) {
                     vm.zoomIn();
                 }
-                if (event.keyCode === 189) {
+                if (event.keyCode === 189 || event.keyCode === 109) {
                     vm.zoomOut();
                 }
             });
-        },
-        mounted() {
+            window.addEventListener('mousewheel', function(event){
+                if (event.deltaY > 0)
+                    vm.zoomOut();
+                else
+                    vm.zoomIn();
+
+                return false;
+            });
         },
         methods: {
             zoomIn: function () {

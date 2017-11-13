@@ -45161,8 +45161,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -45280,7 +45278,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex].bead = this.actionBarValues.bead;
         },
         handleScroll: function handleScroll(event) {
-            this.actionBarValues.panZoom.scaleFactor.handleScroll(event);
+            this.actionBarValues.zoom.handleScroll(event);
         },
         clear: function clear() {
             this.updatableMatrix = null;
@@ -45437,8 +45435,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "keyup": function($event) {
         if (!$event.ctrlKey) { return null; }
         _vm.finishMove($event)
-      },
-      "wheel": _vm.handleScroll
+      }
     }
   })], 1)
 },staticRenderFns: []}
@@ -46636,21 +46633,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             scaleFactor: 1
         };
     },
-    created: function created() {
+    mounted: function mounted() {
         var vm = this;
         window.addEventListener('keydown', function (event) {
             if (event.keyCode === 32) {
                 vm.resetZoom();
             }
-            if (event.keyCode === 187) {
+            if (event.keyCode === 187 || event.keyCode === 107) {
                 vm.zoomIn();
             }
-            if (event.keyCode === 189) {
+            if (event.keyCode === 189 || event.keyCode === 109) {
                 vm.zoomOut();
             }
         });
+        console.log(document.getElementById('canvas'));
+        document.getElementById('canvas').addEventListener('mousewheel', function (event) {
+            if (event.deltaY > 0) vm.zoomOut();else vm.zoomIn();
+
+            return false;
+        });
     },
-    mounted: function mounted() {},
 
     methods: {
         zoomIn: function zoomIn() {
@@ -48112,8 +48114,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     methods: {
         calculateIndex: function calculateIndex(pixelCount, scaleFactor, canvasEdge, offset, beadSize, maxCount) {
-            var scaledOffset = offset * scaleFactor;
-            var pixelsFromPatternEdge = pixelCount - scaledOffset - canvasEdge;
+            var pixelsFromPatternEdge = pixelCount - offset - canvasEdge;
             var pixelsFromBeadStart = pixelsFromPatternEdge % beadSize;
             var previousBeadStart = pixelsFromPatternEdge - pixelsFromBeadStart;
             var beadIndex = previousBeadStart / beadSize;
@@ -48122,7 +48123,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (beadIndex < 0) return null;
             if (beadIndex >= maxCount) return null;
 
-            return beadIndex;
+            return Math.round(beadIndex);
         },
 
         calculateCurrentProps: function calculateCurrentProps() {
