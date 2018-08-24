@@ -1,21 +1,28 @@
 <template>
     <div class="canvasBlock" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%;">
         <draw-brick-lines
-        :actionBarValues="actionBarValues"
-        :canvasProps="canvasProps"
-        :patternValues="patternValues"
-        :beadMatrix.sync="updatableMatrix"
-        :displayProps.sync="displayProps">
+                :actionBarValues="actionBarValues"
+                :canvasProps="canvasProps"
+                :patternValues="patternValues"
+                :beadMatrix.sync="updatableMatrix"
+                :displayProps.sync="displayProps">
         </draw-brick-lines>
 
         <brick-bead-calc
-            :displayProps="displayProps"
-            :beadProps.sync="beadProps"
-            :canvasProps="canvasProps"
-            :panZoom="actionBarValues.panZoom"
-            :mouseProps="mouseProps"
-            :patternSize="patternValues.patternSize">
+                :displayProps="displayProps"
+                :beadProps.sync="beadProps"
+                :canvasProps="canvasProps"
+                :panZoom="actionBarValues.panZoom"
+                :mouseProps="mouseProps"
+                :patternSize="patternValues.patternSize">
         </brick-bead-calc>
+
+        <pattern-signals
+                :updatableMatrix.sync="updatableMatrix"
+                :patternSize.sync="patternValues.patternSize"
+                :signals.sync="actionBarValues.signals">
+        </pattern-signals>
+
         <canvas
                 id="canvas" style="width:100%; height:100%;"
                 @mousedown="start"
@@ -116,7 +123,7 @@
                 }
             },
             move: function (event) {
-                if(this.mouseProps.drawing) {
+                if (this.mouseProps.drawing) {
                     this.mouseProps.currX = event.clientX;
                     this.mouseProps.currY = event.clientY;
                 }
@@ -142,14 +149,6 @@
                 this.canvasProps.ctx.fillRect(matrixValue.leftBound, matrixValue.topBound, matrixValue.rightBound - matrixValue.leftBound, matrixValue.bottomBound - matrixValue.topBound);
                 this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex].bead = this.actionBarValues.bead;
             },
-            handleScroll: function (event) {
-                this.actionBarValues.zoom.handleScroll(event);
-            },
-            clear: function () {
-                this.updatableMatrix = null;
-                this.zoomChild.resetZoom();
-                this.drawNewGrid();
-            },
             save: function () {
                 axios.post('/pattern/save', {
                     'actionBarValues': this.actionBarValues,
@@ -167,77 +166,20 @@
                 this.updatableMatrix = JSON.parse(this.lastState);
                 this.drawNewGrid();
             },
-            rotateLeft: function () {
-                this.lastState = JSON.stringify(this.updatableMatrix);
-                let oldMatrix = this.updatableMatrix;
-
-                this.updatableMatrix = new Array(this.gridHeight);
-                for (let i = 0; i < this.gridHeight; i++) {
-                    this.updatableMatrix[i] = new Array(this.gridWidth);
-                }
-
-                if (oldMatrix) {
-                    //go through our previous bead matrix, and draw out the beads stored there
-                    for (let width = 0; width < this.gridWidth; width++) {
-                        for (let height = 0; height < this.gridHeight; height++) {
-                            if (oldMatrix[this.gridWidth - width]) {
-                                this.updatableMatrix[height][width] = oldMatrix[this.gridWidth - width][height];
-                            }
-                        }
-                    }
-                }
-
-                let oldHeight = this.gridHeight;
-                this.gridHeight = this.gridWidth;
-                this.gridWidth = oldHeight;
-
-                this.drawNewGrid();
-            },
-            rotateRight: function () {
-                this.lastState = JSON.stringify(this.updatableMatrix);
-                let oldMatrix = this.updatableMatrix;
-
-                this.updatableMatrix = new Array(this.gridHeight);
-                for (let i = 0; i < this.gridHeight; i++) {
-                    this.updatableMatrix[i] = new Array(this.gridWidth);
-                }
-
-                if (oldMatrix) {
-                    //go through our previous bead matrix, and draw out the beads stored there
-                    for (let width = 0; width < this.gridWidth; width++) {
-                        for (let height = 0; height < this.gridHeight; height++) {
-                            if (oldMatrix[width]) {
-                                this.updatableMatrix[height][width] = oldMatrix[width][this.gridHeight - height];
-                            }
-                        }
-                    }
-                }
-
-                let oldHeight = this.gridHeight;
-                this.gridHeight = this.gridWidth;
-                this.gridWidth = oldHeight;
-
-                this.drawNewGrid();
-            },
-
-
-
         },
         watch: {
-            'patternValues': {
-                handler: function () {
-                    this.drawNewGrid();
-                }, deep: true,
-            },
-            'beadProps' : {
+            'beadProps': {
                 handler: function () {
                     this.drawBead();
                 },
                 deep: true,
             },
-            'beadMatrix' : {
-                handler: function() {
-                    this.updatableMatrix = this.beadMatrix;
+            'updatableMatrix': {
+                handler: function () {
+                    console.log('bead matrix updated');
+                    console.log(this.updatableMatrix);
+                    this.$emit('update:beadMatrix', this.updatableMatrix);
+//                    this.updatableMatrix = this.beadMatrix;
                 },
                 deep: true,
             },

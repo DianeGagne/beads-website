@@ -53,6 +53,7 @@
                         },
                         undo: false,
                         redo: false,
+                        redraw: false,
                     },
                     panZoom: {
                         scaleFactor: 1,
@@ -76,8 +77,8 @@
                         name: 'brick',
                     },
                     patternSize: {
-                        height: 20,
-                        width: 20,
+                        height: 30,
+                        width: 30,
                     }
                 },
 

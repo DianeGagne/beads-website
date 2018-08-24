@@ -123,8 +123,10 @@
                     //While drawing the lines, update the borders of the beads within the beadMatrix
                     if (rowCount < patternHeight) {
                         for (let beadIndex in this.matrix) {
-                            this.matrix[beadIndex][rowCount].topBound = division;
-                            this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
+                            if(this.matrix.hasOwnProperty(beadIndex)) {
+                                this.matrix[beadIndex][rowCount].topBound = division;
+                                this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
+                            }
                         }
                     }
 
@@ -147,8 +149,10 @@
                     //While drawing the lines, update the borders of the beads within the beadMatrix
                     if (columnCount < patternWidth) {
                         for (let beadIndex in this.matrix[columnCount]) {
-                            this.matrix[columnCount][beadIndex].leftBound = division;
-                            this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
+                            if(this.matrix[columnCount].hasOwnProperty(beadIndex)) {
+                                this.matrix[columnCount][beadIndex].leftBound = division;
+                                this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
+                            }
                         }
                     }
 
@@ -193,7 +197,7 @@
 
                 this.canvasProps.ctx.stroke();
                 this.$emit('update:displayProps', this.display);
-                this.$emit('update:beadMatrix', this.matrix);
+//                this.$emit('update:beadMatrix', this.matrix);
             },
         },
         watch: {
@@ -209,6 +213,21 @@
                 },
                 deep: true,
             },
+            'actionBarValues.signals.redraw': {
+                handler: function() {
+                    if(this.actionBarValues.signals.redraw) {
+                        console.log('draw new grid!');
+                        this.drawNewGrid();
+                        this.actionBarValues.signals.redraw = false;
+                        this.$emit('update:actionBarValues', this.actionBarValues);
+                    }
+                }
+            },
+            'beadMatrix': {
+                handler: function() {
+                    this.matrix = this.beadMatrix;
+                }
+            }
         },
     }
 </script>
