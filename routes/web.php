@@ -26,3 +26,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('pattern/createFromImage', 'CreateController@createFromImage');
+Route::get('pattern/updateCreateStats', 'CreateController@updateCreationStatus');

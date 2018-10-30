@@ -44757,11 +44757,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -44787,6 +44782,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mounted: function mounted() {},
 
     methods: {
+        preview: function preview() {},
         createNew: function createNew() {
             this.$modal.show('new-pattern');
         },
@@ -44811,121 +44807,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    attrs: {
-      "id": "new-pattern"
-    }
-  }, [_c('button', {
-    staticClass: "btn-default",
-    on: {
-      "click": _vm.createNew
-    }
-  }, [_vm._v("New Pattern")]), _vm._v(" "), _c('modal', {
-    staticClass: "settingsModal",
-    attrs: {
-      "name": "new-pattern",
-      "resizable": true,
-      "scrollable": true,
-      "draggable": true,
-      "adaptive": true,
-      "reset": true
-    }
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Create New Pattern")])]), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
-  }, [_c('pattern-name', {
-    attrs: {
-      "patternName": _vm.patternValues.patternName
-    },
-    on: {
-      "update:patternName": function($event) {
-        _vm.patternValues.patternName = $event
-      }
-    }
-  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('div', {
-    staticClass: "selectFunctions"
-  }, [_c('bead-type', {
-    attrs: {
-      "beadType": _vm.patternValues.beadType
-    },
-    on: {
-      "update:beadType": function($event) {
-        _vm.patternValues.beadType = $event
-      }
-    }
-  }), _vm._v(" "), _c('pattern-type', {
-    attrs: {
-      "stitchType": _vm.patternValues.stitchType
-    },
-    on: {
-      "update:stitchType": function($event) {
-        _vm.patternValues.stitchType = $event
-      }
-    }
-  })], 1), _vm._v(" "), _c('hr'), _vm._v(" "), _c('pattern-size', {
-    attrs: {
-      "patternSize": _vm.patternValues.patternSize,
-      "beadType": _vm.patternValues.beadType
-    },
-    on: {
-      "update:patternSize": function($event) {
-        _vm.patternValues.patternSize = $event
-      }
-    }
-  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('div', {
-    staticClass: "tabbable"
-  }, [_c('ul', {
-    staticClass: "nav nav-tabs"
-  }, [_c('li', [_c('a', {
-    attrs: {
-      "href": "#background-image",
-      "data-toggle": "tab"
-    }
-  }, [_vm._v("From Image")])]), _vm._v(" "), _c('li', [_c('a', {
-    attrs: {
-      "href": "#background-bead",
-      "data-toggle": "tab"
-    }
-  }, [_vm._v("Background Bead")])])])]), _vm._v(" "), _c('div', {
-    staticClass: "tab-content"
-  }, [_c('div', {
-    staticClass: "tab-pane login-tab",
-    attrs: {
-      "id": "background-image"
-    }
-  }, [_c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "id": "upload_file",
-      "type": "file"
-    }
-  }), _vm._v(" "), _c('input', {
-    staticClass: "form_control",
-    attrs: {
-      "id": "max_colors",
-      "type": "number"
-    }
-  }), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-default"
-  }, [_vm._v("Create from file")])]), _vm._v(" "), _c('div', {
-    staticClass: "tab-pane login-tab",
-    attrs: {
-      "id": "background-bead"
-    }
-  }, [_c('color-section')], 1)]), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_c('button', {
-    staticClass: "btn btn-primary",
-    on: {
-      "click": _vm.createPattern
-    }
-  }, [_vm._v("Create")])])], 1)])], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
+module.exports={render:function(){},staticRenderFns:[]}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
@@ -46110,7 +45992,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             values: this.actionBarValues,
-
             //internal variables for controlling the action bar size
             menuWidth: 500
         };

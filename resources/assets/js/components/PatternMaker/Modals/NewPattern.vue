@@ -7,6 +7,7 @@
                :draggable="true"
                :adaptive="true"
                :reset="true"
+               :height="auto"
                class="settingsModal">
             <div class="modal-header">
                 <h4 class="modal-title">Create New Pattern</h4>
@@ -17,32 +18,26 @@
 
                 <hr>
                 <div class="selectFunctions">
-                <bead-type :beadType.sync="patternValues.beadType"></bead-type>
-                <pattern-type :stitchType.sync="patternValues.stitchType"></pattern-type>
+                    <bead-type :beadType.sync="patternValues.beadType"></bead-type>
+                    <pattern-type :stitchType.sync="patternValues.stitchType"></pattern-type>
                 </div>
 
                 <hr>
-                <pattern-size :patternSize.sync="patternValues.patternSize" :beadType="patternValues.beadType"></pattern-size>
+                <pattern-size :patternSize.sync="patternValues.patternSize"
+                              :beadType="patternValues.beadType"></pattern-size>
 
                 <hr>
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li><a href="#background-image" data-toggle="tab">From Image</a></li>
-                        <li><a href="#background-bead" data-toggle="tab">Background Bead</a></li>
-                    </ul>
-                </div>
 
-                <div class="tab-content">
-                    <div class="tab-pane login-tab" id="background-image">
-                        <input id="upload_file" class="form-control" type="file" >
-                        <input id="max_colors" class="form_control" type="number">
-                        <button class="btn btn-default" >Create from file</button>
-                    </div>
-                    <div class="tab-pane login-tab" id="background-bead">
-                        <color-section></color-section>
-                    </div>
-                </div>
+                <input id="upload_file" class="form-control" type="file">
+                <label>Max Colors</label>
+                <input id="max_colors" class="form_control" type="number">
+                <br>
 
+                <div class="previewImage"
+                     v-bind:style="{backgroundColor: black,
+                backgroundImage:'url(/assets/delica11/db0374.jpg)',}">
+
+                <button class="btn btn-default" @click="preview">Preview</button>
 
                 <div class="modal-footer">
                     <button class="btn btn-primary" @click="createPattern">Create</button>
@@ -69,7 +64,7 @@
                 updatedPatternValues: this.patternValues,
                 createdBeadMatrix: this.beadMatrix,
                 createdPalette: this.palette,
-                fileUploadFormData:new FormData(),
+                fileUploadFormData: new FormData(),
             }
         },
         created: function () {
@@ -77,14 +72,17 @@
         mounted() {
         },
         methods: {
+            preview: function() {
+
+            },
             createNew: function () {
                 this.$modal.show('new-pattern');
             },
             createPattern: function () {
                 this.createdBeadMatrix = [];
-                for(let i = 0; i<this.patternValues.patternSize.width; i++){
+                for (let i = 0; i < this.patternValues.patternSize.width; i++) {
                     this.createdBeadMatrix[i] = [];
-                    for(let j = 0; j < this.patternValues.patternSize.height; j++){
+                    for (let j = 0; j < this.patternValues.patternSize.height; j++) {
                         this.createdBeadMatrix[i][j] = {};
                     }
                 }

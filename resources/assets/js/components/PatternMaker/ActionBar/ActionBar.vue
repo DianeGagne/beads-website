@@ -36,8 +36,6 @@
         data: function () {
             return {
                 values: this.actionBarValues,
-
-
                 //internal variables for controlling the action bar size
                 menuWidth: 500,
             }
