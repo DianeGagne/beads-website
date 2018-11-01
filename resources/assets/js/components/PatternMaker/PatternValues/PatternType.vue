@@ -11,16 +11,12 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../StoredData/PatternValues.js';
     export default {
-        props: {
-            stitchType: {
-                type: Object,
-            },
-        },
         data: function () {
             return {
-                selectedStitchType: this.stitchType,
-                selected: this.stitchType.name,
+                selectedStitchType: SavedPattern.patternValues.stitchType,
+                selected: this.selectedStitchType.name,
                 types: {
                     brick: {
                         name: 'brick',
@@ -35,7 +31,7 @@
         },
         methods: {
             changedType: function () {
-                this.$emit('update:stitchType', this.types[this.selectedStitchType])
+                Event.fire('stitchType', this.types[this.selectedStitchType]);
             }
         },
     }

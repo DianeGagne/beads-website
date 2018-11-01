@@ -3,31 +3,27 @@
         <vue-tabs>
             <v-tab title="All">
                 <div class="colorpicker">
-                    <color-picker v-for="child in childrenColors" :bead.sync="bead" key="colorInfo.key"
-                                  v-bind:class="{selected: child === bead}"
+                    <color-picker v-for="child in childrenColors" key="colorInfo.key"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Finishes">
                 <v-select multiple :on-change=findFinishes :value.sync="selected" :options="finishOptions"></v-select>
                 <div class="colorpicker">
-                    <color-picker v-for="child in finishColors" :bead.sync="bead" key="colorInfo.key"
-                                  v-bind:class="{selected: child === bead}"
+                    <color-picker v-for="child in finishColors" key="colorInfo.key"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Colors">
                 <slider-picker v-model="colors" style="width:auto;"/>
                 <div class="colorpicker">
-                    <color-picker v-for="child in colorColors" :bead.sync="bead" key="colorInfo.key"
-                                  v-bind:class="{selected: child === bead}"
+                    <color-picker v-for="child in colorColors" key="colorInfo.key"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Palette">
                 <div class="colorpicker">
-                    <color-picker v-for="child in paletteColors" :bead.sync="bead" key="colorInfo.key"
-                                  v-bind:class="{selected: child === bead}"
+                    <color-picker v-for="child in paletteColors" key="colorInfo.key"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
@@ -37,6 +33,8 @@
 <script>
     import vSelect from "vue-select"
     import {Slider} from 'vue-color'
+
+
     var defaultProps = {
         hex: '#194d33',
     };
@@ -44,11 +42,6 @@
         components: {
             vSelect,
             'slider-picker': Slider
-        },
-        props: {
-            bead: {
-                type: Object,
-            },
         },
         data: function () {
             return {
@@ -102,11 +95,6 @@
             }
         },
         watch: {
-            bead: function () {
-                console.log('bead changed');
-                console.log(this.bead);
-                this.$emit('update:bead', this.bead);
-            },
             colors: function () {
                 this.findColors();
             },

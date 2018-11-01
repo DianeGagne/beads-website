@@ -20,18 +20,12 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../StoredData/PatternValues.js';
     export default {
-        props: {
-            patternSize: {
-                type: Object,
-            },
-            beadType: {
-                type: Object,
-            },
-        },
         data: function () {
             return {
-                patternSize: this.patternSize,
+                patternSize: SavedPattern.patternValues.patternSize,
+                beadType: SavedPattern.patternValues.beadType,
                 totalHeight: 0,
                 totalWidth: 0,
                 totalBeads: 0,

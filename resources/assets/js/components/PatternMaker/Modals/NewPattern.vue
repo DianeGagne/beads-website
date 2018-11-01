@@ -37,10 +37,11 @@
                      v-bind:style="{backgroundColor: black,
                 backgroundImage:'url(/assets/delica11/db0374.jpg)',}">
 
-                <button class="btn btn-default" @click="preview">Preview</button>
+                    <button class="btn btn-default" @click="preview">Preview</button>
 
-                <div class="modal-footer">
-                    <button class="btn btn-primary" @click="createPattern">Create</button>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @click="createPattern">Create</button>
+                    </div>
                 </div>
             </div>
         </modal>
@@ -72,7 +73,7 @@
         mounted() {
         },
         methods: {
-            preview: function() {
+            preview: function () {
 
             },
             createNew: function () {

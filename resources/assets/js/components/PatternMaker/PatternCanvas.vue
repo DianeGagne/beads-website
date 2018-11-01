@@ -34,26 +34,18 @@
     </div>
 </template>
 <script>
+
+    import SavedPattern from '../../StoredData/PatternValues.js';
     export default {
-        props: {
-            actionBarValues: {
-                type: Object,
-            },
-            palette: {
-                type: Object,
-            },
-            beadMatrix: {
-                type: Array,
-            },
-            patternValues: {
-                type: Object
-            },
-        },
+
+
         data: function () {
             return {
                 //Read only from the pattern
-                beadPalette: this.palette,
-                updatableMatrix: this.beadMatrix,
+                beadPalette: SavedPattern.palette,
+                updatableMatrix: SavedPattern.beadMatrix,
+                patternValues: SavedPattern.patternValues,
+                actionBarValues: SavedPattern.actionBarValues,
                 history: null,
                 canvasProps: {
                     canvas: null,
@@ -83,7 +75,9 @@
                 },
             }
         },
+
         mounted() {
+
             this.canvasProps.canvas = document.getElementById('canvas');
             this.canvasProps.ctx = this.canvasProps.canvas.getContext('2d');
 

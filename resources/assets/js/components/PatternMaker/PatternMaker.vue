@@ -20,7 +20,7 @@
 
 
             <action-bar
-                    style="height:100%; right:0"
+
                     :actionBarValues.sync="actionBarValues"
                     :patternValues="patternValues"
                     :beadMatrix.sync="beadMatrix"

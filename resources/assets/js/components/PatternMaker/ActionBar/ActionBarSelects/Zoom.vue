@@ -12,10 +12,11 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../../StoredData/PatternValues.js';
     export default {
         data: function () {
             return {
-                scaleFactor: 1,
+                scaleFactor: SavedPattern.actionBarValues.panZoom.scaleFactor,
             }
         },
         mounted() {
@@ -43,17 +44,17 @@
         methods: {
             zoomIn: function () {
                 this.scaleFactor += .25;
-                this.$emit('update:scaleFactor', this.scaleFactor);
+                SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
             },
             zoomOut: function () {
                 if (!this.scaleFactor == 0) {
                     this.scaleFactor -= .25;
-                    this.$emit('update:scaleFactor', this.scaleFactor);
+                    SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
                 }
             },
             resetZoom: function () {
                 this.scaleFactor = 1;
-                this.$emit('update:scaleFactor', this.scaleFactor);
+                SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
             },
             handleScroll: function (event) {
                 if (event.deltaY > 0)

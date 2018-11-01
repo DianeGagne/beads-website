@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8,6 +7,21 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+
+//event emitter
+window.Event = new class {
+    constructor(){
+        this.vue = new Vue();
+    }
+
+    fire( event, data = null){
+        this.vue.$emit(event,data);
+    }
+
+    listen( event, callback){
+        this.vue.$on(event, callback);
+    }
+};
 
 import VueTabs from 'vue-nav-tabs';
 import 'vue-nav-tabs/themes/vue-tabs.css';
@@ -46,14 +60,21 @@ Vue.component('selected-bead', require('./components/PatternMaker/ActionBar/Acti
 Vue.component('rotate', require('./components/PatternMaker/ActionBar/ActionBarSelects/Rotate.vue'));
 Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSelects/Zoom.vue'));
 Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelects/Pan.vue'));
+Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue'));
 
 Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));
 Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/PatternType.vue'));
 Vue.component('bead-type', require('./components/PatternMaker/PatternValues/BeadType.vue'));
 Vue.component('pattern-size', require('./components/PatternMaker/PatternValues/PatternSize.vue'));
 
-Vue.component("resizer", require ("vue-resize-handle/unidirectional"));
+Vue.component("resizer", require("vue-resize-handle/unidirectional"));
 
-const app = new Vue({
-    el: '#app',
+
+const pattern = new Vue({
+    el: '#pattern',
 });
+
+const controls = new Vue({
+    el: '#controls',
+});
+

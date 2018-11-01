@@ -24,6 +24,12 @@
                 newSize: this.patternSize,
             }
         },
+        mounted() {
+            Event.listen('rotateLeft', () => this.rotateLeft());
+            Event.listen('rotateRight', () => this.rotateRight());
+            Event.listen('flipX', () => this.flipX());
+            Event.listen('flipY', () => this.flipY());
+        },
         methods: {
             rotateLeft: function() {
                 console.log('rotate left');

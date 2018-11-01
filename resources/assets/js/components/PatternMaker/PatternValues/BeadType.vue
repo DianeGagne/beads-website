@@ -4,23 +4,17 @@
         <div v-for="type in types">
             <input type="radio"
                    :value=type.name
-                   v-model="selected"
-                   v-on:change="changedType()">
+                   v-model="selected">
             {{type.displayName}}
         </div>
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../StoredData/PatternValues.js';
     export default {
-        props: {
-            beadType: {
-                type: Object,
-            },
-        },
         data: function () {
             return {
-                selected: this.beadType.name,
-                selectedType: this.beadType,
+                selected: SavedPattern.patternValues.beadType.name,
                 types: {
                     delica: {
                         beadAspect: 1, // The number to multiple the width to get the height
@@ -43,7 +37,7 @@
         },
         methods: {
             changedType: function () {
-                this.$emit('update:beadType', this.types[this.selectedType])
+                SavedPattern.patternValues.beadType = this.types[this.selected];
             }
         }
     }

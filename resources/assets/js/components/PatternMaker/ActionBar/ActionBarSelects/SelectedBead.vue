@@ -18,18 +18,12 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../../StoredData/PatternValues.js';
+
     export default {
-        props: {
-            bead: {
-                type: Object,
-            },
-            palette: {
-                type: Object,
-            },
-        },
         data: function () {
             return {
-                currentBead: this.bead,
+                currentBead: SavedPattern.actionBarValues.bead,
 
                 beadName: '',
                 beadFinishes: [],
@@ -39,17 +33,6 @@
         mounted() {
         },
         methods: {},
-        watch: {
-          bead: {
-              handler (bead) {
-                  /*
-                  axios.get('/beads/get', {params: {key: bead.key}})
-                      .then(function (response) {
-                          console.log(response);
-                      });*/
-              },
-              deep: true,
-          },
-        },
     }
 </script>
+

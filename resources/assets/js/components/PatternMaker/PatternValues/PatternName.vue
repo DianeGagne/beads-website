@@ -6,15 +6,11 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../StoredData/PatternValues.js';
     export default {
-        props: {
-            patternName: {
-                type: String,
-            },
-        },
         data: function () {
             return {
-                name: this.patternName,
+                name: SavedPattern.patternValues.patternName,
             }
         },
         mounted() {
@@ -23,7 +19,7 @@
         watch: {
             patternName: {
                 handler () {
-                    this.$emit('update:patternName', this.name)
+                    SavedPattern.patternValues.patternName = this.name;
                 },
             }
         }

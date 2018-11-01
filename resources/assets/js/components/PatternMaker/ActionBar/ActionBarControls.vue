@@ -15,16 +15,13 @@
     </div>
 </template>
 <script>
+    import SavedPattern from '../../../StoredData/PatternValues.js';
+
     export default {
-        props: {
-            bead: {
-                type: Object,
-            },
-        },
         data: function () {
             return {
                 //internal variables for controlling the action bar size
-                currentBead: this.bead,
+                currentBead: SavedPattern.actionBarValues.bead,
                 menuWidth: 500,
                 prevLocation: null,
                 hideBead: false,
@@ -33,13 +30,13 @@
         mounted() {
         },
         methods: {
-            dragStart (event){
+            dragStart(event) {
                 this.resize = true;
                 document.addEventListener('mousemove', this.resizeMenu);
                 document.addEventListener('mouseup', this.finishResize);
                 this.prevLocation = event.clientX;
             },
-            resizeMenu (event) {
+            resizeMenu(event) {
                 if (this.resize = true) {
                     let change = this.prevLocation - event.clientX;
                     this.menuWidth = this.menuWidth + change;
@@ -53,7 +50,7 @@
                 }
                 this.prevLocation = event.clientX;
             },
-            finishResize(event){
+            finishResize(event) {
                 document.removeEventListener('mousemove', this.resizeMenu);
                 document.removeEventListener('mouseup', this.finishResize);
                 this.resize = false;
@@ -69,7 +66,7 @@
         },
         watch: {
             menuWidth: {
-                handler (menuWidth) {
+                handler(menuWidth) {
                     this.$emit('update:menuWidth', this.menuWidth)
                 }
             }
