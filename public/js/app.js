@@ -1009,6 +1009,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_js_modal__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_resize__ = __webpack_require__(128);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1051,10 +1054,13 @@ window.Event = new (function () {
 
 
 
+
+
 //import 'vue-resize-handle';
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_js_modal___default.a);
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_nav_tabs___default.a);
+Vue.use(__WEBPACK_IMPORTED_MODULE_4_vue_resize__["a" /* default */]);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -45270,6 +45276,8 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__);
 //
 //
 //
@@ -45305,11 +45313,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
+    components: { ResizeObserver: __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default.a },
     data: function data() {
         return {
             //Read only from the pattern
@@ -45343,7 +45356,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             beadProps: {
                 xIndex: null,
                 yIndex: null
-            }
+            },
+            width: 10,
+            height: 10
         };
     },
 
@@ -45355,6 +45370,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         //resize the canvas
         this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
         this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
+
+        this.width = this.canvasProps.canvas.width;
+        this.height = this.canvasProps.canvas.height;
 
         this.canvasProps.canvasReady = true;
     },
@@ -45370,7 +45388,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-            this.canvasProps.canvasReady = true;
+            this.width = this.canvasProps.canvas.width;
+            this.height = this.canvasProps.canvas.height;
         },
         start: function start(event) {
             this.canvasProps.ctx.beginPath();
@@ -45461,14 +45480,24 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "border": "1px solid black",
       "margin-left": "15px",
       "margin-right": "15px",
-      "width": "100%"
+      "width": "100%",
+      "height": "100%"
+    },
+    attrs: {
+      "id": "canvasContainer"
     }
-  }, [_c('draw-brick-lines', {
+  }, [_c('resize-observer', {
+    on: {
+      "notify": _vm.onResize
+    }
+  }), _vm._v(" "), _c('draw-brick-lines', {
     attrs: {
       "actionBarValues": _vm.actionBarValues,
       "canvasProps": _vm.canvasProps,
       "patternValues": _vm.patternValues,
       "beadMatrix": _vm.updatableMatrix,
+      "canvasWidth": _vm.width,
+      "canvasHeight": _vm.height,
       "displayProps": _vm.displayProps
     },
     on: {
@@ -45584,8 +45613,11 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(3);
 //
 //
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     /**
@@ -45595,13 +45627,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
      */
 
     props: {
-        //We need to be aware & trigger changes when Zoom is updated
-        actionBarValues: {
-            type: Object
-        },
-        patternValues: {
-            type: Object
-        },
         //Update our grid whenever the Canvas changes
         canvasProps: {
             type: Object
@@ -45610,104 +45635,132 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         displayProps: {
             type: Object
         },
-        //Calculate the edges of each bead
-        beadMatrix: {
-            type: Array
+        canvasWidth: {
+            type: Number
+        },
+        canvasHeight: {
+            type: Number
+        }
+    },
+    computed: {
+        //the aspect multiple of a bead is always 1 for the height
+        aspectPatternHeight: function aspectPatternHeight() {
+            return this.beadCountHeight;
+        },
+        //if we are working with not-square beads multiply by the aspect to get the size across
+        aspectPatternWidth: function aspectPatternWidth() {
+            return this.beadCountWidth * this.beadAspect;
+        },
+        //determine if the pattern goes all the way to the height edges or the width edges.
+        //To display the entire pattern on the screen as large as possible one must be true
+        heightLimited: function heightLimited() {
+            var proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
+            var proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
+
+            console.log('height ' + proportionHeightCovered + ' width ' + proportionWidthCovered);
+            if (proportionHeightCovered > proportionWidthCovered) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        displayBeadHeight: function displayBeadHeight() {
+            var baseBeadHeight = 1;
+            //If our pattern takes up more vertical space on our screen than horizontal
+            if (this.heightLimited) {
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var smallestOffsetPossible = this.canvasHeight % this.beadCountHeight / 2;
+
+                //Calculate the bead size - based on the smallest offsets possible & the current zoom
+                baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
+            } else {
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var _smallestOffsetPossible = this.canvasWidth % (this.beadCountWidth * this.beadAspect) / 2;
+
+                var baseBeadWidth = (this.canvasWidth - _smallestOffsetPossible) / (this.beadCountWidth * this.beadAspect);
+                baseBeadHeight = baseBeadWidth / this.beadAspect;
+            }
+
+            //apply the scale factor to the bead size
+            return baseBeadHeight * this.scaleFactor;
+        },
+        displayBeadWidth: function displayBeadWidth() {
+            var baseBeadHeight = 1;
+            var baseBeadWidth = 1;
+            //If our pattern takes up more vertical space on our screen than horizontal
+            if (this.heightLimited) {
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var smallestOffsetPossible = this.canvasHeight % this.beadCountHeight / 2;
+
+                //Calculate the bead size - based on the smallest offsets possible & the current zoom
+                baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
+                baseBeadWidth = baseBeadHeight * this.beadAspect;
+            } else {
+                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                var _smallestOffsetPossible2 = this.canvasWidth % (this.beadCountWidth * this.beadAspect) / 2;
+
+                baseBeadWidth = (this.canvasWidth - _smallestOffsetPossible2) / (this.beadCountWidth * this.beadAspect);
+            }
+
+            //apply the scale factor to the bead size
+            return baseBeadWidth * this.scaleFactor;
+        },
+        totalPatternWidth: function totalPatternWidth() {
+            return this.beadCountWidth * this.displayBeadWidth;
+        },
+        totalPatternHeight: function totalPatternHeight() {
+            return this.beadCountHeight * this.displayBeadHeight;
+        },
+        leftOffset: function leftOffset() {
+            var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
+            return baseOffset + this.horizontalOffset;
+        },
+        topOffset: function topOffset() {
+            var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
+            return baseOffset + this.verticalOffset;
+        },
+        rightOffset: function rightOffset() {
+            var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
+            return baseOffset - this.horizontalOffset;
+        },
+        bottomOffset: function bottomOffset() {
+            var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
+            return baseOffset - this.verticalOffset;
         }
     },
     data: function data() {
         return {
+            actionBarValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues,
+            patternValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues,
+            beadMatrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
             display: this.displayProps,
-            matrix: this.beadMatrix
+            matrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
+            beadCountHeight: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.patternSize.height,
+            beadCountWidth: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.patternSize.width,
+            beadType: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType,
+            beadAspect: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType.beadAspect,
+            scaleFactor: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor,
+            horizontalOffset: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan.horizontal,
+            verticalOffset: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan.vertical
+
         };
     },
     methods: {
-        isHeightLimited: function isHeightLimited() {
-            //Calculate the height * width of the pattern - assuming a bead height of 1 taking into account the bead aspect ratio
-            var beadPatternHeight = this.patternValues.patternSize.height;
-            var beadPatternWidth = this.patternValues.patternSize.width * this.patternValues.beadType.beadAspect;
-
-            //calculate proportionOfCanvas that is covered by th3e pattern
-            var canvasHeightCovered = beadPatternHeight * this.canvasProps.canvas.height;
-            var canvasWidthCovered = beadPatternWidth * this.canvasProps.canvas.width;
-
-            return canvasHeightCovered < canvasWidthCovered;
-        },
-
-        /*
-         * Calculate the bead size given the canvas size & pattern size
-         *
-         * Find the direction the beads will squish off screen first
-         * Then find the largest size the beads can be in that direction - while staying a consistent size
-         * Using that size & the aspect ratio calculate the bead size in the other direction
-         * Multiply everything by the scale offset so we zoom in/out as required
-         */
-        calculateBeadSize: function calculateBeadSize() {
-            var scaleFactor = this.actionBarValues.panZoom.scaleFactor;
-            var beadAspectRatio = this.patternValues.beadType.beadAspect;
-
-            var baseBeadHeight = 1;
-            var baseBeadWidth = 1;
-            //If our pattern takes up more vertical space on our screen than horizontal
-            if (this.isHeightLimited()) {
-                var canvasHeight = this.canvasProps.canvas.height;
-                var gridHeight = this.patternValues.patternSize.height;
-
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var smallestOffsetPossible = canvasHeight % gridHeight / 2;
-
-                //Calculate the bead size - based on the smallest offsets possible & the current zoom
-                baseBeadHeight = (canvasHeight - smallestOffsetPossible) / gridHeight;
-                baseBeadWidth = baseBeadHeight * beadAspectRatio;
-            } else {
-                var canvasWidth = this.canvasProps.canvas.width;
-                var gridWidth = this.patternValues.patternSize.width;
-
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var _smallestOffsetPossible = canvasWidth % (gridWidth * beadAspectRatio) / 2;
-
-                baseBeadWidth = (canvasWidth - _smallestOffsetPossible) / (gridWidth * beadAspectRatio);
-                baseBeadHeight = baseBeadWidth / beadAspectRatio;
-            }
-
-            //apply the scale factor to the bead size
-            this.display.beadHeight = baseBeadHeight * scaleFactor;
-            this.display.beadWidth = baseBeadWidth * scaleFactor;
-        },
-
-
-        calculateOffset: function calculateOffset(canvasWidth, beadsAcross, beadWidth) {
-            var totalPatternWidth = beadsAcross * beadWidth;
-            return (canvasWidth - totalPatternWidth) / 2;
-        },
-
-        /**
-         *  Using the bead sizes, pan & zoom calculate the offset from the sizes of the canvas to
-         *  draw the pattern
-         */
-        calculateOffsets: function calculateOffsets() {
-            var widthOffset = this.calculateOffset(this.canvasProps.canvas.width, this.patternValues.patternSize.width, this.display.beadWidth);
-            var heightOffset = this.calculateOffset(this.canvasProps.canvas.height, this.patternValues.patternSize.height, this.display.beadHeight);
-
-            this.display.leftOffset = widthOffset + this.actionBarValues.panZoom.pan.horizontal;
-            this.display.topOffset = heightOffset + this.actionBarValues.panZoom.pan.vertical;
-            this.display.rightOffset = widthOffset - this.actionBarValues.panZoom.pan.horizontal;
-            this.display.bottomOffset = heightOffset - this.actionBarValues.panZoom.pan.vertical;
-        },
-
         drawHorizontalLines: function drawHorizontalLines() {
             //draw horizontal lines
-            var division = this.display.topOffset;
-            var patternHeight = this.patternValues.patternSize.height;
-            var beadHeight = this.display.beadHeight;
-            var lineStart = this.display.leftOffset;
-            var lineEnd = this.canvasProps.canvas.width - this.display.rightOffset;
+            var division = this.topOffset;
+            var patternHeight = this.beadCountHeight;
+            var beadHeight = this.displayBeadHeight;
+            var lineStart = this.leftOffset;
+            var lineEnd = this.canvasWidth - this.rightOffset;
 
             for (var rowCount = 0; rowCount <= patternHeight; rowCount++) {
+                console.log(lineStart, division);
                 this.canvasProps.ctx.moveTo(lineStart, division);
                 this.canvasProps.ctx.lineTo(lineEnd, division);
 
                 //While drawing the lines, update the borders of the beads within the beadMatrix
+                //todo: store these values in a separate global matrix - it makes rotation difficult
                 if (rowCount < patternHeight) {
                     for (var beadIndex in this.matrix) {
                         if (this.matrix.hasOwnProperty(beadIndex)) {
@@ -45723,17 +45776,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         drawVerticalLines: function drawVerticalLines() {
             //draw vertical
-            var division = this.display.leftOffset;
-            var patternWidth = this.patternValues.patternSize.width;
-            var beadWidth = this.display.beadWidth;
-            var lineStart = this.display.topOffset;
-            var lineEnd = this.canvasProps.canvas.height - this.display.bottomOffset;
+            var division = this.leftOffset;
+            var patternWidth = this.beadCountWidth;
+            var beadWidth = this.displayBeadWidth;
+            var lineStart = this.topOffset;
+            var lineEnd = this.canvasHeight - this.bottomOffset;
 
             for (var columnCount = 0; columnCount <= patternWidth; columnCount++) {
                 this.canvasProps.ctx.moveTo(division, lineStart);
                 this.canvasProps.ctx.lineTo(division, lineEnd);
 
                 //While drawing the lines, update the borders of the beads within the beadMatrix
+                //todo: store this in a separate global values as well
                 if (columnCount < patternWidth) {
                     for (var beadIndex in this.matrix[columnCount]) {
                         if (this.matrix[columnCount].hasOwnProperty(beadIndex)) {
@@ -45748,39 +45802,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         //Draw all beads currently set in the bead matrix as we have just refreshed the screen
-        drawExistingBeads: function drawExistingBeads() {
-
-            for (var xIndex in this.matrix) {
-                if (this.matrix.hasOwnProperty(xIndex)) {
-                    for (var yIndex in this.matrix[xIndex]) {
-                        if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
-                            if (this.matrix[xIndex][yIndex].bead) {
-                                this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
-                                this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
-                            }
-                        }
-                    }
-                }
-            }
-        },
+        //            drawExistingBeads: function () {
+        //
+        //                for (let xIndex in this.matrix) {
+        //                    if (this.matrix.hasOwnProperty(xIndex)) {
+        //                        for (let yIndex in this.matrix[xIndex]) {
+        //                            if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
+        //                                if (this.matrix[xIndex][yIndex].bead) {
+        //                                    this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
+        //                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            },
 
         /**
          * After any change to the pattern, simply erase it and draw a new one from the grid.
          * This destroys all current data on the canvas and redraws a new one with new values.
          */
         drawNewGrid: function drawNewGrid() {
+            console.log('draw new grid');
             this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.canvasProps.ctx.clearRect(0, 0, this.canvasProps.canvas.width, this.canvasProps.canvas.height);
+            this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
             this.canvasProps.ctx.beginPath();
             this.canvasProps.ctx.strokeStyle = 'black';
 
-            //calculate bead size
-            this.calculateBeadSize();
-            this.calculateOffsets();
             this.drawHorizontalLines();
             this.drawVerticalLines();
-            this.drawExistingBeads();
 
             this.canvasProps.ctx.stroke();
             this.$emit('update:displayProps', this.display);
@@ -45788,11 +45839,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     watch: {
-        'actionBarValues.panZoom': {
+        //            'actionBarValues.panZoom': {
+        //                handler: function () {
+        //                    this.drawNewGrid();
+        //                },
+        //                deep: true,
+        //            },
+
+        'canvasWidth': {
             handler: function handler() {
                 this.drawNewGrid();
-            },
-            deep: true
+            }
         },
         'canvasProps.canvasReady': {
             handler: function handler() {
@@ -48430,6 +48487,643 @@ if (false) {
      require("vue-hot-reload-api").rerender("data-v-9474bd98", module.exports)
   }
 }
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(127);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(42)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../css-loader/index.js!./vue-resize.css", function() {
+			var newContent = require("!!../../css-loader/index.js!./vue-resize.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(41)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".resize-observer[data-v-b329ee4c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 128 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* unused harmony export install */
+/* unused harmony export ResizeObserver */
+function getInternetExplorerVersion() {
+	var ua = window.navigator.userAgent;
+
+	var msie = ua.indexOf('MSIE ');
+	if (msie > 0) {
+		// IE 10 or older => return version number
+		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+	}
+
+	var trident = ua.indexOf('Trident/');
+	if (trident > 0) {
+		// IE 11 => return version number
+		var rv = ua.indexOf('rv:');
+		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+	}
+
+	var edge = ua.indexOf('Edge/');
+	if (edge > 0) {
+		// Edge (IE 12+) => return version number
+		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+	}
+
+	// other browser
+	return -1;
+}
+
+var isIE = void 0;
+
+function initCompat() {
+	if (!initCompat.init) {
+		initCompat.init = true;
+		isIE = getInternetExplorerVersion() !== -1;
+	}
+}
+
+var ResizeObserver = { render: function render() {
+		var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "resize-observer", attrs: { "tabindex": "-1" } });
+	}, staticRenderFns: [], _scopeId: 'data-v-b329ee4c',
+	name: 'resize-observer',
+
+	methods: {
+		notify: function notify() {
+			this.$emit('notify');
+		},
+		addResizeHandlers: function addResizeHandlers() {
+			this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.notify);
+			if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
+				this.notify();
+			}
+		},
+		removeResizeHandlers: function removeResizeHandlers() {
+			if (this._resizeObject && this._resizeObject.onload) {
+				if (!isIE && this._resizeObject.contentDocument) {
+					this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.notify);
+				}
+				delete this._resizeObject.onload;
+			}
+		}
+	},
+
+	mounted: function mounted() {
+		var _this = this;
+
+		initCompat();
+		this.$nextTick(function () {
+			_this._w = _this.$el.offsetWidth;
+			_this._h = _this.$el.offsetHeight;
+		});
+		var object = document.createElement('object');
+		this._resizeObject = object;
+		object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+		object.setAttribute('aria-hidden', 'true');
+		object.setAttribute('tabindex', -1);
+		object.onload = this.addResizeHandlers;
+		object.type = 'text/html';
+		if (isIE) {
+			this.$el.appendChild(object);
+		}
+		object.data = 'about:blank';
+		if (!isIE) {
+			this.$el.appendChild(object);
+		}
+	},
+	beforeDestroy: function beforeDestroy() {
+		this.removeResizeHandlers();
+	}
+};
+
+// Install the components
+function install(Vue) {
+	Vue.component('resize-observer', ResizeObserver);
+	/* -- Add more components here -- */
+}
+
+/* -- Plugin definition & Auto-install -- */
+/* You shouldn't have to modify the code below */
+
+// Plugin
+var plugin = {
+	// eslint-disable-next-line no-undef
+	version: "0.4.4",
+	install: install
+};
+
+// Auto-install
+var GlobalVue = null;
+if (typeof window !== 'undefined') {
+	GlobalVue = window.Vue;
+} else if (typeof global !== 'undefined') {
+	GlobalVue = global.Vue;
+}
+if (GlobalVue) {
+	GlobalVue.use(plugin);
+}
+
+
+/* harmony default export */ __webpack_exports__["a"] = (plugin);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(130)
+}
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(134),
+  /* template */
+  __webpack_require__(135),
+  /* styles */
+  injectStyle,
+  /* scopeId */
+  "data-v-8d76b1c8",
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\Diane\\LaravelBeads\\node_modules\\vue-resize\\src\\components\\ResizeObserver.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ResizeObserver.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-8d76b1c8", Component.options)
+  } else {
+    hotAPI.reload("data-v-8d76b1c8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(131);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(132)("67e1dd30", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../css-loader/index.js!../../../vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-8d76b1c8\",\"scoped\":true,\"hasInlineConfig\":true}!../../../vue-loader/lib/selector.js?type=styles&index=0!./ResizeObserver.vue", function() {
+     var newContent = require("!!../../../css-loader/index.js!../../../vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-8d76b1c8\",\"scoped\":true,\"hasInlineConfig\":true}!../../../vue-loader/lib/selector.js?type=styles&index=0!./ResizeObserver.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(41)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.resize-observer[data-v-8d76b1c8] {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tz-index: -1;\n\twidth: 100%;\n\theight: 100%;\n\tborder: none;\n\tbackground-color: transparent;\n\tpointer-events: none;\n\tdisplay: block;\n\toverflow: hidden;\n\topacity: 0;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(133)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 134 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_compatibility__ = __webpack_require__(136);
+//
+//
+//
+//
+
+
+
+var isIE = void 0;
+
+function initCompat() {
+	if (!initCompat.init) {
+		initCompat.init = true;
+		isIE = Object(__WEBPACK_IMPORTED_MODULE_0__utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
+	}
+}
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'resize-observer',
+
+	methods: {
+		notify: function notify() {
+			this.$emit('notify');
+		},
+		addResizeHandlers: function addResizeHandlers() {
+			this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.notify);
+			if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
+				this.notify();
+			}
+		},
+		removeResizeHandlers: function removeResizeHandlers() {
+			if (this._resizeObject && this._resizeObject.onload) {
+				if (!isIE && this._resizeObject.contentDocument) {
+					this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.notify);
+				}
+				delete this._resizeObject.onload;
+			}
+		}
+	},
+
+	mounted: function mounted() {
+		var _this = this;
+
+		initCompat();
+		this.$nextTick(function () {
+			_this._w = _this.$el.offsetWidth;
+			_this._h = _this.$el.offsetHeight;
+		});
+		var object = document.createElement('object');
+		this._resizeObject = object;
+		object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+		object.setAttribute('aria-hidden', 'true');
+		object.setAttribute('tabindex', -1);
+		object.onload = this.addResizeHandlers;
+		object.type = 'text/html';
+		if (isIE) {
+			this.$el.appendChild(object);
+		}
+		object.data = 'about:blank';
+		if (!isIE) {
+			this.$el.appendChild(object);
+		}
+	},
+	beforeDestroy: function beforeDestroy() {
+		this.removeResizeHandlers();
+	}
+});
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "resize-observer",
+    attrs: {
+      "tabindex": "-1"
+    }
+  })
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-8d76b1c8", module.exports)
+  }
+}
+
+/***/ }),
+/* 136 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = getInternetExplorerVersion;
+function getInternetExplorerVersion () {
+	const ua = window.navigator.userAgent
+
+	const msie = ua.indexOf('MSIE ')
+	if (msie > 0) {
+		// IE 10 or older => return version number
+		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10)
+	}
+
+	const trident = ua.indexOf('Trident/')
+	if (trident > 0) {
+		// IE 11 => return version number
+		const rv = ua.indexOf('rv:')
+		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10)
+	}
+
+	const edge = ua.indexOf('Edge/')
+	if (edge > 0) {
+		// Edge (IE 12+) => return version number
+		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10)
+	}
+
+	// other browser
+	return -1
+}
+
 
 /***/ })
 /******/ ]);

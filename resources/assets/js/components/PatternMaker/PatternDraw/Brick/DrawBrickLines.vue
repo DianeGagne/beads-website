@@ -1,6 +1,8 @@
 <template>
 </template>
 <script>
+    import SavedPattern from '../../../../StoredData/PatternValues.js';
+
     export default {
         /**
          * When a brick stitch is selected, determine the size & location of the grid, and draw the background grid (thread)
@@ -9,13 +11,6 @@
          */
 
         props: {
-            //We need to be aware & trigger changes when Zoom is updated
-            actionBarValues: {
-                type: Object,
-            },
-            patternValues: {
-                type: Object,
-            },
             //Update our grid whenever the Canvas changes
             canvasProps: {
                 type: Object,
@@ -24,106 +19,136 @@
             displayProps: {
                 type: Object,
             },
-            //Calculate the edges of each bead
-            beadMatrix: {
-                type: Array,
-            }
-        },
-        data: function () {
-            return {
-                display: this.displayProps,
-                matrix: this.beadMatrix,
-            }
-        },
-        methods: {
-            isHeightLimited: function () {
-                //Calculate the height * width of the pattern - assuming a bead height of 1 taking into account the bead aspect ratio
-                let beadPatternHeight = this.patternValues.patternSize.height;
-                let beadPatternWidth = this.patternValues.patternSize.width * this.patternValues.beadType.beadAspect;
-
-                //calculate proportionOfCanvas that is covered by th3e pattern
-                let canvasHeightCovered = beadPatternHeight * this.canvasProps.canvas.height;
-                let canvasWidthCovered = beadPatternWidth * this.canvasProps.canvas.width;
-
-                return canvasHeightCovered < canvasWidthCovered;
+            canvasWidth: {
+                type: Number,
             },
+            canvasHeight:
+                {
+                    type: Number,
+                },
+        },
+        computed: {
+            //the aspect multiple of a bead is always 1 for the height
+            aspectPatternHeight: function() {
+                return this.beadCountHeight;
+            },
+            //if we are working with not-square beads multiply by the aspect to get the size across
+            aspectPatternWidth: function() {
+                return this.beadCountWidth * this.beadAspect;
+            },
+            //determine if the pattern goes all the way to the height edges or the width edges.
+            //To display the entire pattern on the screen as large as possible one must be true
+            heightLimited: function() {
+                let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
+                let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
 
-            /*
-             * Calculate the bead size given the canvas size & pattern size
-             *
-             * Find the direction the beads will squish off screen first
-             * Then find the largest size the beads can be in that direction - while staying a consistent size
-             * Using that size & the aspect ratio calculate the bead size in the other direction
-             * Multiply everything by the scale offset so we zoom in/out as required
-             */
-            calculateBeadSize() {
-                let scaleFactor = this.actionBarValues.panZoom.scaleFactor;
-                let beadAspectRatio = this.patternValues.beadType.beadAspect;
-
+                console.log('height '+proportionHeightCovered + ' width ' + proportionWidthCovered);
+                if(proportionHeightCovered > proportionWidthCovered){
+                    return true;
+                }else {
+                    return false;
+                }
+            },
+            displayBeadHeight: function() {
                 let baseBeadHeight = 1;
-                let baseBeadWidth = 1;
                 //If our pattern takes up more vertical space on our screen than horizontal
-                if (this.isHeightLimited()) {
-                    let canvasHeight = this.canvasProps.canvas.height;
-                    let gridHeight = this.patternValues.patternSize.height;
-
+                if (this.heightLimited) {
                     //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                    let smallestOffsetPossible = (canvasHeight % gridHeight) / 2;
+                    let smallestOffsetPossible = (this.canvasHeight % this.beadCountHeight) / 2;
 
                     //Calculate the bead size - based on the smallest offsets possible & the current zoom
-                    baseBeadHeight = (canvasHeight - smallestOffsetPossible) / gridHeight;
-                    baseBeadWidth = baseBeadHeight * beadAspectRatio;
+                    baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
                 } else {
-                    let canvasWidth = this.canvasProps.canvas.width;
-                    let gridWidth = this.patternValues.patternSize.width;
-
                     //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                    let smallestOffsetPossible = (canvasWidth % (gridWidth * beadAspectRatio)) / 2;
+                    let smallestOffsetPossible = (this.canvasWidth % (this.beadCountWidth * this.beadAspect)) / 2;
 
-                    baseBeadWidth = (canvasWidth - smallestOffsetPossible) / (gridWidth * beadAspectRatio);
-                    baseBeadHeight = baseBeadWidth / beadAspectRatio;
+                    let baseBeadWidth = (this.canvasWidth - smallestOffsetPossible) / (this.beadCountWidth * this.beadAspect);
+                    baseBeadHeight = baseBeadWidth / this.beadAspect;
                 }
 
                 //apply the scale factor to the bead size
-                this.display.beadHeight = baseBeadHeight * scaleFactor;
-                this.display.beadWidth = baseBeadWidth * scaleFactor;
+                return baseBeadHeight * this.scaleFactor;
             },
+            displayBeadWidth: function() {
+                let baseBeadHeight = 1;
+                let baseBeadWidth = 1;
+                //If our pattern takes up more vertical space on our screen than horizontal
+                if (this.heightLimited) {
+                    //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                    let smallestOffsetPossible = (this.canvasHeight % this.beadCountHeight) / 2;
 
-            calculateOffset: function (canvasWidth, beadsAcross, beadWidth) {
-                let totalPatternWidth = beadsAcross * beadWidth;
-                return (canvasWidth - totalPatternWidth) / 2;
+                    //Calculate the bead size - based on the smallest offsets possible & the current zoom
+                    baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
+                    baseBeadWidth = baseBeadHeight * this.beadAspect;
+                } else {
+                    //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+                    let smallestOffsetPossible = (this.canvasWidth % (this.beadCountWidth * this.beadAspect)) / 2;
+
+                    baseBeadWidth = (this.canvasWidth - smallestOffsetPossible) / (this.beadCountWidth * this.beadAspect);
+                }
+
+                //apply the scale factor to the bead size
+                return baseBeadWidth * this.scaleFactor
             },
-
-            /**
-             *  Using the bead sizes, pan & zoom calculate the offset from the sizes of the canvas to
-             *  draw the pattern
-             */
-            calculateOffsets: function () {
-                let widthOffset = this.calculateOffset(this.canvasProps.canvas.width, this.patternValues.patternSize.width, this.display.beadWidth);
-                let heightOffset = this.calculateOffset(this.canvasProps.canvas.height, this.patternValues.patternSize.height, this.display.beadHeight);
-
-                this.display.leftOffset = widthOffset + this.actionBarValues.panZoom.pan.horizontal;
-                this.display.topOffset = heightOffset + this.actionBarValues.panZoom.pan.vertical;
-                this.display.rightOffset = widthOffset - this.actionBarValues.panZoom.pan.horizontal;
-                this.display.bottomOffset = heightOffset - this.actionBarValues.panZoom.pan.vertical;
+            totalPatternWidth: function() {
+              return this.beadCountWidth * this.displayBeadWidth;
             },
+            totalPatternHeight: function() {
+                return this.beadCountHeight * this.displayBeadHeight;
+            },
+            leftOffset: function() {
+                let baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
+                return baseOffset + this.horizontalOffset;
+            },
+            topOffset: function() {
+                let baseOffset =(this.canvasHeight - this.totalPatternHeight) / 2;
+                return baseOffset + this.verticalOffset;
+            },
+            rightOffset: function() {
+                let baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
+                return baseOffset - this.horizontalOffset;
+            },
+            bottomOffset: function() {
+                let baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
+                return baseOffset - this.verticalOffset;
+            },
+        },
+        data: function () {
+            return {
+                actionBarValues: SavedPattern.actionBarValues,
+                patternValues: SavedPattern.patternValues,
+                beadMatrix: SavedPattern.beadMatrix,
+                display: this.displayProps,
+                matrix: SavedPattern.beadMatrix,
+                beadCountHeight: SavedPattern.patternValues.patternSize.height,
+                beadCountWidth: SavedPattern.patternValues.patternSize.width,
+                beadType: SavedPattern.patternValues.beadType,
+                beadAspect: SavedPattern.patternValues.beadType.beadAspect,
+                scaleFactor: SavedPattern.actionBarValues.panZoom.scaleFactor,
+                horizontalOffset : SavedPattern.actionBarValues.panZoom.pan.horizontal,
+                verticalOffset: SavedPattern.actionBarValues.panZoom.pan.vertical,
 
+            }
+        },
+        methods: {
             drawHorizontalLines: function () {
                 //draw horizontal lines
-                let division = this.display.topOffset;
-                let patternHeight = this.patternValues.patternSize.height;
-                let beadHeight = this.display.beadHeight;
-                let lineStart = this.display.leftOffset;
-                let lineEnd = this.canvasProps.canvas.width - this.display.rightOffset;
+                let division = this.topOffset;
+                let patternHeight = this.beadCountHeight;
+                let beadHeight = this.displayBeadHeight;
+                let lineStart = this.leftOffset;
+                let lineEnd = this.canvasWidth - this.rightOffset;
 
                 for (let rowCount = 0; rowCount <= patternHeight; rowCount++) {
+                    console.log(lineStart, division);
                     this.canvasProps.ctx.moveTo(lineStart, division);
                     this.canvasProps.ctx.lineTo(lineEnd, division);
 
                     //While drawing the lines, update the borders of the beads within the beadMatrix
+                    //todo: store these values in a separate global matrix - it makes rotation difficult
                     if (rowCount < patternHeight) {
                         for (let beadIndex in this.matrix) {
-                            if(this.matrix.hasOwnProperty(beadIndex)) {
+                            if (this.matrix.hasOwnProperty(beadIndex)) {
                                 this.matrix[beadIndex][rowCount].topBound = division;
                                 this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
                             }
@@ -136,20 +161,21 @@
 
             drawVerticalLines: function () {
                 //draw vertical
-                let division = this.display.leftOffset;
-                let patternWidth = this.patternValues.patternSize.width;
-                let beadWidth = this.display.beadWidth;
-                let lineStart = this.display.topOffset;
-                let lineEnd = this.canvasProps.canvas.height - this.display.bottomOffset;
+                let division = this.leftOffset;
+                let patternWidth = this.beadCountWidth;
+                let beadWidth = this.displayBeadWidth;
+                let lineStart = this.topOffset;
+                let lineEnd = this.canvasHeight - this.bottomOffset;
 
                 for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
                     this.canvasProps.ctx.moveTo(division, lineStart);
                     this.canvasProps.ctx.lineTo(division, lineEnd);
 
                     //While drawing the lines, update the borders of the beads within the beadMatrix
+                    //todo: store this in a separate global values as well
                     if (columnCount < patternWidth) {
                         for (let beadIndex in this.matrix[columnCount]) {
-                            if(this.matrix[columnCount].hasOwnProperty(beadIndex)) {
+                            if (this.matrix[columnCount].hasOwnProperty(beadIndex)) {
                                 this.matrix[columnCount][beadIndex].leftBound = division;
                                 this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
                             }
@@ -161,39 +187,37 @@
             },
 
             //Draw all beads currently set in the bead matrix as we have just refreshed the screen
-            drawExistingBeads: function() {
-
-                for(let xIndex in this.matrix){
-                    if(this.matrix.hasOwnProperty(xIndex)) {
-                        for (let yIndex in this.matrix[xIndex]) {
-                            if(this.matrix[xIndex].hasOwnProperty(yIndex)) {
-                                if (this.matrix[xIndex][yIndex].bead) {
-                                    this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
-                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
-                                }
-                            }
-                        }
-                    }
-                }
-            },
+//            drawExistingBeads: function () {
+//
+//                for (let xIndex in this.matrix) {
+//                    if (this.matrix.hasOwnProperty(xIndex)) {
+//                        for (let yIndex in this.matrix[xIndex]) {
+//                            if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
+//                                if (this.matrix[xIndex][yIndex].bead) {
+//                                    this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
+//                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            },
 
             /**
              * After any change to the pattern, simply erase it and draw a new one from the grid.
              * This destroys all current data on the canvas and redraws a new one with new values.
              */
             drawNewGrid: function () {
+                console.log('draw new grid');
                 this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                this.canvasProps.ctx.clearRect(0, 0, this.canvasProps.canvas.width, this.canvasProps.canvas.height);
+                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
                 this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
                 this.canvasProps.ctx.beginPath();
                 this.canvasProps.ctx.strokeStyle = 'black';
 
-                //calculate bead size
-                this.calculateBeadSize();
-                this.calculateOffsets();
+
                 this.drawHorizontalLines();
                 this.drawVerticalLines();
-                this.drawExistingBeads();
 
                 this.canvasProps.ctx.stroke();
                 this.$emit('update:displayProps', this.display);
@@ -201,11 +225,17 @@
             },
         },
         watch: {
-            'actionBarValues.panZoom': {
+//            'actionBarValues.panZoom': {
+//                handler: function () {
+//                    this.drawNewGrid();
+//                },
+//                deep: true,
+//            },
+
+            'canvasWidth': {
                 handler: function () {
-                    this.drawNewGrid();
-                },
-                deep: true,
+this.drawNewGrid();
+                }
             },
             'canvasProps.canvasReady': {
                 handler: function () {
@@ -214,8 +244,8 @@
                 deep: true,
             },
             'actionBarValues.signals.redraw': {
-                handler: function() {
-                    if(this.actionBarValues.signals.redraw) {
+                handler: function () {
+                    if (this.actionBarValues.signals.redraw) {
                         console.log('draw new grid!');
                         this.drawNewGrid();
                         this.actionBarValues.signals.redraw = false;
@@ -224,7 +254,7 @@
                 }
             },
             'beadMatrix': {
-                handler: function() {
+                handler: function () {
                     this.matrix = this.beadMatrix;
                 }
             }

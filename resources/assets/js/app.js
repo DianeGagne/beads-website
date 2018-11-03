@@ -26,10 +26,13 @@ window.Event = new class {
 import VueTabs from 'vue-nav-tabs';
 import 'vue-nav-tabs/themes/vue-tabs.css';
 import vmodal from 'vue-js-modal';
+import 'vue-resize/dist/vue-resize.css';
+import VueResize from 'vue-resize';
 //import 'vue-resize-handle';
 
 Vue.use(vmodal)
 Vue.use(VueTabs);
+Vue.use(VueResize);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

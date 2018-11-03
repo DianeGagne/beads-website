@@ -1,10 +1,13 @@
 <template>
-    <div class="canvasBlock" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%;">
+    <div class="canvasBlock" id="canvasContainer" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%; height: 100%">
+        <resize-observer @notify="onResize"></resize-observer>
         <draw-brick-lines
                 :actionBarValues="actionBarValues"
                 :canvasProps="canvasProps"
                 :patternValues="patternValues"
                 :beadMatrix.sync="updatableMatrix"
+                :canvasWidth="width"
+                :canvasHeight="height"
                 :displayProps.sync="displayProps">
         </draw-brick-lines>
 
@@ -36,9 +39,11 @@
 <script>
 
     import SavedPattern from '../../StoredData/PatternValues.js';
+    import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
     export default {
 
 
+        components: {ResizeObserver},
         data: function () {
             return {
                 //Read only from the pattern
@@ -73,6 +78,8 @@
                     xIndex: null,
                     yIndex: null,
                 },
+                width:10,
+                height:10,
             }
         },
 
@@ -84,6 +91,9 @@
             //resize the canvas
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
+
+            this.width = this.canvasProps.canvas.width;
+            this.height = this.canvasProps.canvas.height;
 
             this.canvasProps.canvasReady = true;
         },
@@ -98,7 +108,9 @@
                 this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
                 this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-                this.canvasProps.canvasReady = true;
+                this.width = this.canvasProps.canvas.width;
+                this.height = this.canvasProps.canvas.height;
+
             },
             start: function (event) {
                 this.canvasProps.ctx.beginPath();
