@@ -2,6 +2,7 @@
 </template>
 <script>
     import SavedPattern from '../../../../StoredData/PatternValues.js';
+    import CanvasLocations from '../../../../StoredData/CanvasLocations.js';
 
     export default {
         /**
@@ -27,29 +28,45 @@
                     type: Number,
                 },
         },
+        data: function () {
+            return {
+                actionBarValues: SavedPattern.actionBarValues,
+                patternValues: SavedPattern.patternValues,
+                beadMatrix: SavedPattern.beadMatrix,
+                display: this.displayProps,
+                matrix: SavedPattern.beadMatrix,
+                beadCountHeight: SavedPattern.patternValues.patternSize.height,
+                beadCountWidth: SavedPattern.patternValues.patternSize.width,
+                beadType: SavedPattern.patternValues.beadType,
+                beadAspect: SavedPattern.patternValues.beadType.beadAspect,
+                scaleFactor: SavedPattern.actionBarValues.panZoom.scaleFactor,
+                horizontalOffset: SavedPattern.actionBarValues.panZoom.pan.horizontal,
+                verticalOffset: SavedPattern.actionBarValues.panZoom.pan.vertical,
+                locations: CanvasLocations,
+            }
+        },
         computed: {
             //the aspect multiple of a bead is always 1 for the height
-            aspectPatternHeight: function() {
+            aspectPatternHeight: function () {
                 return this.beadCountHeight;
             },
             //if we are working with not-square beads multiply by the aspect to get the size across
-            aspectPatternWidth: function() {
+            aspectPatternWidth: function () {
                 return this.beadCountWidth * this.beadAspect;
             },
             //determine if the pattern goes all the way to the height edges or the width edges.
             //To display the entire pattern on the screen as large as possible one must be true
-            heightLimited: function() {
+            heightLimited: function () {
                 let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
                 let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
 
-                console.log('height '+proportionHeightCovered + ' width ' + proportionWidthCovered);
-                if(proportionHeightCovered > proportionWidthCovered){
+                if (proportionHeightCovered > proportionWidthCovered) {
                     return true;
-                }else {
+                } else {
                     return false;
                 }
             },
-            displayBeadHeight: function() {
+            displayBeadHeight: function () {
                 let baseBeadHeight = 1;
                 //If our pattern takes up more vertical space on our screen than horizontal
                 if (this.heightLimited) {
@@ -67,9 +84,10 @@
                 }
 
                 //apply the scale factor to the bead size
-                return baseBeadHeight * this.scaleFactor;
+                this.locations.rowHeight = baseBeadHeight * this.scaleFactor;
+                return this.locations.rowHeight;
             },
-            displayBeadWidth: function() {
+            displayBeadWidth: function () {
                 let baseBeadHeight = 1;
                 let baseBeadWidth = 1;
                 //If our pattern takes up more vertical space on our screen than horizontal
@@ -88,48 +106,39 @@
                 }
 
                 //apply the scale factor to the bead size
-                return baseBeadWidth * this.scaleFactor
+                this.locations.columnWidth = baseBeadWidth * this.scaleFactor
+                return this.locations.columnWidth;
             },
-            totalPatternWidth: function() {
-              return this.beadCountWidth * this.displayBeadWidth;
+            totalPatternWidth: function () {
+                this.locations.pixelWidth = this.beadCountWidth * this.displayBeadWidth;
+                return this.locations.pixelWidth;
             },
-            totalPatternHeight: function() {
-                return this.beadCountHeight * this.displayBeadHeight;
+            totalPatternHeight: function () {
+                this.locations.pixelHeight = this.beadCountHeight * this.displayBeadHeight;
+                return this.locations.pixelHeight;
             },
-            leftOffset: function() {
+            leftOffset: function () {
                 let baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-                return baseOffset + this.horizontalOffset;
+                this.locations.leftOffset = baseOffset + this.horizontalOffset;
+                return this.locations.leftOffset;
             },
-            topOffset: function() {
-                let baseOffset =(this.canvasHeight - this.totalPatternHeight) / 2;
-                return baseOffset + this.verticalOffset;
-            },
-            rightOffset: function() {
-                let baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-                return baseOffset - this.horizontalOffset;
-            },
-            bottomOffset: function() {
+            topOffset: function () {
                 let baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
-                return baseOffset - this.verticalOffset;
+                this.locations.topOffset = baseOffset + this.verticalOffset;
+                return this.locations.topOffset;
+            },
+            rightOffset: function () {
+                let baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
+                this.locations.rightOffset = baseOffset - this.horizontalOffset;
+                return this.locations.rightOffset;
+            },
+            bottomOffset: function () {
+                let baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
+                this.locations.bottomOffset = baseOffset - this.verticalOffset;
+                return this.locations.bottomOffset;
             },
         },
-        data: function () {
-            return {
-                actionBarValues: SavedPattern.actionBarValues,
-                patternValues: SavedPattern.patternValues,
-                beadMatrix: SavedPattern.beadMatrix,
-                display: this.displayProps,
-                matrix: SavedPattern.beadMatrix,
-                beadCountHeight: SavedPattern.patternValues.patternSize.height,
-                beadCountWidth: SavedPattern.patternValues.patternSize.width,
-                beadType: SavedPattern.patternValues.beadType,
-                beadAspect: SavedPattern.patternValues.beadType.beadAspect,
-                scaleFactor: SavedPattern.actionBarValues.panZoom.scaleFactor,
-                horizontalOffset : SavedPattern.actionBarValues.panZoom.pan.horizontal,
-                verticalOffset: SavedPattern.actionBarValues.panZoom.pan.vertical,
 
-            }
-        },
         methods: {
             drawHorizontalLines: function () {
                 //draw horizontal lines
@@ -139,21 +148,21 @@
                 let lineStart = this.leftOffset;
                 let lineEnd = this.canvasWidth - this.rightOffset;
 
+                this.locations.rowStarts = [];
                 for (let rowCount = 0; rowCount <= patternHeight; rowCount++) {
-                    console.log(lineStart, division);
                     this.canvasProps.ctx.moveTo(lineStart, division);
                     this.canvasProps.ctx.lineTo(lineEnd, division);
-
+                    this.locations.addRow(division);
                     //While drawing the lines, update the borders of the beads within the beadMatrix
                     //todo: store these values in a separate global matrix - it makes rotation difficult
-                    if (rowCount < patternHeight) {
-                        for (let beadIndex in this.matrix) {
-                            if (this.matrix.hasOwnProperty(beadIndex)) {
-                                this.matrix[beadIndex][rowCount].topBound = division;
-                                this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
-                            }
-                        }
-                    }
+//                    if (rowCount < patternHeight) {
+//                        for (let beadIndex in this.matrix) {
+//                            if (this.matrix.hasOwnProperty(beadIndex)) {
+//                                this.matrix[beadIndex][rowCount].topBound = division;
+//                                this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
+//                            }
+//                        }
+//                    }
 
                     division += beadHeight;
                 }
@@ -167,20 +176,21 @@
                 let lineStart = this.topOffset;
                 let lineEnd = this.canvasHeight - this.bottomOffset;
 
+                this.locations.columnStarts = [];
                 for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
                     this.canvasProps.ctx.moveTo(division, lineStart);
                     this.canvasProps.ctx.lineTo(division, lineEnd);
-
+                    this.locations.addColumn(division);
                     //While drawing the lines, update the borders of the beads within the beadMatrix
                     //todo: store this in a separate global values as well
-                    if (columnCount < patternWidth) {
-                        for (let beadIndex in this.matrix[columnCount]) {
-                            if (this.matrix[columnCount].hasOwnProperty(beadIndex)) {
-                                this.matrix[columnCount][beadIndex].leftBound = division;
-                                this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
-                            }
-                        }
-                    }
+//                    if (columnCount < patternWidth) {
+//                        for (let beadIndex in this.matrix[columnCount]) {
+//                            if (this.matrix[columnCount].hasOwnProperty(beadIndex)) {
+//                                this.matrix[columnCount][beadIndex].leftBound = division;
+//                                this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
+//                            }
+//                        }
+//                    }
 
                     division += beadWidth;
                 }
@@ -195,7 +205,8 @@
 //                            if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
 //                                if (this.matrix[xIndex][yIndex].bead) {
 //                                    this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
-//                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound, this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
+//                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound,
+// this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
 //                                }
 //                            }
 //                        }
@@ -208,7 +219,6 @@
              * This destroys all current data on the canvas and redraws a new one with new values.
              */
             drawNewGrid: function () {
-                console.log('draw new grid');
                 this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
                 this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
                 this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
@@ -234,7 +244,7 @@
 
             'canvasWidth': {
                 handler: function () {
-this.drawNewGrid();
+                    this.drawNewGrid();
                 }
             },
             'canvasProps.canvasReady': {
@@ -246,7 +256,6 @@ this.drawNewGrid();
             'actionBarValues.signals.redraw': {
                 handler: function () {
                     if (this.actionBarValues.signals.redraw) {
-                        console.log('draw new grid!');
                         this.drawNewGrid();
                         this.actionBarValues.signals.redraw = false;
                         this.$emit('update:actionBarValues', this.actionBarValues);

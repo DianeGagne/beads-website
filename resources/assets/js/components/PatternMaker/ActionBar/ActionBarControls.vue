@@ -28,6 +28,7 @@
             }
         },
         mounted() {
+            SavedPattern.updateCanvas = true;
         },
         methods: {
             dragStart(event) {
@@ -54,15 +55,19 @@
                 document.removeEventListener('mousemove', this.resizeMenu);
                 document.removeEventListener('mouseup', this.finishResize);
                 this.resize = false;
+                SavedPattern.updateCanvas = true;
             },
             close: function () {
                 this.menuWidth = 0;
                 this.hideBead = true;
+                SavedPattern.updateCanvas = true;
             },
             open: function () {
                 this.menuWidth = 500;
                 this.hideBead = false;
+                SavedPattern.updateCanvas = true;
             },
+
         },
         watch: {
             menuWidth: {

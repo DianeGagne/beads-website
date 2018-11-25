@@ -54,6 +54,7 @@ Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas
 Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
 Vue.component('pattern-signals', require('./components/PatternMaker/PatternDraw/PatternSignals.vue'));
+Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
 
 Vue.component('action-bar', require('./components/PatternMaker/ActionBar/ActionBar.vue'));
 Vue.component('action-bar-controls', require('./components/PatternMaker/ActionBar/ActionBarControls.vue'));

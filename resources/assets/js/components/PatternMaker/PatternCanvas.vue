@@ -1,5 +1,7 @@
 <template>
-    <div class="canvasBlock" id="canvasContainer" style="border: 1px solid black; margin-left:15px; margin-right:15px; width:100%; height: 100%">
+    <div class="canvasBlock" id="canvasContainer"
+         style="border: 1px solid black; height: 100%"
+    >
         <resize-observer @notify="onResize"></resize-observer>
         <draw-brick-lines
                 :actionBarValues="actionBarValues"
@@ -26,6 +28,19 @@
                 :signals.sync="actionBarValues.signals">
         </pattern-signals>
 
+        <div v-for="(column, columnIndex) in updatableMatrix">
+            <div v-for="(row, rowIndex) in column">
+                <bead
+                        :left="locations.columnStarts[columnIndex]"
+                        :top="locations.rowStarts[rowIndex]"
+                        :height="locations.rowHeight"
+                        :width="locations.columnWidth"
+                        :canvasProps="canvasProps"
+                        :bead="updatableMatrix[columnIndex][rowIndex]">
+                </bead>
+            </div>
+        </div>
+
         <canvas
                 id="canvas" style="width:100%; height:100%;"
                 @mousedown="start"
@@ -40,13 +55,14 @@
 
     import SavedPattern from '../../StoredData/PatternValues.js';
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
+    import CanvasLocations from '../../StoredData/CanvasLocations.js';
+
     export default {
-
-
         components: {ResizeObserver},
         data: function () {
             return {
                 //Read only from the pattern
+                locations: CanvasLocations,
                 beadPalette: SavedPattern.palette,
                 updatableMatrix: SavedPattern.beadMatrix,
                 patternValues: SavedPattern.patternValues,
@@ -78,8 +94,8 @@
                     xIndex: null,
                     yIndex: null,
                 },
-                width:10,
-                height:10,
+                width: 10,
+                height: 10,
             }
         },
 
@@ -99,6 +115,40 @@
         },
         beforeDestroy: function () {
             window.removeEventListener('resize', this.onResize);
+        },
+        computed: {
+            mouseIsInPattern: function () {
+                return this.mouseY > this.locations.topOffset
+                    && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
+                    && this.mouseX > this.locations.leftOffset
+                    && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
+
+            },
+            mouseRow: function () {
+                if(!this.mouseIsInPattern)
+                    return null;
+                for (let index in this.locations.rowStarts) {
+                    if (this.mouseY < this.locations.rowStarts[index]) {
+                        return index - 1;
+                    }
+                }
+            },
+            mouseColumn: function () {
+                if(!this.mouseIsInPattern)
+                    return null;
+                for (let index in this.locations.columnStarts) {
+                    if (this.mouseX < this.locations.columnStarts[index]) {
+                        return index - 1;
+                    }
+                }
+            },
+
+            mouseX: function () {
+                return this.mouseProps.currX - this.canvasProps.canvas.offsetLeft;
+            },
+            mouseY: function () {
+                return this.mouseProps.currY - this.canvasProps.canvas.offsetTop;
+            }
         },
         methods: {
             /**
@@ -147,13 +197,15 @@
                 this.mouseProps.drag = false;
             },
             drawBead: function () {
-                this.canvasProps.ctx.fillStyle = this.actionBarValues.bead.color;
-                if (this.beadProps.xIndex === null)
+                if (!this.mouseIsInPattern)
                     return;
 
-                let matrixValue = this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex];
-                this.canvasProps.ctx.fillRect(matrixValue.leftBound, matrixValue.topBound, matrixValue.rightBound - matrixValue.leftBound, matrixValue.bottomBound - matrixValue.topBound);
-                this.updatableMatrix[this.beadProps.xIndex][this.beadProps.yIndex].bead = this.actionBarValues.bead;
+                const newRow = this.updatableMatrix[this.mouseColumn].slice(0);
+
+                this.$set(newRow[this.mouseRow], 'bead', this.actionBarValues.bead);
+                this.$set(this.updatableMatrix, this.mouseColumn, newRow);
+                //this.updatableMatrix[this.mouseColumn][this.mouseRow].bead = this.actionBarValues.bead;
+                console.log(this.updatableMatrix);
             },
             save: function () {
                 axios.post('/pattern/save', {
@@ -182,13 +234,18 @@
             },
             'updatableMatrix': {
                 handler: function () {
-                    console.log('bead matrix updated');
-                    console.log(this.updatableMatrix);
                     this.$emit('update:beadMatrix', this.updatableMatrix);
 //                    this.updatableMatrix = this.beadMatrix;
                 },
                 deep: true,
             },
+
+            'SavedPattern.updateCanvas': {
+                handler: function() {
+                  //  console.log('on resize called');
+                   // this.onResize();
+                }
+            }
         }
     }
 </script>
