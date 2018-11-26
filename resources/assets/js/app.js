@@ -26,13 +26,9 @@ window.Event = new class {
 import VueTabs from 'vue-nav-tabs';
 import 'vue-nav-tabs/themes/vue-tabs.css';
 import vmodal from 'vue-js-modal';
-import 'vue-resize/dist/vue-resize.css';
-import VueResize from 'vue-resize';
-//import 'vue-resize-handle';
 
 Vue.use(vmodal)
 Vue.use(VueTabs);
-Vue.use(VueResize);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -50,12 +46,6 @@ Vue.component('patternmaker', require('./components/PatternMaker/PatternMaker.vu
 Vue.component('new-pattern', require('./components/PatternMaker/Modals/NewPattern.vue'));
 Vue.component('update-pattern', require('./components/PatternMaker/Modals/UpdatePattern.vue'));
 
-Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
-Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
-Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
-Vue.component('pattern-signals', require('./components/PatternMaker/PatternDraw/PatternSignals.vue'));
-Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
-
 Vue.component('action-bar', require('./components/PatternMaker/ActionBar/ActionBar.vue'));
 Vue.component('action-bar-controls', require('./components/PatternMaker/ActionBar/ActionBarControls.vue'));
 Vue.component('color-section', require('./components/PatternMaker/ActionBar/ActionBarSelects/ColorSection/ColorSection.vue'));
@@ -66,12 +56,17 @@ Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSele
 Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelects/Pan.vue'));
 Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue'));
 
+Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
+Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
+Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
+Vue.component('pattern-signals', require('./components/PatternMaker/PatternDraw/PatternSignals.vue'));
+Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
+
 Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));
 Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/PatternType.vue'));
 Vue.component('bead-type', require('./components/PatternMaker/PatternValues/BeadType.vue'));
 Vue.component('pattern-size', require('./components/PatternMaker/PatternValues/PatternSize.vue'));
 
-Vue.component("resizer", require("vue-resize-handle/unidirectional"));
 
 
 const pattern = new Vue({

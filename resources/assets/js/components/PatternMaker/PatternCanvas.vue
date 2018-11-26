@@ -1,8 +1,7 @@
 <template>
     <div class="canvasBlock" id="canvasContainer"
          style="border: 1px solid black; height: 100%"
-    >
-        <resize-observer @notify="onResize"></resize-observer>
+    @notify="onResize">
         <draw-brick-lines
                 :actionBarValues="actionBarValues"
                 :canvasProps="canvasProps"
@@ -56,6 +55,16 @@
     import SavedPattern from '../../StoredData/PatternValues.js';
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
     import CanvasLocations from '../../StoredData/CanvasLocations.js';
+    import { getInternetExplorerVersion } from '../../../../../node_modules/vue-resize/src/utils/compatibility'
+
+    let isIE;
+
+    function initCompat () {
+        if (!initCompat.init) {
+            initCompat.init = true
+            isIE = getInternetExplorerVersion() !== -1
+        }
+    }
 
     export default {
         components: {ResizeObserver},
@@ -100,21 +109,34 @@
         },
 
         mounted() {
+            initCompat();
+            this.$nextTick(() => {
+                this._w = this.$el.offsetWidth
+                this._h = this.$el.offsetHeight
+            });
+            const object = document.createElement('object');
+            this._resizeObject = object;
+            object.setAttribute('style', 'display: block; top: 0; left: 0; height: 0%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+            object.setAttribute('aria-hidden', 'true');
+            object.setAttribute('tabindex', -1);
+            object.onload = this.addResizeHandlers;
+            object.type = 'text/html';
+            if (isIE) {
+                this.$el.appendChild(object)
+            }
+            object.data = 'about:blank'
+            if (!isIE) {
+                this.$el.appendChild(object)
+            }
 
             this.canvasProps.canvas = document.getElementById('canvas');
             this.canvasProps.ctx = this.canvasProps.canvas.getContext('2d');
 
-            //resize the canvas
-            this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
-            this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
-
-            this.width = this.canvasProps.canvas.width;
-            this.height = this.canvasProps.canvas.height;
-
-            this.canvasProps.canvasReady = true;
+            this.onResize();
         },
         beforeDestroy: function () {
-            window.removeEventListener('resize', this.onResize);
+            this.removeResizeHandlers();
+            window.removeEventListener('resize', this.onResize());
         },
         computed: {
             mouseIsInPattern: function () {
@@ -154,14 +176,28 @@
             /**
              * Changing the size of the canvas
              */
+            addResizeHandlers () {
+                this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.onResize);
+                if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
+                    this.onResize()
+                }
+            },
+            removeResizeHandlers () {
+                if (this._resizeObject && this._resizeObject.onload) {
+                    if (!isIE && this._resizeObject.contentDocument) {
+                        this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.onResize);
+                    }
+                    delete this._resizeObject.onload
+                }
+            },
             onResize: function () {
                 this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
                 this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
                 this.width = this.canvasProps.canvas.width;
                 this.height = this.canvasProps.canvas.height;
-
             },
+
             start: function (event) {
                 this.canvasProps.ctx.beginPath();
 
@@ -204,8 +240,6 @@
 
                 this.$set(newRow[this.mouseRow], 'bead', this.actionBarValues.bead);
                 this.$set(this.updatableMatrix, this.mouseColumn, newRow);
-                //this.updatableMatrix[this.mouseColumn][this.mouseRow].bead = this.actionBarValues.bead;
-                console.log(this.updatableMatrix);
             },
             save: function () {
                 axios.post('/pattern/save', {

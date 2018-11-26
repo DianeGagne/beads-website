@@ -22,7 +22,7 @@
 
         data: function () {
             return {
-                menuWidth: 500,
+                menuWidth: 0,
             }
         },
 

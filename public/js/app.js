@@ -18521,9 +18521,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_js_modal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vue_resize_dist_vue_resize_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_resize__ = __webpack_require__(48);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -18567,12 +18564,8 @@ window.Event = new (function () {
 
 
 
-
-//import 'vue-resize-handle';
-
 Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_js_modal___default.a);
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_nav_tabs___default.a);
-Vue.use(__WEBPACK_IMPORTED_MODULE_4_vue_resize__["a" /* default */]);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -18589,12 +18582,6 @@ Vue.component('patternmaker', __webpack_require__(58));
 Vue.component('new-pattern', __webpack_require__(61));
 Vue.component('update-pattern', __webpack_require__(64));
 
-Vue.component('pattern-canvas', __webpack_require__(67));
-Vue.component('draw-brick-lines', __webpack_require__(78));
-Vue.component('brick-bead-calc', __webpack_require__(81));
-Vue.component('pattern-signals', __webpack_require__(84));
-Vue.component('bead', __webpack_require__(87));
-
 Vue.component('action-bar', __webpack_require__(90));
 Vue.component('action-bar-controls', __webpack_require__(93));
 Vue.component('color-section', __webpack_require__(96));
@@ -18605,12 +18592,16 @@ Vue.component('zoom', __webpack_require__(110));
 Vue.component('pan', __webpack_require__(113));
 Vue.component('undo', __webpack_require__(116));
 
+Vue.component('pattern-canvas', __webpack_require__(67));
+Vue.component('draw-brick-lines', __webpack_require__(78));
+Vue.component('brick-bead-calc', __webpack_require__(81));
+Vue.component('pattern-signals', __webpack_require__(84));
+Vue.component('bead', __webpack_require__(87));
+
 Vue.component('pattern-name', __webpack_require__(119));
 Vue.component('pattern-type', __webpack_require__(122));
 Vue.component('bead-type', __webpack_require__(125));
 Vue.component('pattern-size', __webpack_require__(128));
-
-Vue.component("resizer", __webpack_require__(131));
 
 var pattern = new Vue({
     el: '#pattern'
@@ -43880,178 +43871,9 @@ module.exports = function (css) {
 });
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(47);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(12)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!./vue-resize.css", function() {
-			var newContent = require("!!../../css-loader/index.js!./vue-resize.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(5)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, ".resize-observer[data-v-b329ee4c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}", ""]);
-
-// exports
-
-
-/***/ }),
-/* 48 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/* unused harmony export install */
-/* unused harmony export ResizeObserver */
-function getInternetExplorerVersion() {
-	var ua = window.navigator.userAgent;
-
-	var msie = ua.indexOf('MSIE ');
-	if (msie > 0) {
-		// IE 10 or older => return version number
-		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-	}
-
-	var trident = ua.indexOf('Trident/');
-	if (trident > 0) {
-		// IE 11 => return version number
-		var rv = ua.indexOf('rv:');
-		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-	}
-
-	var edge = ua.indexOf('Edge/');
-	if (edge > 0) {
-		// Edge (IE 12+) => return version number
-		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-	}
-
-	// other browser
-	return -1;
-}
-
-var isIE = void 0;
-
-function initCompat() {
-	if (!initCompat.init) {
-		initCompat.init = true;
-		isIE = getInternetExplorerVersion() !== -1;
-	}
-}
-
-var ResizeObserver = { render: function render() {
-		var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "resize-observer", attrs: { "tabindex": "-1" } });
-	}, staticRenderFns: [], _scopeId: 'data-v-b329ee4c',
-	name: 'resize-observer',
-
-	methods: {
-		notify: function notify() {
-			this.$emit('notify');
-		},
-		addResizeHandlers: function addResizeHandlers() {
-			this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.notify);
-			if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
-				this.notify();
-			}
-		},
-		removeResizeHandlers: function removeResizeHandlers() {
-			if (this._resizeObject && this._resizeObject.onload) {
-				if (!isIE && this._resizeObject.contentDocument) {
-					this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.notify);
-				}
-				delete this._resizeObject.onload;
-			}
-		}
-	},
-
-	mounted: function mounted() {
-		var _this = this;
-
-		initCompat();
-		this.$nextTick(function () {
-			_this._w = _this.$el.offsetWidth;
-			_this._h = _this.$el.offsetHeight;
-		});
-		var object = document.createElement('object');
-		this._resizeObject = object;
-		object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
-		object.setAttribute('aria-hidden', 'true');
-		object.setAttribute('tabindex', -1);
-		object.onload = this.addResizeHandlers;
-		object.type = 'text/html';
-		if (isIE) {
-			this.$el.appendChild(object);
-		}
-		object.data = 'about:blank';
-		if (!isIE) {
-			this.$el.appendChild(object);
-		}
-	},
-	beforeDestroy: function beforeDestroy() {
-		this.removeResizeHandlers();
-	}
-};
-
-// Install the components
-function install(Vue) {
-	Vue.component('resize-observer', ResizeObserver);
-	/* -- Add more components here -- */
-}
-
-/* -- Plugin definition & Auto-install -- */
-/* You shouldn't have to modify the code below */
-
-// Plugin
-var plugin = {
-	// eslint-disable-next-line no-undef
-	version: "0.4.4",
-	install: install
-};
-
-// Auto-install
-var GlobalVue = null;
-if (typeof window !== 'undefined') {
-	GlobalVue = window.Vue;
-} else if (typeof global !== 'undefined') {
-	GlobalVue = global.Vue;
-}
-if (GlobalVue) {
-	GlobalVue.use(plugin);
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (plugin);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
-
-/***/ }),
+/* 46 */,
+/* 47 */,
+/* 48 */,
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -45431,7 +45253,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(69);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StoredData_CanvasLocations_js__ = __webpack_require__(13);
-//
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(75);
 //
 //
 //
@@ -45489,6 +45311,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
+
+var isIE = void 0;
+
+function initCompat() {
+    if (!initCompat.init) {
+        initCompat.init = true;
+        isIE = Object(__WEBPACK_IMPORTED_MODULE_3__node_modules_vue_resize_src_utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
+    }
+}
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: { ResizeObserver: __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default.a },
@@ -45533,22 +45365,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     mounted: function mounted() {
+        var _this = this;
+
+        initCompat();
+        this.$nextTick(function () {
+            _this._w = _this.$el.offsetWidth;
+            _this._h = _this.$el.offsetHeight;
+        });
+        var object = document.createElement('object');
+        this._resizeObject = object;
+        object.setAttribute('style', 'display: block; top: 0; left: 0; height: 0%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+        object.setAttribute('aria-hidden', 'true');
+        object.setAttribute('tabindex', -1);
+        object.onload = this.addResizeHandlers;
+        object.type = 'text/html';
+        if (isIE) {
+            this.$el.appendChild(object);
+        }
+        object.data = 'about:blank';
+        if (!isIE) {
+            this.$el.appendChild(object);
+        }
 
         this.canvasProps.canvas = document.getElementById('canvas');
         this.canvasProps.ctx = this.canvasProps.canvas.getContext('2d');
 
-        //resize the canvas
-        this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
-        this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
-
-        this.width = this.canvasProps.canvas.width;
-        this.height = this.canvasProps.canvas.height;
-
-        this.canvasProps.canvasReady = true;
+        this.onResize();
     },
 
     beforeDestroy: function beforeDestroy() {
-        window.removeEventListener('resize', this.onResize);
+        this.removeResizeHandlers();
+        window.removeEventListener('resize', this.onResize());
     },
     computed: {
         mouseIsInPattern: function mouseIsInPattern() {
@@ -45582,6 +45429,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         /**
          * Changing the size of the canvas
          */
+        addResizeHandlers: function addResizeHandlers() {
+            this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.onResize);
+            if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
+                this.onResize();
+            }
+        },
+        removeResizeHandlers: function removeResizeHandlers() {
+            if (this._resizeObject && this._resizeObject.onload) {
+                if (!isIE && this._resizeObject.contentDocument) {
+                    this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.onResize);
+                }
+                delete this._resizeObject.onload;
+            }
+        },
+
         onResize: function onResize() {
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
@@ -45589,6 +45451,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.width = this.canvasProps.canvas.width;
             this.height = this.canvasProps.canvas.height;
         },
+
         start: function start(event) {
             this.canvasProps.ctx.beginPath();
 
@@ -45630,8 +45493,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.$set(newRow[this.mouseRow], 'bead', this.actionBarValues.bead);
             this.$set(this.updatableMatrix, this.mouseColumn, newRow);
-            //this.updatableMatrix[this.mouseColumn][this.mouseRow].bead = this.actionBarValues.bead;
-            console.log(this.updatableMatrix);
         },
         save: function save() {
             axios.post('/pattern/save', {
@@ -46152,12 +46013,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "id": "canvasContainer"
-    }
-  }, [_c('resize-observer', {
+    },
     on: {
       "notify": _vm.onResize
     }
-  }), _vm._v(" "), _c('draw-brick-lines', {
+  }, [_c('draw-brick-lines', {
     attrs: {
       "actionBarValues": _vm.actionBarValues,
       "canvasProps": _vm.canvasProps,
@@ -47114,7 +46974,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            menuWidth: 500
+            menuWidth: 0
         };
     }
 
@@ -47232,13 +47092,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             //internal variables for controlling the action bar size
             currentBead: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.bead,
-            menuWidth: 500,
+            menuWidth: 0,
             prevLocation: null,
             hideBead: false
         };
     },
     mounted: function mounted() {
         __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].updateCanvas = true;
+        this.open();
     },
 
     methods: {
@@ -47266,18 +47127,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             document.removeEventListener('mousemove', this.resizeMenu);
             document.removeEventListener('mouseup', this.finishResize);
             this.resize = false;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].updateCanvas = true;
         },
 
         close: function close() {
             this.menuWidth = 0;
             this.hideBead = true;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].updateCanvas = true;
         },
         open: function open() {
             this.menuWidth = 500;
             this.hideBead = false;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].updateCanvas = true;
         }
 
     },
@@ -49083,222 +48941,9 @@ if (false) {
 }
 
 /***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = {
-  mixins: [__webpack_require__(132), __webpack_require__(133)],
-  props: {
-    "offset": {
-      type: Number,
-      "default": 0
-    },
-    "extent": {
-      type: Number,
-      "default": 10
-    },
-    "minSize": {
-      type: Number,
-      "default": 0
-    },
-    "defaultSize": {
-      type: Number,
-      "default": -1
-    },
-    "maxSize": {
-      type: Number,
-      "default": Number.MAX_VALUE
-    },
-    "side": {
-      type: String,
-      "default": "right"
-    },
-    "size": {
-      type: Number,
-      required: true
-    }
-  },
-  computed: {
-    horizontal: function() {
-      return this.side === "left" || this.side === "right";
-    },
-    plus: function() {
-      return this.side === "right" || this.side === "bottom";
-    },
-    style: function() {
-      var style;
-      if (this.horizontal) {
-        style = {
-          width: this.extent + "px",
-          height: "100%",
-          top: "0",
-          cursor: "ew-resize"
-        };
-      } else {
-        style = {
-          width: "100%",
-          height: this.extent + "px",
-          left: "0",
-          cursor: "ns-resize"
-        };
-      }
-      style[this.side] = -this.offset + "px";
-      return style;
-    }
-  },
-  methods: {
-    resetSize: function(e) {
-      var oldSize;
-      if (!e.defaultPrevented) {
-        e.preventDefault();
-        if (this.defaultSize > -1) {
-          oldSize = this.size;
-          if (this.defaultSize < this.minSize) {
-            this.size = this.minSize;
-          } else if (this.defaultSize > this.maxSize) {
-            this.size = this.maxSize;
-          } else {
-            this.size = this.defaultSize;
-          }
-          this.$emit("resize", this.size, oldSize, this);
-          return this.$emit("reset-size");
-        }
-      }
-    },
-    dragStart: function(e) {
-      if (!e.defaultPrevented) {
-        e.preventDefault();
-        this.startSize = this.size;
-        if (this.horizontal) {
-          this.startPos = e.clientX;
-        } else {
-          this.startPos = e.clientY;
-        }
-        if (document.body.style.cursor != null) {
-          this.oldCursor = document.body.style.cursor;
-        } else {
-          this.oldCursor = null;
-        }
-        document.body.style.cursor = this.style.cursor;
-        this.removeMoveListener = this.onDocument("mousemove", this.drag);
-        this.removeEndListener = this.onceDocument("mouseup", this.dragEnd);
-        return this.$emit("resize-start", this.size, this);
-      }
-    },
-    drag: function(e) {
-      var moved, newSize, oldSize, pos;
-      e.preventDefault();
-      if (this.horizontal) {
-        pos = e.clientX;
-      } else {
-        pos = e.clientY;
-      }
-      moved = pos - this.startPos;
-      if (!this.plus) {
-        moved = -moved;
-      }
-      newSize = this.startSize + moved;
-      if (newSize < this.minSize) {
-        newSize = this.minSize;
-      } else if (newSize > this.maxSize) {
-        newSize = this.maxSize;
-      }
-      oldSize = this.size;
-      this.size = newSize;
-      return this.$emit("resize", this.size, oldSize, this);
-    },
-    dragEnd: function(e) {
-      e.preventDefault();
-      document.body.style.cursor = this.oldCursor;
-      if (typeof this.removeMoveListener === "function") {
-        this.removeMoveListener();
-      }
-      if (typeof this.removeEndListener === "function") {
-        this.removeEndListener();
-      }
-      this.$emit("resize-end", this.size, this);
-      return true;
-    }
-  },
-  watch: {
-    "minSize": function(val) {
-      if (this.size < val) {
-        return this.size = val;
-      }
-    },
-    "maxSize": function(val) {
-      if (this.size > val) {
-        return this.size = val;
-      }
-    }
-  }
-};
-
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=resize-handle v-bind:style=style style=\"position: absolute\" @mousedown=dragStart @dblclick=resetSize v-bind:class=\"'resize-handle-'+side\"></div>"
-
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports) {
-
-(function() {
-  var onDocument;
-
-  onDocument = function(event, cb, useCapture) {
-    var remover;
-    document.documentElement.addEventListener(event, cb, useCapture);
-    remover = function() {
-      document.documentElement.removeEventListener(event, cb);
-      return remover = null;
-    };
-    return remover;
-  };
-
-  module.exports = {
-    methods: {
-      onDocument: onDocument
-    }
-  };
-
-}).call(this);
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports) {
-
-(function() {
-  var onceDocument;
-
-  onceDocument = function(event, cb, useCapture) {
-    var remover, wrapper;
-    remover = null;
-    wrapper = function(e) {
-      if (cb(e)) {
-        if (remover != null) {
-          return remover();
-        }
-      }
-    };
-    document.documentElement.addEventListener(event, wrapper, useCapture);
-    remover = function() {
-      document.documentElement.removeEventListener(event, wrapper);
-      return remover = null;
-    };
-    return remover;
-  };
-
-  module.exports = {
-    methods: {
-      onceDocument: onceDocument
-    }
-  };
-
-}).call(this);
-
-
-/***/ }),
+/* 131 */,
+/* 132 */,
+/* 133 */,
 /* 134 */
 /***/ (function(module, exports) {
 
