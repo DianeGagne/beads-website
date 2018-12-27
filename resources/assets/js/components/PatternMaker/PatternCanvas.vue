@@ -1,7 +1,7 @@
 <template>
     <div class="canvasBlock" id="canvasContainer"
          style="border: 1px solid black; height: 100%"
-    @notify="onResize">
+         @notify="onResize">
         <draw-brick-lines
                 :actionBarValues="actionBarValues"
                 :canvasProps="canvasProps"
@@ -30,10 +30,8 @@
         <div v-for="(column, columnIndex) in updatableMatrix">
             <div v-for="(row, rowIndex) in column">
                 <bead
-                        :left="locations.columnStarts[columnIndex]"
-                        :top="locations.rowStarts[rowIndex]"
-                        :height="locations.rowHeight"
-                        :width="locations.columnWidth"
+                        :column="columnIndex"
+                        :row="rowIndex"
                         :canvasProps="canvasProps"
                         :bead="updatableMatrix[columnIndex][rowIndex]">
                 </bead>
@@ -55,11 +53,11 @@
     import SavedPattern from '../../StoredData/PatternValues.js';
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
     import CanvasLocations from '../../StoredData/CanvasLocations.js';
-    import { getInternetExplorerVersion } from '../../../../../node_modules/vue-resize/src/utils/compatibility'
+    import {getInternetExplorerVersion} from '../../../../../node_modules/vue-resize/src/utils/compatibility'
 
     let isIE;
 
-    function initCompat () {
+    function initCompat() {
         if (!initCompat.init) {
             initCompat.init = true
             isIE = getInternetExplorerVersion() !== -1
@@ -147,7 +145,7 @@
 
             },
             mouseRow: function () {
-                if(!this.mouseIsInPattern)
+                if (!this.mouseIsInPattern)
                     return null;
                 for (let index in this.locations.rowStarts) {
                     if (this.mouseY < this.locations.rowStarts[index]) {
@@ -156,7 +154,7 @@
                 }
             },
             mouseColumn: function () {
-                if(!this.mouseIsInPattern)
+                if (!this.mouseIsInPattern)
                     return null;
                 for (let index in this.locations.columnStarts) {
                     if (this.mouseX < this.locations.columnStarts[index]) {
@@ -166,23 +164,31 @@
             },
 
             mouseX: function () {
-                return this.mouseProps.currX - this.canvasProps.canvas.offsetLeft;
+                let offsetLeft = 0;
+                if (this.canvasProps.canvas) {
+                    offsetLeft = this.canvasProps.canvas.offsetLeft;
+                }
+                return this.mouseProps.currX - offsetLeft;
             },
             mouseY: function () {
-                return this.mouseProps.currY - this.canvasProps.canvas.offsetTop;
+                let offsetTop = 0;
+                if (this.canvasProps.canvas) {
+                    offsetTop = this.canvasProps.canvas.offsetTop;
+                }
+                return this.mouseProps.currY - offsetTop;
             }
         },
         methods: {
             /**
              * Changing the size of the canvas
              */
-            addResizeHandlers () {
+            addResizeHandlers() {
                 this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.onResize);
                 if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
                     this.onResize()
                 }
             },
-            removeResizeHandlers () {
+            removeResizeHandlers() {
                 if (this._resizeObject && this._resizeObject.onload) {
                     if (!isIE && this._resizeObject.contentDocument) {
                         this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.onResize);
@@ -233,12 +239,18 @@
                 this.mouseProps.drag = false;
             },
             drawBead: function () {
-                if (!this.mouseIsInPattern)
+                if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
                     return;
+                }
 
                 const newRow = this.updatableMatrix[this.mouseColumn].slice(0);
+                let beadToDraw = {
+                    'color': this.actionBarValues.bead.color,
+                    'key': this.actionBarValues.bead.key,
+                    'image': this.actionBarValues.bead.image
+                };
 
-                this.$set(newRow[this.mouseRow], 'bead', this.actionBarValues.bead);
+                this.$set(newRow[this.mouseRow], 'bead', beadToDraw);
                 this.$set(this.updatableMatrix, this.mouseColumn, newRow);
             },
             save: function () {
@@ -260,12 +272,22 @@
             },
         },
         watch: {
-            'beadProps': {
+            'mouseRow': {
                 handler: function () {
                     this.drawBead();
-                },
-                deep: true,
+                }
             },
+            'mouseColumn': {
+                handler: function () {
+                    this.drawBead();
+                }
+            },
+//            'beadProps': {
+//                handler: function () {
+//                    this.drawBead();
+//                },
+//                deep: true,
+//            },
             'updatableMatrix': {
                 handler: function () {
                     this.$emit('update:beadMatrix', this.updatableMatrix);
@@ -275,9 +297,9 @@
             },
 
             'SavedPattern.updateCanvas': {
-                handler: function() {
-                  //  console.log('on resize called');
-                   // this.onResize();
+                handler: function () {
+                    //  console.log('on resize called');
+                    // this.onResize();
                 }
             }
         }

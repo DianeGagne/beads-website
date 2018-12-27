@@ -2,19 +2,14 @@
 </template>
 <script>
     import * as _ from "lodash";
+    import CanvasLocations from '../../../StoredData/CanvasLocations.js';
 
     export default {
         props: {
-            left: {
+            column: {
                 type: Number,
             },
-            top: {
-                type: Number,
-            },
-            height: {
-                type: Number,
-            },
-            width: {
+            row: {
                 type: Number,
             },
             bead: {
@@ -24,36 +19,39 @@
                 type: Object,
             },
         },
+        data: function() {
+          return {
+          }
+        },
+        computed: {
+            canvasSize: function() {
+                return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
+            }
+        },
         methods: {
             drawBead: function () {
-                //todo: throttle or debounce this or something so we arn't triggering a full redraw 6 times when the pattern is zoomed
-                if(this.bead.bead && this.bead.bead.color) {
+                let left = CanvasLocations.columnStarts[this.column];
+                let top = CanvasLocations.rowStarts[this.row];
+                let height = CanvasLocations.rowHeight;
+                let width = CanvasLocations.columnWidth;
+
+                if (this.bead.bead && this.bead.bead.color) {
                     let self = this;
-                    _.debounce(function(self) {
-                        this.canvasProps.ctx.fillStyle = self.bead.bead.color;
-                        this.canvasProps.ctx.fillRect(self.left, self.top, self.width, self.height);
-                    });
+                    this.canvasProps.ctx.fillStyle = self.bead.bead.color;
+                    this.canvasProps.ctx.fillRect(left, top, width, height);
                     this.canvasProps.ctx.stroke();
                 }
             },
 
         },
         watch: {
-            left: function() {
-                this.drawBead();
-            },
-            top: function() {
-                this.drawBead();
-            },
-            width: function() {
-                this.drawBead();
-            },
-            height: function() {
-                this.drawBead();
+            canvasSize: {
+                handler: function () {
+                    this.drawBead();
+                },
             },
             bead: {
                 handler: function () {
-                    console.log('bead changed');
                     this.drawBead();
                 },
                 deep: true,

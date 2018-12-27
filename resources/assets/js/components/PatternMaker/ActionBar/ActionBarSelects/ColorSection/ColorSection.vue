@@ -89,7 +89,6 @@
                 let data = this.colors.rgba;
                 axios.get('/beads/color', {params: {color: data}})
                     .then(function (response) {
-                        console.log(response);
                         self.colorColors = response.data;
                     });
             }
@@ -98,31 +97,6 @@
             colors: function () {
                 this.findColors();
             },
-            beadMatrix: function () {
-                //create the palette
-                let newPalette = [];
-
-                //search each row for beads
-                for (let row in this.beadMatrix) {
-                    //search each column for beads
-                    for (let column in this.beadMatrix[row]) {
-                        //search the existing palette to make sure the bead is not yet in it
-                        let draw = true;
-                        for (let paletteBead in newPalette) {
-                            if (this.beadMatrix[row][column].key == newPalette[paletteBead].key) {
-                                //if it is in the palette skip adding this bead and go back to the next bead
-                                draw = false;
-                                break;
-                            }
-                        }
-                        //if we have not yet seen this bead, add it to the palette
-                        if (draw) {
-                            newPalette.push(this.beadMatrix[row][column]);
-                        }
-                    }
-                }
-                this.paletteColors = newPalette;
-            }
         }
     }
 </script>
