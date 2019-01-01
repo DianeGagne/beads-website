@@ -27,7 +27,7 @@
     export default {
         data: function () {
             return {
-                panTotals: SavedPattern.actionBarValues.panZoom.pan,
+                panTotals: SavedPattern.pan,
             }
         },
         created: function () {
@@ -52,24 +52,30 @@
         methods: {
             panLeft: function () {
                 this.panTotals.horizontal -= 25;
-                SavedPattern.actionBarValues.panZoom.pan = this.panTotals;
+                SavedPattern.pan.horizontal = this.panTotals.horizontal;
+                SavedPattern.pan.vertical = this.panTotals.vertical;
+                console.log(SavedPattern);
             },
             panRight: function () {
                 this.panTotals.horizontal += 25;
-                SavedPattern.actionBarValues.panZoom.pan = this.panTotals;
+                SavedPattern.pan.horizontal = this.panTotals.horizontal;
+                SavedPattern.pan.vertical = this.panTotals.vertical;
             },
             panUp: function () {
                 this.panTotals.vertical -= 25;
-                SavedPattern.actionBarValues.panZoom.pan = this.panTotals;
+                SavedPattern.pan.horizontal = this.panTotals.horizontal;
+                SavedPattern.pan.vertical = this.panTotals.vertical;
             },
             panDown: function () {
                 this.panTotals.vertical += 25;
-                SavedPattern.actionBarValues.panZoom.pan = this.panTotals;
+                SavedPattern.pan.horizontal = this.panTotals.horizontal;
+                SavedPattern.pan.vertical = this.panTotals.vertical;
             },
             panCenter: function () {
                 this.panTotals.vertical = 0;
                 this.panTotals.horizontal = 0;
-                SavedPattern.actionBarValues.panZoom.pan = this.panTotals;
+                SavedPattern.pan.horizontal = this.panTotals.horizontal;
+                SavedPattern.pan.vertical = this.panTotals.vertical;
             },
         },
     }

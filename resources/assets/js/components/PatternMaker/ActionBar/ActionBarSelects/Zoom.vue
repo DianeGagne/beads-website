@@ -16,7 +16,7 @@
     export default {
         data: function () {
             return {
-                scaleFactor: SavedPattern.actionBarValues.panZoom.scaleFactor,
+                scaleFactor: SavedPattern.scaleFactor,
             }
         },
         mounted() {
@@ -44,17 +44,17 @@
         methods: {
             zoomIn: function () {
                 this.scaleFactor += .25;
-                SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+                SavedPattern.scaleFactor = this.scaleFactor;
             },
             zoomOut: function () {
                 if (!this.scaleFactor == 0) {
                     this.scaleFactor -= .25;
-                    SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+                    SavedPattern.scaleFactor = this.scaleFactor;
                 }
             },
             resetZoom: function () {
                 this.scaleFactor = 1;
-                SavedPattern.actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+                SavedPattern.scaleFactor = this.scaleFactor;
             },
             handleScroll: function (event) {
                 if (event.deltaY > 0)

@@ -499,20 +499,22 @@ var SavedPattern = function SavedPattern() {
         }
     };
     this.actionBarValues = {
+
+        //Selected bead
         bead: {
             color: '#666666',
             image: 'db0923',
             key: 14,
             otherValue: 'something'
-        },
-        panZoom: {
-            scaleFactor: 1,
-            pan: {
-                horizontal: 0,
-                vertical: 0
-            }
         }
     };
+
+    //Display values for the pan and zoom
+    this.pan = {
+        horizontal: 0,
+        vertical: 0
+    };
+    this.scaleFactor = 1;
 
     this.updateCanvas = false;
 
@@ -46243,7 +46245,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            scaleFactor: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor
+            scaleFactor: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor
         };
     },
     mounted: function mounted() {
@@ -46269,17 +46271,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         zoomIn: function zoomIn() {
             this.scaleFactor += .25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
         },
         zoomOut: function zoomOut() {
             if (!this.scaleFactor == 0) {
                 this.scaleFactor -= .25;
-                __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+                __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
             }
         },
         resetZoom: function resetZoom() {
             this.scaleFactor = 1;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor = this.scaleFactor;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
         },
         handleScroll: function handleScroll(event) {
             if (event.deltaY > 0) this.zoomOut();else this.zoomIn();
@@ -46423,7 +46425,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            panTotals: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan
+            panTotals: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan
         };
     },
     created: function created() {
@@ -46448,24 +46450,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         panLeft: function panLeft() {
             this.panTotals.horizontal -= 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan = this.panTotals;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
+            console.log(__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"]);
         },
         panRight: function panRight() {
             this.panTotals.horizontal += 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan = this.panTotals;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
         },
         panUp: function panUp() {
             this.panTotals.vertical -= 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan = this.panTotals;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
         },
         panDown: function panDown() {
             this.panTotals.vertical += 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan = this.panTotals;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
         },
         panCenter: function panCenter() {
             this.panTotals.vertical = 0;
             this.panTotals.horizontal = 0;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan = this.panTotals;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
+            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
         }
     }
 });
@@ -46771,15 +46779,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -46891,7 +46890,6 @@ function initCompat() {
                 }
             }
         },
-
         mouseX: function mouseX() {
             var offsetLeft = 0;
             if (this.canvasProps.canvas) {
@@ -47501,20 +47499,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.displayProps = $event
       }
     }
-  }), _vm._v(" "), _c('brick-bead-calc', {
-    attrs: {
-      "displayProps": _vm.displayProps,
-      "beadProps": _vm.beadProps,
-      "canvasProps": _vm.canvasProps,
-      "panZoom": _vm.actionBarValues.panZoom,
-      "mouseProps": _vm.mouseProps,
-      "patternSize": _vm.patternValues.patternSize
-    },
-    on: {
-      "update:beadProps": function($event) {
-        _vm.beadProps = $event
-      }
-    }
   }), _vm._v(" "), _c('pattern-signals', {
     attrs: {
       "updatableMatrix": _vm.updatableMatrix,
@@ -47659,13 +47643,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             beadCountWidth: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.patternSize.width,
             beadType: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType,
             beadAspect: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType.beadAspect,
-            scaleFactor: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.scaleFactor,
-            horizontalOffset: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan.horizontal,
-            verticalOffset: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues.panZoom.pan.vertical,
             locations: __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */]
         };
     },
     computed: {
+        //determine if we need to redraw due to the pan/zoom
+        panZoom: function panZoom() {
+            console.log((__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical) * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor);
+            return (__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical) * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
+        },
         //the aspect multiple of a bead is always 1 for the height
         aspectPatternHeight: function aspectPatternHeight() {
             return this.beadCountHeight;
@@ -47680,12 +47666,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
             var proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
 
-            if (proportionHeightCovered > proportionWidthCovered) {
-                return true;
-            } else {
-                return false;
-            }
+            return proportionHeightCovered > proportionWidthCovered;
         },
+        //Determine how tall each bead is on the screen
         displayBeadHeight: function displayBeadHeight() {
             var baseBeadHeight = 1;
             //If our pattern takes up more vertical space on our screen than horizontal
@@ -47704,9 +47687,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             //apply the scale factor to the bead size
-            this.locations.rowHeight = baseBeadHeight * this.scaleFactor;
+            this.locations.rowHeight = baseBeadHeight * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
             return this.locations.rowHeight;
         },
+        //Determine how wide each bead is on the screen
         displayBeadWidth: function displayBeadWidth() {
             var baseBeadHeight = 1;
             var baseBeadWidth = 1;
@@ -47726,7 +47710,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             //apply the scale factor to the bead size
-            this.locations.columnWidth = baseBeadWidth * this.scaleFactor;
+            this.locations.columnWidth = baseBeadWidth * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
             return this.locations.columnWidth;
         },
         totalPatternWidth: function totalPatternWidth() {
@@ -47739,22 +47723,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         leftOffset: function leftOffset() {
             var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-            this.locations.leftOffset = baseOffset + this.horizontalOffset;
+            this.locations.leftOffset = baseOffset + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal;
             return this.locations.leftOffset;
         },
         topOffset: function topOffset() {
             var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
-            this.locations.topOffset = baseOffset + this.verticalOffset;
+            this.locations.topOffset = baseOffset + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical;
             return this.locations.topOffset;
         },
         rightOffset: function rightOffset() {
             var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-            this.locations.rightOffset = baseOffset - this.horizontalOffset;
+            this.locations.rightOffset = baseOffset - __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal;
             return this.locations.rightOffset;
         },
         bottomOffset: function bottomOffset() {
             var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
-            this.locations.bottomOffset = baseOffset - this.verticalOffset;
+            this.locations.bottomOffset = baseOffset - __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical;
             return this.locations.bottomOffset;
         }
     },
@@ -47773,17 +47757,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.canvasProps.ctx.moveTo(lineStart, division);
                 this.canvasProps.ctx.lineTo(lineEnd, division);
                 this.locations.addRow(division);
-                //While drawing the lines, update the borders of the beads within the beadMatrix
-                //todo: store these values in a separate global matrix - it makes rotation difficult
-                //                    if (rowCount < patternHeight) {
-                //                        for (let beadIndex in this.matrix) {
-                //                            if (this.matrix.hasOwnProperty(beadIndex)) {
-                //                                this.matrix[beadIndex][rowCount].topBound = division;
-                //                                this.matrix[beadIndex][rowCount].bottomBound = division + beadHeight;
-                //                            }
-                //                        }
-                //                    }
-
                 division += beadHeight;
             }
         },
@@ -47801,38 +47774,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.canvasProps.ctx.moveTo(division, lineStart);
                 this.canvasProps.ctx.lineTo(division, lineEnd);
                 this.locations.addColumn(division);
-                //While drawing the lines, update the borders of the beads within the beadMatrix
-                //todo: store this in a separate global values as well
-                //                    if (columnCount < patternWidth) {
-                //                        for (let beadIndex in this.matrix[columnCount]) {
-                //                            if (this.matrix[columnCount].hasOwnProperty(beadIndex)) {
-                //                                this.matrix[columnCount][beadIndex].leftBound = division;
-                //                                this.matrix[columnCount][beadIndex].rightBound = division + beadWidth;
-                //                            }
-                //                        }
-                //                    }
-
                 division += beadWidth;
             }
         },
-
-        //Draw all beads currently set in the bead matrix as we have just refreshed the screen
-        //            drawExistingBeads: function () {
-        //
-        //                for (let xIndex in this.matrix) {
-        //                    if (this.matrix.hasOwnProperty(xIndex)) {
-        //                        for (let yIndex in this.matrix[xIndex]) {
-        //                            if (this.matrix[xIndex].hasOwnProperty(yIndex)) {
-        //                                if (this.matrix[xIndex][yIndex].bead) {
-        //                                    this.canvasProps.ctx.fillStyle = this.matrix[xIndex][yIndex].bead.color;
-        //                                    this.canvasProps.ctx.fillRect(this.matrix[xIndex][yIndex].leftBound,
-        // this.matrix[xIndex][yIndex].topBound, this.display.beadWidth, this.display.beadHeight);
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            },
 
         /**
          * After any change to the pattern, simply erase it and draw a new one from the grid.
@@ -47841,7 +47785,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         drawNewGrid: function drawNewGrid() {
             this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
             this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-            this.canvasProps.ctx.scale(this.scaleFactor, this.scaleFactor);
+            this.canvasProps.ctx.scale(__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor, __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor);
             this.canvasProps.ctx.beginPath();
             this.canvasProps.ctx.strokeStyle = 'black';
 
@@ -47850,17 +47794,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.canvasProps.ctx.stroke();
             this.$emit('update:displayProps', this.display);
-            //                this.$emit('update:beadMatrix', this.matrix);
         }
     },
     watch: {
-        //            'actionBarValues.panZoom': {
-        //                handler: function () {
-        //                    this.drawNewGrid();
-        //                },
-        //                deep: true,
-        //            },
-
+        'panZoom': {
+            handler: function handler() {
+                console.log('pan zoom changed');
+                this.drawNewGrid();
+            }
+        },
         'canvasWidth': {
             handler: function handler() {
                 this.drawNewGrid();
@@ -47871,15 +47813,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.drawNewGrid();
             },
             deep: true
-        },
-        'actionBarValues.signals.redraw': {
-            handler: function handler() {
-                if (this.actionBarValues.signals.redraw) {
-                    this.drawNewGrid();
-                    this.actionBarValues.signals.redraw = false;
-                    this.$emit('update:actionBarValues', this.actionBarValues);
-                }
-            }
         },
         'beadMatrix': {
             handler: function handler() {
@@ -48288,12 +48221,9 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__ = __webpack_require__(4);
 //
 //
-
 
 
 
@@ -48317,15 +48247,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     computed: {
         canvasSize: function canvasSize() {
-            return __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].rowHeight * __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].rowStarts * __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].columnWidth * __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].columnStarts;
+            return __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowHeight * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowStarts * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnWidth * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnStarts;
         }
     },
     methods: {
         drawBead: function drawBead() {
-            var left = __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].columnStarts[this.column];
-            var top = __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].rowStarts[this.row];
-            var height = __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].rowHeight;
-            var width = __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */].columnWidth;
+            var left = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnStarts[this.column];
+            var top = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowStarts[this.row];
+            var height = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowHeight;
+            var width = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnWidth;
 
             if (this.bead.bead && this.bead.bead.color) {
                 var self = this;

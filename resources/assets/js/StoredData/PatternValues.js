@@ -19,20 +19,22 @@ class SavedPattern {
             }
         };
         this.actionBarValues = {
+
+            //Selected bead
             bead: {
                 color: '#666666',
                 image: 'db0923',
                 key: 14,
                 otherValue: 'something',
             },
-            panZoom: {
-                scaleFactor: 1,
-                pan: {
-                    horizontal: 0,
-                    vertical: 0,
-                },
-            },
         };
+
+        //Display values for the pan and zoom
+        this.pan = {
+            horizontal: 0,
+            vertical: 0,
+        };
+        this.scaleFactor = 1;
 
         this.updateCanvas = false;
 

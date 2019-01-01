@@ -1,7 +1,6 @@
 <template>
 </template>
 <script>
-    import * as _ from "lodash";
     import CanvasLocations from '../../../StoredData/CanvasLocations.js';
 
     export default {

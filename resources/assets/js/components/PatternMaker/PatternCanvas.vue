@@ -12,15 +12,6 @@
                 :displayProps.sync="displayProps">
         </draw-brick-lines>
 
-        <brick-bead-calc
-                :displayProps="displayProps"
-                :beadProps.sync="beadProps"
-                :canvasProps="canvasProps"
-                :panZoom="actionBarValues.panZoom"
-                :mouseProps="mouseProps"
-                :patternSize="patternValues.patternSize">
-        </brick-bead-calc>
-
         <pattern-signals
                 :updatableMatrix.sync="updatableMatrix"
                 :patternSize.sync="patternValues.patternSize"
@@ -59,7 +50,7 @@
 
     function initCompat() {
         if (!initCompat.init) {
-            initCompat.init = true
+            initCompat.init = true;
             isIE = getInternetExplorerVersion() !== -1
         }
     }
@@ -162,7 +153,6 @@
                     }
                 }
             },
-
             mouseX: function () {
                 let offsetLeft = 0;
                 if (this.canvasProps.canvas) {
