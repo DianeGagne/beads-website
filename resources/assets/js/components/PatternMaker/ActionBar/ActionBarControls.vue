@@ -9,8 +9,7 @@
                 class="glyphicon glyphicon-arrow-right"></i></button>
 
         <button @click="open" class="beadDisplayButton" v-bind:class="{hide: !hideBead}"
-                v-bind:style="{backgroundColor: this.currentBead.color,
-                backgroundImage:'url(/assets/delica11/' + this.currentBead.image + '.jpg)'}">
+                v-bind:style="{backgroundColor: color, backgroundImage: bg}">
         </button>
     </div>
 </template>
@@ -21,7 +20,6 @@
         data: function () {
             return {
                 //internal variables for controlling the action bar size
-                currentBead: SavedPattern.actionBarValues.bead,
                 menuWidth: 0,
                 prevLocation: null,
                 hideBead: false,
@@ -30,6 +28,14 @@
         mounted() {
             SavedPattern.updateCanvas = true;
             this.open();
+        },
+        computed: {
+            color() {
+                return this.$store.getters['currentBead/beadColor'];
+            },
+            bg() {
+                return this.$store.getters['currentBead/beadImageUrl'];
+            }
         },
         methods: {
             dragStart(event) {

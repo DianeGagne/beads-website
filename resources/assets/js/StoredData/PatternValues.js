@@ -18,16 +18,6 @@ class SavedPattern {
                 width: 30,
             }
         };
-        this.actionBarValues = {
-
-            //Selected bead
-            bead: {
-                color: '#666666',
-                image: 'db0923',
-                key: 14,
-                otherValue: 'something',
-            },
-        };
 
         //Display values for the pan and zoom
         this.pan = {
@@ -50,7 +40,6 @@ class SavedPattern {
         this.palette = null;
     };
 }
-
 
 export default (new SavedPattern);
 

@@ -12,12 +12,6 @@
                 :displayProps.sync="displayProps">
         </draw-brick-lines>
 
-        <pattern-signals
-                :updatableMatrix.sync="updatableMatrix"
-                :patternSize.sync="patternValues.patternSize"
-                :signals.sync="actionBarValues.signals">
-        </pattern-signals>
-
         <div v-for="(column, columnIndex) in updatableMatrix">
             <div v-for="(row, rowIndex) in column">
                 <bead

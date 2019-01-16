@@ -2,32 +2,33 @@
     <div id="selected-bead">
         <div class="currentBead">
             <div class="beadDisplay"
-                 v-bind:style="{backgroundColor: this.currentBead.color,
-                backgroundImage:'url(/assets/delica11/' + this.currentBead.image + '.jpg)',}">
+                 :style="{backgroundColor: color, backgroundImage: bg}">
                 <div class="hotKey" style="bottom:3px; right:3px;">
                     A
                 </div>
             </div>
             <div class="beadDescriptions">
-                <br>{{this.beadFinishes}}
+                <br> add the bead finishes here
                 <br>R100 - G234 - B234
                 <br>19 (1g)
 
+                <br>{{style}}
             </div>
         </div>
     </div>
 </template>
 <script>
-    import SavedPattern from '../../../../StoredData/PatternValues.js';
 
     export default {
         data: function () {
-            return {
-                currentBead: SavedPattern.actionBarValues.bead,
-
-                beadName: '',
-                beadFinishes: [],
-                beadColors: '',
+            return {}
+        },
+        computed: {
+            color() {
+                return this.$store.getters['currentBead/beadColor'];
+            },
+            bg() {
+                return this.$store.getters['currentBead/beadImageUrl'];
             }
         },
         mounted() {

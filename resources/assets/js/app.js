@@ -26,16 +26,26 @@ window.Event = new class {
 import VueTabs from 'vue-nav-tabs';
 import 'vue-nav-tabs/themes/vue-tabs.css';
 import vmodal from 'vue-js-modal';
+import Vuex from 'vuex';
 
-Vue.use(vmodal)
+import currentBead from './store/currentBead';
+
+Vue.use(vmodal);
 Vue.use(VueTabs);
+Vue.use(Vuex);
+
+export const store = new Vuex.Store({
+    namespaced: true,
+    modules: {
+        currentBead: currentBead,
+    }
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
 
 Vue.component('register', require('./components/Registration/Register.vue'));
 
@@ -59,7 +69,6 @@ Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSele
 Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
 Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
-Vue.component('pattern-signals', require('./components/PatternMaker/PatternDraw/PatternSignals.vue'));
 Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
 
 Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));
@@ -67,13 +76,13 @@ Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/P
 Vue.component('bead-type', require('./components/PatternMaker/PatternValues/BeadType.vue'));
 Vue.component('pattern-size', require('./components/PatternMaker/PatternValues/PatternSize.vue'));
 
-
-
 const pattern = new Vue({
     el: '#pattern',
+    store,
 });
 
 const controls = new Vue({
     el: '#controls',
+    store,
 });
 
