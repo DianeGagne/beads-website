@@ -228,11 +228,7 @@
                 }
 
                 const newRow = this.updatableMatrix[this.mouseColumn].slice(0);
-                let beadToDraw = {
-                    'color': this.actionBarValues.bead.color,
-                    'key': this.actionBarValues.bead.key,
-                    'image': this.actionBarValues.bead.image
-                };
+                let beadToDraw = this.$store.getters['currentBead/value'];
 
                 this.$set(newRow[this.mouseRow], 'bead', beadToDraw);
                 this.$set(this.updatableMatrix, this.mouseColumn, newRow);

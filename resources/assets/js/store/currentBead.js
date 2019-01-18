@@ -22,6 +22,9 @@
         beadKey(state, getters){
             return state.key;
         },
+        value(state, getters){
+            return {color: state.color, key: state.key};
+        },
     };
 
 export default {
