@@ -12,13 +12,12 @@
                 :displayProps.sync="displayProps">
         </draw-brick-lines>
 
-        <div v-for="(column, columnIndex) in updatableMatrix">
-            <div v-for="(row, rowIndex) in column">
+        <div v-for="column in columns">
+            <div v-for="row in rows">
                 <bead
-                        :column="columnIndex"
-                        :row="rowIndex"
-                        :canvasProps="canvasProps"
-                        :bead="updatableMatrix[columnIndex][rowIndex]">
+                        :column="column"
+                        :row="row"
+                        :canvasProps="canvasProps">
                 </bead>
             </div>
         </div>
@@ -40,6 +39,7 @@
     import CanvasLocations from '../../StoredData/CanvasLocations.js';
     import {getInternetExplorerVersion} from '../../../../../node_modules/vue-resize/src/utils/compatibility'
 
+    import { mapState, mapGetters } from 'vuex';
     let isIE;
 
     function initCompat() {
@@ -86,8 +86,8 @@
                     xIndex: null,
                     yIndex: null,
                 },
-                width: 10,
                 height: 10,
+                width: 10,
             }
         },
 
@@ -115,6 +115,8 @@
             this.canvasProps.canvas = document.getElementById('canvas');
             this.canvasProps.ctx = this.canvasProps.canvas.getContext('2d');
 
+            this.$store.commit('pattern/createInitialPattern');
+
             this.onResize();
         },
         beforeDestroy: function () {
@@ -122,6 +124,13 @@
             window.removeEventListener('resize', this.onResize());
         },
         computed: {
+            ...mapState({
+                rows: state => state.pattern.rows,
+                columns: state => state.pattern.columns
+            }),
+            ...mapGetters({
+                bead: "pattern/colorAtLocation",
+            }),
             mouseIsInPattern: function () {
                 return this.mouseY > this.locations.topOffset
                     && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
@@ -227,11 +236,16 @@
                     return;
                 }
 
-                const newRow = this.updatableMatrix[this.mouseColumn].slice(0);
                 let beadToDraw = this.$store.getters['currentBead/value'];
 
-                this.$set(newRow[this.mouseRow], 'bead', beadToDraw);
-                this.$set(this.updatableMatrix, this.mouseColumn, newRow);
+                let patternUpdateObject = {};
+                patternUpdateObject.bead = beadToDraw;
+
+                let column = this.mouseColumn;
+                let row = this.mouseRow;
+                patternUpdateObject.locations = [{x: column, y: row}];
+
+                this.$store.commit('pattern/setBeads', patternUpdateObject);
             },
             save: function () {
                 axios.post('/pattern/save', {

@@ -29,6 +29,7 @@ import vmodal from 'vue-js-modal';
 import Vuex from 'vuex';
 
 import currentBead from './store/currentBead';
+import pattern from './store/Pattern';
 
 Vue.use(vmodal);
 Vue.use(VueTabs);
@@ -38,6 +39,7 @@ export const store = new Vuex.Store({
     namespaced: true,
     modules: {
         currentBead: currentBead,
+        pattern: pattern,
     }
 });
 
@@ -76,12 +78,12 @@ Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/P
 Vue.component('bead-type', require('./components/PatternMaker/PatternValues/BeadType.vue'));
 Vue.component('pattern-size', require('./components/PatternMaker/PatternValues/PatternSize.vue'));
 
-const pattern = new Vue({
+const patternObject = new Vue({
     el: '#pattern',
     store,
 });
 
-const controls = new Vue({
+const controlsObject = new Vue({
     el: '#controls',
     store,
 });

@@ -31,12 +31,9 @@
         data: function () {
             return {
                 actionBarValues: SavedPattern.actionBarValues,
-                patternValues: SavedPattern.patternValues,
                 beadMatrix: SavedPattern.beadMatrix,
                 display: this.displayProps,
                 matrix: SavedPattern.beadMatrix,
-                beadCountHeight: SavedPattern.patternValues.patternSize.height,
-                beadCountWidth: SavedPattern.patternValues.patternSize.width,
                 beadType: SavedPattern.patternValues.beadType,
                 beadAspect: SavedPattern.patternValues.beadType.beadAspect,
                 locations: CanvasLocations,
@@ -45,16 +42,21 @@
         computed: {
             //determine if we need to redraw due to the pan/zoom
             panZoom: function () {
-                console.log((SavedPattern.pan.horizontal + SavedPattern.pan.vertical) * SavedPattern.scaleFactor);
                 return (SavedPattern.pan.horizontal + SavedPattern.pan.vertical) * SavedPattern.scaleFactor;
+            },
+            beadCountHeight: function() {
+                return this.$store.getters['pattern/height'];
+            },
+            beadCountWidth: function() {
+                return this.$store.getters['pattern/width']
             },
             //the aspect multiple of a bead is always 1 for the height
             aspectPatternHeight: function () {
-                return this.beadCountHeight;
+                return this.$store.getters['pattern/height'];
             },
             //if we are working with not-square beads multiply by the aspect to get the size across
             aspectPatternWidth: function () {
-                return this.beadCountWidth * this.beadAspect;
+                return this.$store.getters['pattern/width'] * this.beadAspect;
             },
             //determine if the pattern goes all the way to the height edges or the width edges.
             //To display the entire pattern on the screen as large as possible one must be true

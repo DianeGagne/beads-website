@@ -13,10 +13,7 @@ class SavedPattern {
             stitchType: {
                 name: 'brick',
             },
-            patternSize: {
-                height: 5,
-                width: 30,
-            }
+
         };
 
         //Display values for the pan and zoom
@@ -28,14 +25,7 @@ class SavedPattern {
 
         this.updateCanvas = false;
 
-        this.beadMatrix = [];
 
-        for (let i = 0; i < this.patternValues.patternSize.width; i++) {
-            this.beadMatrix.push([]);
-            for (let j = 0; j < this.patternValues.patternSize.height; j++) {
-                this.beadMatrix[i].push({});
-            }
-        }
 
         this.palette = null;
     };
