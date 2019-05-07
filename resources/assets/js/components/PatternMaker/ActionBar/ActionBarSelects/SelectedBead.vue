@@ -12,7 +12,7 @@
                 <br>R100 - G234 - B234
                 <br>19 (1g)
 
-                <br>{{style}}
+                <br>
             </div>
         </div>
     </div>

@@ -17,24 +17,20 @@
             },
         },
         data: function() {
-          return {
-          }
+            return {
+            }
         },
         computed: {
             ...mapGetters({
 //                bead: state => state.pattern.colorAtLocation({'x': this.column, 'y': this.row})
                 bead: "pattern/colorAtLocation",
+                canvasWidth: "brickPattern/canvasWidth"
             }),
             canvasSize: function() {
                 return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
             },
             location: function() {
                 return {'x': this.column, 'y': this.row};
-            },
-            beadColor: function() {
-                console.log(this.bead(this.location));
-//            return this.$store.getters.pattern/colorAtLocation(this.location)
-                return this.bead(this.location);
             }
         },
         methods: {
@@ -44,14 +40,19 @@
                 let height = CanvasLocations.rowHeight;
                 let width = CanvasLocations.columnWidth;
 
-                    this.canvasProps.ctx.fillStyle = this.beadColor;
-                    this.canvasProps.ctx.strokeStyle = '#222222';
-                    this.canvasProps.ctx.fillRect(left, top, width, height);
-                    this.canvasProps.ctx.stroke();
+                this.canvasProps.ctx.fillStyle = this.bead(location);
+                this.canvasProps.ctx.strokeStyle = '#990000';
+                this.canvasProps.ctx.fillRect(left, top, width, height);
+                this.canvasProps.ctx.stroke();
             },
         },
         watch: {
-            beadColor: {
+            canvasWidth: {
+                handler: function () {
+                    this.drawBead();
+                },
+            },
+            bead: {
                 handler: function () {
                     this.drawBead();
                 },

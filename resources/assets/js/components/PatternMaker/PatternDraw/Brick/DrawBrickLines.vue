@@ -3,6 +3,7 @@
 <script>
     import SavedPattern from '../../../../StoredData/PatternValues.js';
     import CanvasLocations from '../../../../StoredData/CanvasLocations.js';
+    import {mapMutations, mapState, mapGetters} from 'vuex';
 
     export default {
         /**
@@ -167,13 +168,13 @@
                 let lineStart = this.topOffset;
                 let lineEnd = this.canvasHeight - this.bottomOffset;
 
-                this.locations.columnStarts = [];
-                for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
-                    this.canvasProps.ctx.moveTo(division, lineStart);
-                    this.canvasProps.ctx.lineTo(division, lineEnd);
-                    this.locations.addColumn(division);
-                    division += beadWidth;
-                }
+//                this.locations.columnStarts = [];
+//                for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
+//                    this.canvasProps.ctx.moveTo(division, lineStart);
+//                    this.canvasProps.ctx.lineTo(division, lineEnd);
+//                    this.locations.addColumn(division);
+//                    division += beadWidth;
+//                }
             },
 
             /**
@@ -182,7 +183,7 @@
              */
             drawNewGrid: function () {
                 this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+//                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
                 this.canvasProps.ctx.scale(SavedPattern.scaleFactor, SavedPattern.scaleFactor);
                 this.canvasProps.ctx.beginPath();
                 this.canvasProps.ctx.strokeStyle = 'black';
@@ -192,19 +193,18 @@
                 this.drawVerticalLines();
 
                 this.canvasProps.ctx.stroke();
-                this.$emit('update:displayProps', this.display);
             },
         },
         watch: {
             'panZoom': {
                 handler: function () {
-                    console.log('pan zoom changed');
                     this.drawNewGrid();
                 },
             },
             'canvasWidth': {
                 handler: function () {
-                    this.drawNewGrid();
+                    this.$store.commit('brickPattern/setCanvasWidth', this.canvasWidth);
+//                    this.drawNewGrid();
                 }
             },
             'canvasProps.canvasReady': {
@@ -213,11 +213,7 @@
                 },
                 deep: true,
             },
-            'beadMatrix': {
-                handler: function () {
-                    this.matrix = this.beadMatrix;
-                }
-            }
+
         },
     }
 </script>

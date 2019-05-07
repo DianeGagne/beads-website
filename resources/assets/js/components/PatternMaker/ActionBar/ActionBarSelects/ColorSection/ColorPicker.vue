@@ -1,5 +1,5 @@
 <template>
-    <div id="color-picker" class="color-picker" v-bind:class="{selected: isSelected}">
+    <div class="color-picker" v-bind:class="{selected: isSelected}">
         <div class="color-image" :id=this.info.image
              v-bind:style="{backgroundColor: this.info.color,  backgroundImage:this.imageUrl}"
              @click="setBead">

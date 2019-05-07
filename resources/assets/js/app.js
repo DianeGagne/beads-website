@@ -30,6 +30,7 @@ import Vuex from 'vuex';
 
 import currentBead from './store/currentBead';
 import pattern from './store/Pattern';
+import brickPattern from './store/BrickPattern';
 
 Vue.use(vmodal);
 Vue.use(VueTabs);
@@ -40,6 +41,7 @@ export const store = new Vuex.Store({
     modules: {
         currentBead: currentBead,
         pattern: pattern,
+        brickPattern: brickPattern,
     }
 });
 

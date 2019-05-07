@@ -8,7 +8,7 @@
                 </div>
             </v-tab>
             <v-tab title="Finishes">
-                <v-select multiple :on-change=findFinishes :value.sync="selected" :options="finishOptions"></v-select>
+                <select multiple :on-change=findFinishes :value.sync="selected" :options="finishOptions"></select>
                 <div class="colorpicker">
                     <color-picker v-for="child in finishColors" key="colorInfo.key"
                                   v-bind:info="child"></color-picker>
@@ -31,7 +31,6 @@
     </div>
 </template>
 <script>
-    import vSelect from "vue-select"
     import {Slider} from 'vue-color'
 
 
@@ -40,7 +39,6 @@
     };
     export default {
         components: {
-            vSelect,
             'slider-picker': Slider
         },
         data: function () {
