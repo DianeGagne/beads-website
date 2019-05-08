@@ -45,12 +45,8 @@ const getters = {
         return state.canvasWidth;
     },
     heightLimited(state, getters, rootState){
-        console.log(rootState);
         let proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
         let proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
-
-        console.log('height covered '+proportionHeightCovered);
-        console.log('width covered '+proportionWidthCovered);
 
         return  proportionHeightCovered > proportionWidthCovered;
     },
@@ -104,11 +100,11 @@ const getters = {
     },
     leftOffset(state, getters, rootState) {
         let baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
-        return baseOffset + state.pan.horizontal;
+        return baseOffset + state.pan.horizontal + 0.5;
     },
     topOffset(state, getters) {
         let baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
-        return baseOffset + state.pan.vertical;
+        return baseOffset + state.pan.vertical + 0.5;
     },
     beadTop: (state, getters) => (location) => {
         return (location.x - 1) * getters.beadHeight + getters.topOffset;

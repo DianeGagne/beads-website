@@ -2,15 +2,6 @@
     <div class="canvasBlock" id="canvasContainer"
          style="border: 1px solid black; height: 100%"
          @notify="onResize">
-        <draw-brick-lines
-                :actionBarValues="actionBarValues"
-                :canvasProps="canvasProps"
-                :patternValues="patternValues"
-                :beadMatrix.sync="updatableMatrix"
-                :canvasWidth="width"
-                :canvasHeight="height"
-                :displayProps.sync="displayProps">
-        </draw-brick-lines>
 
         <div v-for="column in columns">
             <div v-for="row in rows">
@@ -36,7 +27,6 @@
 
     import SavedPattern from '../../StoredData/PatternValues.js';
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
-    import CanvasLocations from '../../StoredData/CanvasLocations.js';
     import {getInternetExplorerVersion} from '../../../../../node_modules/vue-resize/src/utils/compatibility'
 
     import { mapState, mapGetters } from 'vuex';
@@ -54,7 +44,6 @@
         data: function () {
             return {
                 //Read only from the pattern
-                locations: CanvasLocations,
                 beadPalette: SavedPattern.palette,
                 updatableMatrix: SavedPattern.beadMatrix,
                 patternValues: SavedPattern.patternValues,
@@ -65,7 +54,6 @@
                     ctx: null,
                     canvasReady: false,
                 },
-
                 //The current display settings as calculated when drawing a grid
                 displayProps: {
                     beadWidth: 1,
@@ -94,8 +82,8 @@
         mounted() {
             initCompat();
             this.$nextTick(() => {
-                this._w = this.$el.offsetWidth
-                this._h = this.$el.offsetHeight
+                this._w = this.$el.offsetWidth;
+                this._h = this.$el.offsetHeight;
             });
             const object = document.createElement('object');
             this._resizeObject = object;
@@ -107,7 +95,7 @@
             if (isIE) {
                 this.$el.appendChild(object)
             }
-            object.data = 'about:blank'
+            object.data = 'about:blank';
             if (!isIE) {
                 this.$el.appendChild(object)
             }
@@ -193,109 +181,111 @@
                 this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
                 this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-                this.width = this.canvasProps.canvas.width;
-                this.height = this.canvasProps.canvas.height;
-            },
-
-            start: function (event) {
-                this.canvasProps.ctx.beginPath();
-
-                this.mouseProps.prevX = this.mouseProps.currX;
-                this.mouseProps.prevY = this.mouseProps.currY;
-
-                if (event.ctrlKey) {
-                    this.drag = true;
-                }
-                if (!this.drag) {
-                    this.lastState = JSON.stringify(this.updatableMatrix);
-                    this.mouseProps.drawing = true;
-                    this.mouseProps.currX = event.clientX;
-                    this.mouseProps.currY = event.clientY;
-                }
-            },
-            move: function (event) {
-                if (this.mouseProps.drawing) {
-                    this.mouseProps.currX = event.clientX;
-                    this.mouseProps.currY = event.clientY;
-                }
-
-                if (this.drag) {
-                    if (this.zoomChild != null) {
-                        this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
-                        this.prevX = this.currX;
-                        this.prevY = this.currY;
-                    }
-                }
-            },
-            finishMove: function (event) {
-                this.mouseProps.drawing = false;
-                this.mouseProps.drag = false;
-            },
-            drawBead: function () {
-                if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
-                    return;
-                }
-
-                let beadToDraw = this.$store.getters['currentBead/value'];
-
-                let patternUpdateObject = {};
-                patternUpdateObject.bead = beadToDraw;
-
-                let column = this.mouseColumn;
-                let row = this.mouseRow;
-                patternUpdateObject.locations = [{x: column, y: row}];
-
-                this.$store.commit('pattern/setBeads', patternUpdateObject);
-            },
-            save: function () {
-                axios.post('/pattern/save', {
-                    'actionBarValues': this.actionBarValues,
-                    'palette': this.beadPalette,
-                    'beadMatrix': this.updatableMatrix,
-                    'patternValues': this.patternValues,
-                })
-                    .then(function (response) {
-                        console.log(response)
-                    }).catch(function (response) {
-                    console.log('catch');
+                this.$nextTick(() => {
+                    this.$store.commit('brickPattern/setCanvasWidth', this.canvasProps.canvas.clientWidth);
+                    this.$store.commit('brickPattern/setCanvasHeight', this.canvasProps.canvas.clientHeight);
                 });
             },
-            undo: function () {
-                this.updatableMatrix = JSON.parse(this.lastState);
-                this.drawNewGrid();
-            },
+            //
+            // start: function (event) {
+            //     this.canvasProps.ctx.beginPath();
+            //
+            //     this.mouseProps.prevX = this.mouseProps.currX;
+            //     this.mouseProps.prevY = this.mouseProps.currY;
+            //
+            //     if (event.ctrlKey) {
+            //         this.drag = true;
+            //     }
+            //     if (!this.drag) {
+            //         this.lastState = JSON.stringify(this.updatableMatrix);
+            //         this.mouseProps.drawing = true;
+            //         this.mouseProps.currX = event.clientX;
+            //         this.mouseProps.currY = event.clientY;
+            //     }
+            // },
+            // move: function (event) {
+            //     if (this.mouseProps.drawing) {
+            //         this.mouseProps.currX = event.clientX;
+            //         this.mouseProps.currY = event.clientY;
+            //     }
+            //
+            //     if (this.drag) {
+            //         if (this.zoomChild != null) {
+            //             this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
+            //             this.prevX = this.currX;
+            //             this.prevY = this.currY;
+            //         }
+            //     }
+            // },
+            // finishMove: function (event) {
+            //     this.mouseProps.drawing = false;
+            //     this.mouseProps.drag = false;
+            // },
+            // drawBead: function () {
+            //     if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
+            //         return;
+            //     }
+            //
+            //     let beadToDraw = this.$store.getters['currentBead/value'];
+            //
+            //     let patternUpdateObject = {};
+            //     patternUpdateObject.bead = beadToDraw;
+            //
+            //     let column = this.mouseColumn;
+            //     let row = this.mouseRow;
+            //     patternUpdateObject.locations = [{x: column, y: row}];
+            //
+            //     this.$store.commit('pattern/setBeads', patternUpdateObject);
+            // },
+            // save: function () {
+            //     axios.post('/pattern/save', {
+            //         'actionBarValues': this.actionBarValues,
+            //         'palette': this.beadPalette,
+            //         'beadMatrix': this.updatableMatrix,
+            //         'patternValues': this.patternValues,
+            //     })
+            //         .then(function (response) {
+            //             console.log(response)
+            //         }).catch(function (response) {
+            //         console.log('catch');
+            //     });
+            // },
+            // undo: function () {
+            //     this.updatableMatrix = JSON.parse(this.lastState);
+            //     this.drawNewGrid();
+            // },
         },
         watch: {
-            'mouseRow': {
-                handler: function () {
-                    this.drawBead();
-                }
-            },
-            'mouseColumn': {
-                handler: function () {
-                    this.drawBead();
-                }
-            },
+            // 'mouseRow': {
+            //     handler: function () {
+            //         this.drawBead();
+            //     }
+            // },
+            // 'mouseColumn': {
+            //     handler: function () {
+            //         this.drawBead();
+            //     }
+            // },
 //            'beadProps': {
 //                handler: function () {
 //                    this.drawBead();
 //                },
 //                deep: true,
 //            },
-            'updatableMatrix': {
-                handler: function () {
-                    this.$emit('update:beadMatrix', this.updatableMatrix);
-//                    this.updatableMatrix = this.beadMatrix;
-                },
-                deep: true,
-            },
-
-            'SavedPattern.updateCanvas': {
-                handler: function () {
-                    //  console.log('on resize called');
-                    // this.onResize();
-                }
-            }
+//             'updatableMatrix': {
+//                 handler: function () {
+//                     this.$emit('update:beadMatrix', this.updatableMatrix);
+// //                    this.updatableMatrix = this.beadMatrix;
+//                 },
+//                 deep: true,
+//             },
+//
+//             'SavedPattern.updateCanvas': {
+//                 handler: function () {
+//                     //  console.log('on resize called');
+//                     // this.onResize();
+//                 }
+//             }
         }
     }
 </script>

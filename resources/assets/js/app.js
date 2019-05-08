@@ -53,8 +53,8 @@ export const store = new Vuex.Store({
 
 Vue.component('register', require('./components/Registration/Register.vue'));
 
-Vue.component('scrollpattern', require('./components/PatternDisplays/ScrollPatterns.vue'));
-Vue.component('patternshow', require('./components/PatternDisplays/PatternShow.vue'));
+// Vue.component('scrollpattern', require('./components/PatternDisplays/ScrollPatterns.vue'));
+// Vue.component('patternshow', require('./components/PatternDisplays/PatternShow.vue'));
 
 Vue.component('patternmaker', require('./components/PatternMaker/PatternMaker.vue'));
 Vue.component('new-pattern', require('./components/PatternMaker/Modals/NewPattern.vue'));
@@ -71,8 +71,8 @@ Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelec
 Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue'));
 
 Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
-Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
-Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
+// Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
+// Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
 Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
 
 Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));

@@ -1595,48 +1595,7 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CanvasLocations = function () {
-    function CanvasLocations() {
-        _classCallCheck(this, CanvasLocations);
-
-        this.rowStarts = [];
-        this.columnStarts = [];
-        this.rowHeight = 0;
-        this.columnWidth = 0;
-        this.leftOffset = 0;
-        this.rightOffset = 0;
-        this.topOffset = 0;
-        this.bottomOffset = 0;
-        this.pixelHeight = 0;
-        this.pixelWidth = 0;
-    }
-
-    _createClass(CanvasLocations, [{
-        key: "addRow",
-        value: function addRow(rowLocation) {
-            this.rowStarts.push(rowLocation);
-        }
-    }, {
-        key: "addColumn",
-        value: function addColumn(columnLocation) {
-            this.columnStarts.push(columnLocation);
-        }
-    }]);
-
-    return CanvasLocations;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (new CanvasLocations());
-
-/***/ }),
+/* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2304,8 +2263,8 @@ var store = new __WEBPACK_IMPORTED_MODULE_3_vuex__["a" /* default */].Store({
 
 Vue.component('register', __webpack_require__(54));
 
-Vue.component('scrollpattern', __webpack_require__(57));
-Vue.component('patternshow', __webpack_require__(60));
+// Vue.component('scrollpattern', require('./components/PatternDisplays/ScrollPatterns.vue'));
+// Vue.component('patternshow', require('./components/PatternDisplays/PatternShow.vue'));
 
 Vue.component('patternmaker', __webpack_require__(63));
 Vue.component('new-pattern', __webpack_require__(66));
@@ -2322,8 +2281,8 @@ Vue.component('pan', __webpack_require__(94));
 Vue.component('undo', __webpack_require__(97));
 
 Vue.component('pattern-canvas', __webpack_require__(100));
-Vue.component('draw-brick-lines', __webpack_require__(110));
-Vue.component('brick-bead-calc', __webpack_require__(113));
+// Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
+// Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
 Vue.component('bead', __webpack_require__(116));
 
 Vue.component('pattern-name', __webpack_require__(119));
@@ -45936,12 +45895,8 @@ var getters = {
         return state.canvasWidth;
     },
     heightLimited: function heightLimited(state, getters, rootState) {
-        console.log(rootState);
         var proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
         var proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
-
-        console.log('height covered ' + proportionHeightCovered);
-        console.log('width covered ' + proportionWidthCovered);
 
         return proportionHeightCovered > proportionWidthCovered;
     },
@@ -45994,11 +45949,11 @@ var getters = {
     },
     leftOffset: function leftOffset(state, getters, rootState) {
         var baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
-        return baseOffset + state.pan.horizontal;
+        return baseOffset + state.pan.horizontal + 0.5;
     },
     topOffset: function topOffset(state, getters) {
         var baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
-        return baseOffset + state.pan.vertical;
+        return baseOffset + state.pan.vertical + 0.5;
     },
 
     beadTop: function beadTop(state, getters) {
@@ -46281,475 +46236,12 @@ if (false) {
 }
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(58)
-/* template */
-var __vue_template__ = __webpack_require__(59)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternDisplays/ScrollPatterns.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-72775615", Component.options)
-  } else {
-    hotAPI.reload("data-v-72775615", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 58 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            prevPattern: {
-                width: 5,
-                height: 6,
-                beadMatrix: null
-
-            },
-            current: {
-                width: 7,
-                height: 7,
-                beadMatrix: null
-            },
-            nextPattern: {
-                width: 8,
-                height: 8,
-                beadMatrix: null
-            },
-            centerSize: 400
-
-        };
-    },
-    created: function created() {
-        var vm = this;
-        window.addEventListener('keydown', function (event) {
-            if (event.keyCode === 37) {
-                vm.scrollLeft();
-            }
-            if (event.keyCode === 39) {
-                vm.scrollRight();
-            }
-            if (event.keyCode === 32) {
-                vm.zoomPattern();
-            }
-        });
-        window.addEventListener('keyup', function (event) {
-            if (event.keyCode === 32) {
-                vm.removeZoomPattern();
-            }
-        });
-    },
-    mounted: function mounted() {},
-
-    methods: {
-        swapPattern: function swapPattern(prevPattern, nextPattern) {
-            console.log(prevPattern);
-            console.log(nextPattern);
-            prevPattern.width = nextPattern.width;
-            prevPattern.height = nextPattern.height;
-            prevPattern.beadMatrix = nextPattern.beadMatrix;
-        },
-        scrollLeft: function scrollLeft() {
-            var self = this;
-            axios.get('/pattern/next').then(function (response) {
-                console.log(response);
-                //cycle current to prevPattern, nextPattern to current & get the nextPattern
-                self.swapPattern(self.prevPattern, self.current);
-                self.swapPattern(self.current, self.nextPattern);
-
-                self.nextPattern.width = response.data.width;
-                self.nextPattern.height = response.data.height;
-                self.nextPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
-            });
-        },
-        scrollRight: function scrollRight() {
-            var self = this;
-            axios.get('/pattern/next').then(function (response) {
-                console.log(response);
-                //cycle current to prevPattern, nextPattern to current & get the nextPattern
-                self.swapPattern(self.nextPattern, self.current);
-                self.swapPattern(self.current, self.prevPattern);
-
-                self.prevPattern.width = response.data.width;
-                self.prevPattern.height = response.data.height;
-                self.prevPattern.beadMatrix = JSON.parse(response.data.jsonPattern);
-            });
-        },
-        zoomPattern: function zoomPattern() {
-            this.centerSize = 600;
-        },
-        removeZoomPattern: function removeZoomPattern() {
-            this.centerSize = 400;
-        }
-    }
-});
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { attrs: { id: "scrollPattern" } }, [
-      _c(
-        "div",
-        { staticStyle: { display: "flex" } },
-        [
-          _c(
-            "button",
-            { attrs: { id: "scroll-left" }, on: { click: _vm.scrollLeft } },
-            [_c("span", { staticClass: "glyphicon glyphicon-arrow-left" })]
-          ),
-          _vm._v(" "),
-          _c("patternshow", {
-            attrs: {
-              "canvas-name": "prev_pattern",
-              "canvas-height": 200,
-              "canvas-width": 200,
-              patternInfo: _vm.prevPattern
-            }
-          }),
-          _vm._v(" "),
-          _c("patternshow", {
-            attrs: {
-              "canvas-name": "current_pattern",
-              "canvas-height": _vm.centerSize,
-              "canvas-width": _vm.centerSize,
-              patternInfo: _vm.current
-            },
-            nativeOn: {
-              mouseenter: function($event) {
-                return _vm.zoomPattern($event)
-              },
-              mouseleave: function($event) {
-                return _vm.removeZoomPattern($event)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("patternshow", {
-            attrs: {
-              "canvas-name": "next_pattern",
-              "canvas-height": 200,
-              "canvas-width": 200,
-              patternInfo: _vm.nextPattern
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            { attrs: { id: "scroll-right" }, on: { click: _vm.scrollRight } },
-            [_c("span", { staticClass: "glyphicon glyphicon-arrow-right" })]
-          )
-        ],
-        1
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-72775615", module.exports)
-  }
-}
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(61)
-/* template */
-var __vue_template__ = __webpack_require__(62)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternDisplays/PatternShow.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ab541190", Component.options)
-  } else {
-    hotAPI.reload("data-v-ab541190", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        patternInfo: {
-            default: {
-                width: 7,
-                height: 7,
-                beadMatrix: null
-            }
-        },
-        canvasName: { default: 'canvas' },
-        canvasWidth: { default: "100%" },
-        canvasHeight: { default: "100%" }
-    },
-    data: function data() {
-        return {
-            currX: null,
-            currY: null,
-            prevX: null,
-            prevY: null,
-            beadX: null,
-            beadY: null,
-            drawing: false,
-            drag: false,
-            canvas: null,
-            ctx: null,
-            leftOffset: 0,
-            topOffset: 0,
-            beadWidth: 20,
-            beadHeight: 20,
-            beadAspect: 1,
-            zoomChild: null,
-            scaleFactor: 1,
-            panHorizontal: 0,
-            panVertical: 0,
-            color: 'black',
-            beadType: 'delica'
-        };
-    },
-
-    mounted: function mounted() {
-        this.canvas = document.getElementById(this.canvasName);
-        this.ctx = this.canvas.getContext('2d');
-        this.patternInfo.beadMatrix = JSON.parse(this.patternInfo.beadMatrix);
-
-        this.drawNewGrid();
-    },
-
-    methods: {
-        drawBead: function drawBead(beadX, beadY, color) {
-            this.ctx.fillStyle = color;
-            if (beadX === '' || beadY === '') return;
-            if (beadX < 0 || beadX >= this.patternInfo.width || beadY < 0 || beadY >= this.patternInfo.height) return;
-
-            var boxX = this.leftOffset + beadX * this.beadWidth + 1;
-            var boxY = this.topOffset + beadY * this.beadHeight + 1;
-            this.ctx.fillRect(boxX, boxY, this.beadWidth - 2, this.beadHeight - 2);
-        },
-
-        drawNewGrid: function drawNewGrid() {
-            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.scale(this.scaleFactor, this.scaleFactor);
-            this.ctx.beginPath();
-            this.ctx.strokeStyle = 'black';
-            console.log('begin drawing grid');
-
-            //calculate bead size
-            var widthOffset = void 0;
-            var heightOffset = void 0;
-            if (this.patternInfo.width * this.beadAspect < this.patternInfo.height) {
-                //height is larger
-                heightOffset = this.canvas.height / this.scaleFactor % this.patternInfo.height / 2;
-                this.beadHeight = (this.canvas.height - heightOffset) / this.patternInfo.height;
-                this.beadWidth = this.beadHeight * this.beadAspect;
-            } else {
-                widthOffset = this.canvas.width / this.scaleFactor % (this.patternInfo.width * this.beadAspect) / 2;
-                this.beadWidth = (this.canvas.width - widthOffset) / (this.patternInfo.width * this.beadAspect);
-                this.beadHeight = this.beadWidth / this.beadAspect;
-            }
-            widthOffset = this.canvas.width / this.scaleFactor - this.patternInfo.width * this.beadWidth;
-            heightOffset = this.canvas.height / this.scaleFactor - this.patternInfo.height * this.beadHeight;
-            this.leftOffset = widthOffset / 2 + this.panHorizontal;
-            this.topOffset = heightOffset / 2 + this.panVertical;
-            var rightOffset = widthOffset - this.leftOffset;
-            var bottomOffset = heightOffset - this.topOffset;
-
-            //draw horizontal lines
-            var division = this.topOffset;
-            for (var beadCount = 0; beadCount <= this.patternInfo.height; beadCount++) {
-                this.ctx.moveTo(this.leftOffset, division);
-                this.ctx.lineTo(this.canvas.width / this.scaleFactor - rightOffset, division);
-                division += this.beadHeight;
-            }
-            //draw vertical
-            division = this.leftOffset;
-            for (var _beadCount = 0; _beadCount <= this.patternInfo.width; _beadCount++) {
-                this.ctx.moveTo(division, this.topOffset);
-                this.ctx.lineTo(division, this.canvas.height / this.scaleFactor - bottomOffset);
-                division += this.beadWidth;
-            }
-
-            if (this.patternInfo.beadMatrix) {
-                //go through our previous bead matrix, and draw out the beads stored there
-                for (var width = 0; width < this.patternInfo.width; width++) {
-                    for (var height = 0; height < this.patternInfo.height; height++) {
-                        if (this.patternInfo.beadMatrix[width]) {
-                            var setColor = this.patternInfo.beadMatrix[width][height];
-                            if (setColor) {
-                                this.drawBead(width, height, setColor);
-                            }
-                        }
-                    }
-                }
-            }
-            console.log('stroke');
-            this.ctx.stroke();
-        }
-    },
-    watch: {
-        "patternInfo.height": function patternInfoHeight() {
-            this.drawNewGrid();
-        },
-        canvasHeight: function canvasHeight() {
-            var self = this;
-            //use a callback because this is called before the DOM redraws the canvas with the new width/height
-            setTimeout(function () {
-                self.drawNewGrid();
-            }, 30);
-        }
-
-    }
-});
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { attrs: { id: "patternShow" } }, [
-      _c("div", { staticStyle: { display: "flex" } }, [
-        _c("canvas", {
-          staticStyle: { border: "1px solid black" },
-          attrs: {
-            id: _vm.canvasName,
-            height: _vm.canvasHeight,
-            width: _vm.canvasWidth
-          }
-        })
-      ])
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-ab541190", module.exports)
-  }
-}
-
-/***/ }),
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -46819,87 +46311,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            //Values set from the action bar for creating the pattern
-            actionBarValues: {
-                bead: {
-                    color: '#666666',
-                    image: 'db0023',
-                    key: 14,
-                    otherValue: 'something'
-                },
-                signals: {
-                    //signals that trigger an action on the main pattern
-                    //they will trigger the action on true, then be set to false again.
-                    rotations: {
-                        rotateLeft: false,
-                        rotateRight: false,
-                        flipX: false,
-                        flipY: false
-                    },
-                    undo: false,
-                    redo: false,
-                    redraw: false
-                },
-                panZoom: {
-                    scaleFactor: 1,
-                    pan: {
-                        horizontal: 0,
-                        vertical: 0
-                    }
-                }
-            },
-
-            patternValues: {
-                patternName: 'New Pattern',
-                beadType: {
-                    name: 'delica',
-                    beadAspect: 1,
-                    beadWidth: 1.96,
-                    beadHeight: 1.96,
-                    beadWeight: .030
-                },
-                stitchType: {
-                    name: 'brick'
-                },
-                patternSize: {
-                    height: 30,
-                    width: 30
-                }
-            },
-
-            beadMatrix: [],
-            palette: null
-        };
-    },
-    mounted: function mounted() {
-        //Initialize beadMatrix with default values for sanity
-        console.log(this.patternValues.patternSize.width);
-        for (var i = 0; i < this.patternValues.patternSize.width; i++) {
-            this.beadMatrix[i] = [];
-            for (var j = 0; j < this.patternValues.patternSize.height; j++) {
-                this.beadMatrix[i][j] = {};
-            }
-        }
-    },
+    data: function data() {},
+    mounted: function mounted() {},
 
     methods: {},
     watch: {}
@@ -46920,35 +46335,7 @@ var render = function() {
       _c(
         "div",
         { staticStyle: { height: "30px", display: "flex", width: "100%" } },
-        [
-          _c("pattern-name", {
-            attrs: { patternName: _vm.patternValues.patternName },
-            on: {
-              "update:patternName": function($event) {
-                _vm.$set(_vm.patternValues, "patternName", $event)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("new-pattern", {
-            attrs: {
-              patternValues: _vm.patternValues,
-              beadMatrix: _vm.beadMatrix,
-              palette: _vm.palette
-            },
-            on: {
-              "update:patternValues": function($event) {
-                _vm.patternValues = $event
-              },
-              "update:beadMatrix": function($event) {
-                _vm.beadMatrix = $event
-              },
-              "update:palette": function($event) {
-                _vm.palette = $event
-              }
-            }
-          })
-        ],
+        [_c("new-pattern")],
         1
       ),
       _vm._v(" "),
@@ -46957,45 +46344,10 @@ var render = function() {
         { staticStyle: { display: "flex", height: "100%" } },
         [
           _c("pattern-canvas", {
-            staticStyle: { height: "100%", width: "100%" },
-            attrs: {
-              actionBarValues: _vm.actionBarValues,
-              patternValues: _vm.patternValues,
-              beadMatrix: _vm.beadMatrix,
-              palette: _vm.palette
-            },
-            on: {
-              "update:actionBarValues": function($event) {
-                _vm.actionBarValues = $event
-              },
-              "update:beadMatrix": function($event) {
-                _vm.beadMatrix = $event
-              },
-              "update:palette": function($event) {
-                _vm.palette = $event
-              }
-            }
+            staticStyle: { height: "100%", width: "100%" }
           }),
           _vm._v(" "),
-          _c("action-bar", {
-            attrs: {
-              actionBarValues: _vm.actionBarValues,
-              patternValues: _vm.patternValues,
-              beadMatrix: _vm.beadMatrix,
-              palette: _vm.palette
-            },
-            on: {
-              "update:actionBarValues": function($event) {
-                _vm.actionBarValues = $event
-              },
-              "update:beadMatrix": function($event) {
-                _vm.beadMatrix = $event
-              },
-              "update:palette": function($event) {
-                _vm.palette = $event
-              }
-            }
-          })
+          _c("action-bar")
         ],
         1
       )
@@ -47703,7 +47055,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
 //
 //
 //
@@ -47719,7 +47070,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -47732,7 +47082,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     mounted: function mounted() {
-        __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].updateCanvas = true;
         this.open();
     },
 
@@ -49121,9 +48470,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(102);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StoredData_CanvasLocations_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(4);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -49151,16 +48499,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
 
 
 
@@ -49173,7 +48511,7 @@ var isIE = void 0;
 function initCompat() {
     if (!initCompat.init) {
         initCompat.init = true;
-        isIE = Object(__WEBPACK_IMPORTED_MODULE_3__node_modules_vue_resize_src_utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
+        isIE = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_resize_src_utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
     }
 }
 
@@ -49182,7 +48520,6 @@ function initCompat() {
     data: function data() {
         return {
             //Read only from the pattern
-            locations: __WEBPACK_IMPORTED_MODULE_2__StoredData_CanvasLocations_js__["a" /* default */],
             beadPalette: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].palette,
             updatableMatrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
             patternValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues,
@@ -49193,7 +48530,6 @@ function initCompat() {
                 ctx: null,
                 canvasReady: false
             },
-
             //The current display settings as calculated when drawing a grid
             displayProps: {
                 beadWidth: 1,
@@ -49254,14 +48590,14 @@ function initCompat() {
         this.removeResizeHandlers();
         window.removeEventListener('resize', this.onResize());
     },
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_4_vuex__["c" /* mapState */])({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["c" /* mapState */])({
         rows: function rows(state) {
             return state.pattern.rows;
         },
         columns: function columns(state) {
             return state.pattern.columns;
         }
-    }), Object(__WEBPACK_IMPORTED_MODULE_4_vuex__["b" /* mapGetters */])({
+    }), Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["b" /* mapGetters */])({
         bead: "pattern/colorAtLocation"
     }), {
         mouseIsInPattern: function mouseIsInPattern() {
@@ -49318,111 +48654,116 @@ function initCompat() {
         },
 
         onResize: function onResize() {
+            var _this2 = this;
+
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-            this.width = this.canvasProps.canvas.width;
-            this.height = this.canvasProps.canvas.height;
-        },
-
-        start: function start(event) {
-            this.canvasProps.ctx.beginPath();
-
-            this.mouseProps.prevX = this.mouseProps.currX;
-            this.mouseProps.prevY = this.mouseProps.currY;
-
-            if (event.ctrlKey) {
-                this.drag = true;
-            }
-            if (!this.drag) {
-                this.lastState = JSON.stringify(this.updatableMatrix);
-                this.mouseProps.drawing = true;
-                this.mouseProps.currX = event.clientX;
-                this.mouseProps.currY = event.clientY;
-            }
-        },
-        move: function move(event) {
-            if (this.mouseProps.drawing) {
-                this.mouseProps.currX = event.clientX;
-                this.mouseProps.currY = event.clientY;
-            }
-
-            if (this.drag) {
-                if (this.zoomChild != null) {
-                    this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
-                    this.prevX = this.currX;
-                    this.prevY = this.currY;
-                }
-            }
-        },
-        finishMove: function finishMove(event) {
-            this.mouseProps.drawing = false;
-            this.mouseProps.drag = false;
-        },
-        drawBead: function drawBead() {
-            if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
-                return;
-            }
-
-            var beadToDraw = this.$store.getters['currentBead/value'];
-
-            var patternUpdateObject = {};
-            patternUpdateObject.bead = beadToDraw;
-
-            var column = this.mouseColumn;
-            var row = this.mouseRow;
-            patternUpdateObject.locations = [{ x: column, y: row }];
-
-            this.$store.commit('pattern/setBeads', patternUpdateObject);
-        },
-        save: function save() {
-            axios.post('/pattern/save', {
-                'actionBarValues': this.actionBarValues,
-                'palette': this.beadPalette,
-                'beadMatrix': this.updatableMatrix,
-                'patternValues': this.patternValues
-            }).then(function (response) {
-                console.log(response);
-            }).catch(function (response) {
-                console.log('catch');
+            this.$nextTick(function () {
+                _this2.$store.commit('brickPattern/setCanvasWidth', _this2.canvasProps.canvas.clientWidth);
+                _this2.$store.commit('brickPattern/setCanvasHeight', _this2.canvasProps.canvas.clientHeight);
             });
-        },
-        undo: function undo() {
-            this.updatableMatrix = JSON.parse(this.lastState);
-            this.drawNewGrid();
         }
+        //
+        // start: function (event) {
+        //     this.canvasProps.ctx.beginPath();
+        //
+        //     this.mouseProps.prevX = this.mouseProps.currX;
+        //     this.mouseProps.prevY = this.mouseProps.currY;
+        //
+        //     if (event.ctrlKey) {
+        //         this.drag = true;
+        //     }
+        //     if (!this.drag) {
+        //         this.lastState = JSON.stringify(this.updatableMatrix);
+        //         this.mouseProps.drawing = true;
+        //         this.mouseProps.currX = event.clientX;
+        //         this.mouseProps.currY = event.clientY;
+        //     }
+        // },
+        // move: function (event) {
+        //     if (this.mouseProps.drawing) {
+        //         this.mouseProps.currX = event.clientX;
+        //         this.mouseProps.currY = event.clientY;
+        //     }
+        //
+        //     if (this.drag) {
+        //         if (this.zoomChild != null) {
+        //             this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
+        //             this.prevX = this.currX;
+        //             this.prevY = this.currY;
+        //         }
+        //     }
+        // },
+        // finishMove: function (event) {
+        //     this.mouseProps.drawing = false;
+        //     this.mouseProps.drag = false;
+        // },
+        // drawBead: function () {
+        //     if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
+        //         return;
+        //     }
+        //
+        //     let beadToDraw = this.$store.getters['currentBead/value'];
+        //
+        //     let patternUpdateObject = {};
+        //     patternUpdateObject.bead = beadToDraw;
+        //
+        //     let column = this.mouseColumn;
+        //     let row = this.mouseRow;
+        //     patternUpdateObject.locations = [{x: column, y: row}];
+        //
+        //     this.$store.commit('pattern/setBeads', patternUpdateObject);
+        // },
+        // save: function () {
+        //     axios.post('/pattern/save', {
+        //         'actionBarValues': this.actionBarValues,
+        //         'palette': this.beadPalette,
+        //         'beadMatrix': this.updatableMatrix,
+        //         'patternValues': this.patternValues,
+        //     })
+        //         .then(function (response) {
+        //             console.log(response)
+        //         }).catch(function (response) {
+        //         console.log('catch');
+        //     });
+        // },
+        // undo: function () {
+        //     this.updatableMatrix = JSON.parse(this.lastState);
+        //     this.drawNewGrid();
+        // },
     },
     watch: {
-        'mouseRow': {
-            handler: function handler() {
-                this.drawBead();
-            }
-        },
-        'mouseColumn': {
-            handler: function handler() {
-                this.drawBead();
-            }
-        },
+        // 'mouseRow': {
+        //     handler: function () {
+        //         this.drawBead();
+        //     }
+        // },
+        // 'mouseColumn': {
+        //     handler: function () {
+        //         this.drawBead();
+        //     }
+        // },
         //            'beadProps': {
         //                handler: function () {
         //                    this.drawBead();
         //                },
         //                deep: true,
         //            },
-        'updatableMatrix': {
-            handler: function handler() {
-                this.$emit('update:beadMatrix', this.updatableMatrix);
-                //                    this.updatableMatrix = this.beadMatrix;
-            },
-            deep: true
-        },
-
-        'SavedPattern.updateCanvas': {
-            handler: function handler() {
-                //  console.log('on resize called');
-                // this.onResize();
-            }
-        }
+        //             'updatableMatrix': {
+        //                 handler: function () {
+        //                     this.$emit('update:beadMatrix', this.updatableMatrix);
+        // //                    this.updatableMatrix = this.beadMatrix;
+        //                 },
+        //                 deep: true,
+        //             },
+        //
+        //             'SavedPattern.updateCanvas': {
+        //                 handler: function () {
+        //                     //  console.log('on resize called');
+        //                     // this.onResize();
+        //                 }
+        //             }
     }
 });
 
@@ -49893,26 +49234,6 @@ var render = function() {
       on: { notify: _vm.onResize }
     },
     [
-      _c("draw-brick-lines", {
-        attrs: {
-          actionBarValues: _vm.actionBarValues,
-          canvasProps: _vm.canvasProps,
-          patternValues: _vm.patternValues,
-          beadMatrix: _vm.updatableMatrix,
-          canvasWidth: _vm.width,
-          canvasHeight: _vm.height,
-          displayProps: _vm.displayProps
-        },
-        on: {
-          "update:beadMatrix": function($event) {
-            _vm.updatableMatrix = $event
-          },
-          "update:displayProps": function($event) {
-            _vm.displayProps = $event
-          }
-        }
-      }),
-      _vm._v(" "),
       _vm._l(_vm.columns, function(column) {
         return _c(
           "div",
@@ -49966,438 +49287,12 @@ if (false) {
 }
 
 /***/ }),
-/* 110 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(111)
-/* template */
-var __vue_template__ = __webpack_require__(112)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-69bc7e3f", Component.options)
-  } else {
-    hotAPI.reload("data-v-69bc7e3f", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 111 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(4);
-//
-//
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    /**
-     * When a brick stitch is selected, determine the size & location of the grid, and draw the background grid (thread)
-     *
-     * This will fill in the display within the canvas
-     */
-
-    props: {
-        //Update our grid whenever the Canvas changes
-        canvasProps: {
-            type: Object
-        },
-        //We are in charge of the Display Props & will calculate them when drawing our grid
-        displayProps: {
-            type: Object
-        },
-        canvasWidth: {
-            type: Number
-        },
-        canvasHeight: {
-            type: Number
-        }
-    },
-    data: function data() {
-        return {
-            actionBarValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues,
-            beadMatrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
-            display: this.displayProps,
-            matrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
-            beadType: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType,
-            beadAspect: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType.beadAspect,
-            locations: __WEBPACK_IMPORTED_MODULE_1__StoredData_CanvasLocations_js__["a" /* default */]
-        };
-    },
-    computed: {
-        // beadCountHeight: function() {
-        //     return this.$store.getters['pattern/height'];
-        // },
-        // beadCountWidth: function() {
-        //     return this.$store.getters['pattern/width']
-        // },
-        // //the aspect multiple of a bead is always 1 for the height
-        // aspectPatternHeight: function () {
-        //     return this.$store.getters['pattern/height'];
-        // },
-        // //if we are working with not-square beads multiply by the aspect to get the size across
-        // aspectPatternWidth: function () {
-        //     return this.$store.getters['pattern/width'] * this.beadAspect;
-        // },
-        // //determine if the pattern goes all the way to the height edges or the width edges.
-        //To display the entire pattern on the screen as large as possible one must be true
-        // heightLimited: function () {
-        //     let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
-        //     let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
-        //
-        //     return proportionHeightCovered > proportionWidthCovered;
-        // },
-        //Determine how tall each bead is on the screen
-        displayBeadHeight: function displayBeadHeight() {
-            var baseBeadHeight = 1;
-            //If our pattern takes up more vertical space on our screen than horizontal
-            if (this.heightLimited) {
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var smallestOffsetPossible = this.canvasHeight % this.beadCountHeight / 2;
-
-                //Calculate the bead size - based on the smallest offsets possible & the current zoom
-                baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
-            } else {
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var _smallestOffsetPossible = this.canvasWidth % (this.beadCountWidth * this.beadAspect) / 2;
-
-                var baseBeadWidth = (this.canvasWidth - _smallestOffsetPossible) / (this.beadCountWidth * this.beadAspect);
-                baseBeadHeight = baseBeadWidth / this.beadAspect;
-            }
-
-            //apply the scale factor to the bead size
-            this.locations.rowHeight = baseBeadHeight * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
-            return this.locations.rowHeight;
-        },
-        //Determine how wide each bead is on the screen
-        displayBeadWidth: function displayBeadWidth() {
-            var baseBeadHeight = 1;
-            var baseBeadWidth = 1;
-            //If our pattern takes up more vertical space on our screen than horizontal
-            if (this.heightLimited) {
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var smallestOffsetPossible = this.canvasHeight % this.beadCountHeight / 2;
-
-                //Calculate the bead size - based on the smallest offsets possible & the current zoom
-                baseBeadHeight = (this.canvasHeight - smallestOffsetPossible) / this.beadCountHeight;
-                baseBeadWidth = baseBeadHeight * this.beadAspect;
-            } else {
-                //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-                var _smallestOffsetPossible2 = this.canvasWidth % (this.beadCountWidth * this.beadAspect) / 2;
-
-                baseBeadWidth = (this.canvasWidth - _smallestOffsetPossible2) / (this.beadCountWidth * this.beadAspect);
-            }
-
-            //apply the scale factor to the bead size
-            this.locations.columnWidth = baseBeadWidth * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
-            return this.locations.columnWidth;
-        },
-        totalPatternWidth: function totalPatternWidth() {
-            this.locations.pixelWidth = this.beadCountWidth * this.displayBeadWidth;
-            return this.locations.pixelWidth;
-        },
-        totalPatternHeight: function totalPatternHeight() {
-            this.locations.pixelHeight = this.beadCountHeight * this.displayBeadHeight;
-            return this.locations.pixelHeight;
-        },
-        leftOffset: function leftOffset() {
-            var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-            this.locations.leftOffset = baseOffset + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal;
-            return this.locations.leftOffset;
-        },
-        topOffset: function topOffset() {
-            var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
-            this.locations.topOffset = baseOffset + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical;
-            return this.locations.topOffset;
-        },
-        rightOffset: function rightOffset() {
-            var baseOffset = (this.canvasWidth - this.totalPatternWidth) / 2;
-            this.locations.rightOffset = baseOffset - __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal;
-            return this.locations.rightOffset;
-        },
-        bottomOffset: function bottomOffset() {
-            var baseOffset = (this.canvasHeight - this.totalPatternHeight) / 2;
-            this.locations.bottomOffset = baseOffset - __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical;
-            return this.locations.bottomOffset;
-        }
-    },
-
-    methods: {
-        drawHorizontalLines: function drawHorizontalLines() {
-            //draw horizontal lines
-            var division = this.topOffset;
-            var patternHeight = this.beadCountHeight;
-            var beadHeight = this.displayBeadHeight;
-            var lineStart = this.leftOffset;
-            var lineEnd = this.canvasWidth - this.rightOffset;
-
-            this.locations.rowStarts = [];
-            for (var rowCount = 0; rowCount <= patternHeight; rowCount++) {
-                this.canvasProps.ctx.moveTo(lineStart, division);
-                this.canvasProps.ctx.lineTo(lineEnd, division);
-                this.locations.addRow(division);
-                division += beadHeight;
-            }
-        },
-
-        drawVerticalLines: function drawVerticalLines() {
-            //draw vertical
-            var division = this.leftOffset;
-            var patternWidth = this.beadCountWidth;
-            var beadWidth = this.displayBeadWidth;
-            var lineStart = this.topOffset;
-            var lineEnd = this.canvasHeight - this.bottomOffset;
-
-            //                this.locations.columnStarts = [];
-            //                for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
-            //                    this.canvasProps.ctx.moveTo(division, lineStart);
-            //                    this.canvasProps.ctx.lineTo(division, lineEnd);
-            //                    this.locations.addColumn(division);
-            //                    division += beadWidth;
-            //                }
-        },
-
-        /**
-         * After any change to the pattern, simply erase it and draw a new one from the grid.
-         * This destroys all current data on the canvas and redraws a new one with new values.
-         */
-        drawNewGrid: function drawNewGrid() {
-            this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            //                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-            this.canvasProps.ctx.scale(__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor, __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor);
-            this.canvasProps.ctx.beginPath();
-            this.canvasProps.ctx.strokeStyle = 'black';
-
-            this.drawHorizontalLines();
-            this.drawVerticalLines();
-
-            this.canvasProps.ctx.stroke();
-        }
-    },
-    watch: {
-        'panZoom': {
-            handler: function handler() {
-                this.drawNewGrid();
-            }
-        },
-        'canvasWidth': {
-            handler: function handler() {
-                this.$store.commit('brickPattern/setCanvasWidth', this.canvasWidth);
-                this.$store.commit('brickPattern/setCanvasHeight', this.canvasHeight);
-                //                    this.drawNewGrid();
-            }
-        },
-        'canvasProps.canvasReady': {
-            handler: function handler() {
-                this.drawNewGrid();
-            },
-            deep: true
-        }
-
-    }
-});
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div")
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-69bc7e3f", module.exports)
-  }
-}
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(114)
-/* template */
-var __vue_template__ = __webpack_require__(115)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6b6a2d22", Component.options)
-  } else {
-    hotAPI.reload("data-v-6b6a2d22", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-
-/**
- * When a brick stitch is selected, using the mouse position and the grid calculated offsets & bead size
- * Calculate the bead index given a set of coordinates
- */
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        displayProps: {
-            type: Object
-        },
-        beadProps: {
-            type: Object
-        },
-        canvasProps: {
-            type: Object
-        },
-        patternSize: {
-            type: Object
-        },
-        mouseProps: {
-            type: Object
-        },
-        panZoom: {
-            type: Object
-        }
-    },
-    data: function data() {
-        return {
-            calculated: this.beadProps
-        };
-    },
-    methods: {
-        calculateIndex: function calculateIndex(pixelCount, scaleFactor, canvasEdge, offset, beadSize, maxCount) {
-            var pixelsFromPatternEdge = pixelCount - offset - canvasEdge;
-            var pixelsFromBeadStart = pixelsFromPatternEdge % beadSize;
-            var previousBeadStart = pixelsFromPatternEdge - pixelsFromBeadStart;
-            var beadIndex = previousBeadStart / beadSize;
-
-            //Ensure this index is really in the pattern
-            if (beadIndex < 0) return null;
-            if (beadIndex >= maxCount) return null;
-
-            return Math.round(beadIndex);
-        },
-
-        calculateCurrentProps: function calculateCurrentProps() {
-            var rect = this.canvasProps.canvas.getBoundingClientRect();
-            var scaleFactor = this.panZoom.scaleFactor;
-            var display = this.displayProps;
-            //given the mouse props calculate the indexes
-
-            this.calculated.xIndex = this.calculateIndex(this.mouseProps.currX, scaleFactor, rect.left, display.leftOffset, display.beadWidth, this.patternSize.width);
-            this.calculated.yIndex = this.calculateIndex(this.mouseProps.currY, scaleFactor, rect.top, display.topOffset, display.beadHeight, this.patternSize.height);
-
-            this.$emit('update:beadProps', this.calculated);
-        }
-    },
-    watch: {
-        'mouseProps': {
-            handler: function handler() {
-                this.calculateCurrentProps();
-            },
-            deep: true
-        }
-    }
-});
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div")
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6b6a2d22", module.exports)
-  }
-}
-
-/***/ }),
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */,
+/* 114 */,
+/* 115 */,
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -50406,7 +49301,7 @@ var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(117)
 /* template */
-var __vue_template__ = __webpack_require__(118)
+var __vue_template__ = null
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50450,13 +49345,8 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(4);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-
 
 
 
@@ -50467,81 +49357,39 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         row: {
             type: Number
-        },
-        canvasProps: {
-            type: Object
         }
     },
     data: function data() {
         return {};
     },
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapGetters */])({
-        //                bead: state => state.pattern.colorAtLocation({'x': this.column, 'y': this.row})
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
         bead: "pattern/colorAtLocation",
-        canvasWidth: "brickPattern/canvasWidth",
         beadHeight: "brickPattern/beadHeight",
         beadWidth: "brickPattern/beadWidth",
         beadTop: "brickPattern/beadTop",
         beadLeft: "brickPattern/beadLeft"
     }), {
-        // canvasSize: function() {
-        //     return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
-        // },
         location: function location() {
             return { 'x': this.row, 'y': this.column };
         }
     }),
-    methods: {
-        drawBead: function drawBead() {
-            var left = this.beadLeft(this.location);
-            var top = this.beadTop(this.location);
-            var height = this.beadHeight;
-            var width = this.beadWidth;
+    render: function render() {
+        var left = this.beadLeft(this.location);
+        var top = this.beadTop(this.location);
+        var height = this.beadHeight;
+        var width = this.beadWidth;
 
-            this.canvasProps.ctx.fillStyle = this.bead(this.location);
-            this.canvasProps.ctx.strokeStyle = '#990000';
-            this.canvasProps.ctx.lineWidth = 1;
-            // this.canvasProps.ctx.strokeRect()
-            this.canvasProps.ctx.rect(left, top, width, height);
-            this.canvasProps.ctx.stroke();
-        }
-    },
-    watch: {
-        canvasWidth: {
-            handler: function handler() {
-                this.drawBead();
-            }
-        },
-        bead: {
-            handler: function handler() {
-                this.drawBead();
-            },
-            deep: true
-        }
+        this.canvasProps.ctx.fillStyle = this.bead(this.location);
+        this.canvasProps.ctx.strokeStyle = '#990000';
+        this.canvasProps.ctx.lineWidth = 1;
+        // this.canvasProps.ctx.strokeRect()
+        this.canvasProps.ctx.rect(left, top, width, height);
+        this.canvasProps.ctx.stroke();
     }
 });
 
 /***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div")
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-a75ae4d6", module.exports)
-  }
-}
-
-/***/ }),
+/* 118 */,
 /* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 

@@ -133,7 +133,7 @@
         },
         watch: {
             "patternInfo.height": function () {
-                this.drawNewGrid();
+                // this.drawNewGrid();
             },
             canvasHeight: function () {
                 let self = this;

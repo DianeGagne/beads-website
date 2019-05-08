@@ -14,7 +14,6 @@
     </div>
 </template>
 <script>
-    import SavedPattern from '../../../StoredData/PatternValues.js';
 
     export default {
         data: function () {
@@ -26,7 +25,6 @@
             }
         },
         mounted() {
-            SavedPattern.updateCanvas = true;
             this.open();
         },
         computed: {

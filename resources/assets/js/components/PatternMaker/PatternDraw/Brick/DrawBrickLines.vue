@@ -139,77 +139,9 @@
         },
 
         methods: {
-            drawHorizontalLines: function () {
-                //draw horizontal lines
-                let division = this.topOffset;
-                let patternHeight = this.beadCountHeight;
-                let beadHeight = this.displayBeadHeight;
-                let lineStart = this.leftOffset;
-                let lineEnd = this.canvasWidth - this.rightOffset;
 
-                this.locations.rowStarts = [];
-                for (let rowCount = 0; rowCount <= patternHeight; rowCount++) {
-                    this.canvasProps.ctx.moveTo(lineStart, division);
-                    this.canvasProps.ctx.lineTo(lineEnd, division);
-                    this.locations.addRow(division);
-                    division += beadHeight;
-                }
-            },
-
-            drawVerticalLines: function () {
-                //draw vertical
-                let division = this.leftOffset;
-                let patternWidth = this.beadCountWidth;
-                let beadWidth = this.displayBeadWidth;
-                let lineStart = this.topOffset;
-                let lineEnd = this.canvasHeight - this.bottomOffset;
-
-//                this.locations.columnStarts = [];
-//                for (let columnCount = 0; columnCount <= patternWidth; columnCount++) {
-//                    this.canvasProps.ctx.moveTo(division, lineStart);
-//                    this.canvasProps.ctx.lineTo(division, lineEnd);
-//                    this.locations.addColumn(division);
-//                    division += beadWidth;
-//                }
-            },
-
-            /**
-             * After any change to the pattern, simply erase it and draw a new one from the grid.
-             * This destroys all current data on the canvas and redraws a new one with new values.
-             */
-            drawNewGrid: function () {
-                this.canvasProps.ctx.setTransform(1, 0, 0, 1, 0, 0);
-//                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-                this.canvasProps.ctx.scale(SavedPattern.scaleFactor, SavedPattern.scaleFactor);
-                this.canvasProps.ctx.beginPath();
-                this.canvasProps.ctx.strokeStyle = 'black';
-
-
-                this.drawHorizontalLines();
-                this.drawVerticalLines();
-
-                this.canvasProps.ctx.stroke();
-            },
         },
         watch: {
-            'panZoom': {
-                handler: function () {
-                    this.drawNewGrid();
-                },
-            },
-            'canvasWidth': {
-                handler: function () {
-                    this.$store.commit('brickPattern/setCanvasWidth', this.canvasWidth);
-                    this.$store.commit('brickPattern/setCanvasHeight', this.canvasHeight);
-//                    this.drawNewGrid();
-                }
-            },
-            'canvasProps.canvasReady': {
-                handler: function () {
-                    this.drawNewGrid();
-                },
-                deep: true,
-            },
 
         },
     }
