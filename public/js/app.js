@@ -45951,9 +45951,15 @@ var getters = {
         var baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
         return baseOffset + state.pan.horizontal + 0.5;
     },
+    horizontalEndOfPattern: function horizontalEndOfPattern(state, getters, rootState) {
+        return getters.leftOffset + getters.beadWidth * rootState.pattern.columns;
+    },
     topOffset: function topOffset(state, getters) {
         var baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
         return baseOffset + state.pan.vertical + 0.5;
+    },
+    verticalEndOfPattern: function verticalEndOfPattern(state, getters, rootState) {
+        return getters.topOffset + getters.beadHeight * rootState.pattern.rows;
     },
 
     beadTop: function beadTop(state, getters) {
@@ -45964,6 +45970,33 @@ var getters = {
     beadLeft: function beadLeft(state, getters) {
         return function (location) {
             return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+        };
+    },
+
+    //given a location (x,y) determine if the pixels are within the beaded pattern or outside of it
+    isLocationInPattern: function isLocationInPattern(state, getters) {
+        return function (location) {
+            //check the location is within the pattern
+            if (location.x < getters.leftOffset) return false;
+            if (location.y < getters.topOffset) return false;
+            if (location.x > getters.horizontalEndOfPattern) return false;
+            if (location.y > getters.verticalEndOfPattern) return false;
+
+            return true;
+        };
+    },
+    //get given a location in pixels (x,y) and return a location of the bead (row, column),
+    //or return null if not in the pattern
+    getBeadFromPixels: function getBeadFromPixels(state, getters) {
+        return function (location) {
+            console.log('getBeadFromPixels');
+            console.log(location);
+            if (getters.isLocationInPattern) {
+                //it is in the pattern - get the column
+                var column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
+                var row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+                return { 'column': column, 'row': row };
+            }
         };
     }
 };
@@ -48520,24 +48553,11 @@ function initCompat() {
     data: function data() {
         return {
             //Read only from the pattern
-            beadPalette: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].palette,
-            updatableMatrix: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].beadMatrix,
-            patternValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues,
-            actionBarValues: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].actionBarValues,
             history: null,
             canvasProps: {
                 canvas: null,
                 ctx: null,
                 canvasReady: false
-            },
-            //The current display settings as calculated when drawing a grid
-            displayProps: {
-                beadWidth: 1,
-                beadHeight: 1,
-                topOffset: 0,
-                leftOffset: 0,
-                rightOffset: 0,
-                bottomOffset: 0
             },
             //Keep track of the current & previous mouse position
             mouseProps: {
@@ -48598,27 +48618,36 @@ function initCompat() {
             return state.pattern.columns;
         }
     }), Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["b" /* mapGetters */])({
-        bead: "pattern/colorAtLocation"
+        bead: "pattern/colorAtLocation",
+        getFromPixels: "brickPattern/getBeadFromPixels",
+        isInPattern: "brickPattern/isLocationInPattern",
+        beadToDraw: "currentBead/value"
     }), {
-        mouseIsInPattern: function mouseIsInPattern() {
-            return this.mouseY > this.locations.topOffset && this.mouseY < this.locations.topOffset + this.locations.pixelHeight && this.mouseX > this.locations.leftOffset && this.mouseX < this.locations.leftOffset + this.locations.pixelWidth;
-        },
-        mouseRow: function mouseRow() {
-            if (!this.mouseIsInPattern) return null;
-            for (var index in this.locations.rowStarts) {
-                if (this.mouseY < this.locations.rowStarts[index]) {
-                    return index - 1;
-                }
-            }
-        },
-        mouseColumn: function mouseColumn() {
-            if (!this.mouseIsInPattern) return null;
-            for (var index in this.locations.columnStarts) {
-                if (this.mouseX < this.locations.columnStarts[index]) {
-                    return index - 1;
-                }
-            }
-        },
+        // mouseIsInPattern: function () {
+        //     return this.mouseY > this.locations.topOffset
+        //         && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
+        //         && this.mouseX > this.locations.leftOffset
+        //         && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
+        //
+        // },
+        // mouseRow: function () {
+        //     if (!this.mouseIsInPattern)
+        //         return null;
+        //     for (let index in this.locations.rowStarts) {
+        //         if (this.mouseY < this.locations.rowStarts[index]) {
+        //             return index - 1;
+        //         }
+        //     }
+        // },
+        // mouseColumn: function () {
+        //     if (!this.mouseIsInPattern)
+        //         return null;
+        //     for (let index in this.locations.columnStarts) {
+        //         if (this.mouseX < this.locations.columnStarts[index]) {
+        //             return index - 1;
+        //         }
+        //     }
+        // },
         mouseX: function mouseX() {
             var offsetLeft = 0;
             if (this.canvasProps.canvas) {
@@ -48663,58 +48692,58 @@ function initCompat() {
                 _this2.$store.commit('brickPattern/setCanvasWidth', _this2.canvasProps.canvas.clientWidth);
                 _this2.$store.commit('brickPattern/setCanvasHeight', _this2.canvasProps.canvas.clientHeight);
             });
+        },
+
+        start: function start(event) {
+            this.canvasProps.ctx.beginPath();
+
+            this.mouseProps.prevX = this.mouseProps.currX;
+            this.mouseProps.prevY = this.mouseProps.currY;
+
+            if (event.ctrlKey) {
+                this.drag = true;
+            }
+            if (!this.drag) {
+                this.lastState = JSON.stringify(this.updatableMatrix);
+                this.mouseProps.drawing = true;
+                // this.mouseProps.currX = event.clientX;
+                // this.mouseProps.currY = event.clientY;
+                this.drawBead();
+            }
+        },
+        move: function move(event) {
+            if (this.mouseProps.drawing) {
+                this.mouseProps.currX = event.clientX;
+                this.mouseProps.currY = event.clientY;
+                this.drawBead();
+            }
+
+            if (this.drag) {
+                if (this.zoomChild != null) {
+                    this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
+                    this.prevX = this.currX;
+                    this.prevY = this.currY;
+                }
+            }
+        },
+        finishMove: function finishMove(event) {
+            this.mouseProps.drawing = false;
+            this.mouseProps.drag = false;
+        },
+        drawBead: function drawBead() {
+            var location = { 'x': this.mouseX, 'y': this.mouseY };
+            if (!this.isInPattern(location) || !this.mouseProps.drawing) {
+                return;
+            }
+
+            var beadPosition = this.getFromPixels(location);
+            var patternUpdateObject = {};
+            patternUpdateObject.bead = this.beadToDraw;
+
+            patternUpdateObject.locations = [{ x: beadPosition.column, y: beadPosition.row }];
+
+            this.$store.commit('pattern/setBeads', patternUpdateObject);
         }
-        //
-        // start: function (event) {
-        //     this.canvasProps.ctx.beginPath();
-        //
-        //     this.mouseProps.prevX = this.mouseProps.currX;
-        //     this.mouseProps.prevY = this.mouseProps.currY;
-        //
-        //     if (event.ctrlKey) {
-        //         this.drag = true;
-        //     }
-        //     if (!this.drag) {
-        //         this.lastState = JSON.stringify(this.updatableMatrix);
-        //         this.mouseProps.drawing = true;
-        //         this.mouseProps.currX = event.clientX;
-        //         this.mouseProps.currY = event.clientY;
-        //     }
-        // },
-        // move: function (event) {
-        //     if (this.mouseProps.drawing) {
-        //         this.mouseProps.currX = event.clientX;
-        //         this.mouseProps.currY = event.clientY;
-        //     }
-        //
-        //     if (this.drag) {
-        //         if (this.zoomChild != null) {
-        //             this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
-        //             this.prevX = this.currX;
-        //             this.prevY = this.currY;
-        //         }
-        //     }
-        // },
-        // finishMove: function (event) {
-        //     this.mouseProps.drawing = false;
-        //     this.mouseProps.drag = false;
-        // },
-        // drawBead: function () {
-        //     if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
-        //         return;
-        //     }
-        //
-        //     let beadToDraw = this.$store.getters['currentBead/value'];
-        //
-        //     let patternUpdateObject = {};
-        //     patternUpdateObject.bead = beadToDraw;
-        //
-        //     let column = this.mouseColumn;
-        //     let row = this.mouseRow;
-        //     patternUpdateObject.locations = [{x: column, y: row}];
-        //
-        //     this.$store.commit('pattern/setBeads', patternUpdateObject);
-        // },
         // save: function () {
         //     axios.post('/pattern/save', {
         //         'actionBarValues': this.actionBarValues,
@@ -49357,11 +49386,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         row: {
             type: Number
+        },
+        canvasProps: {
+            type: Object
         }
     },
-    data: function data() {
-        return {};
-    },
+
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
         bead: "pattern/colorAtLocation",
         beadHeight: "brickPattern/beadHeight",
@@ -49384,6 +49414,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.canvasProps.ctx.lineWidth = 1;
         // this.canvasProps.ctx.strokeRect()
         this.canvasProps.ctx.rect(left, top, width, height);
+        this.canvasProps.ctx.fillRect(left, top, width, height);
         this.canvasProps.ctx.stroke();
     }
 });

@@ -9,11 +9,11 @@
             row: {
                 type: Number,
             },
+            canvasProps: {
+                type: Object,
+            },
         },
-        data: function() {
-            return {
-            }
-        },
+
         computed: {
             ...mapGetters({
                 bead: "pattern/colorAtLocation",
@@ -37,6 +37,7 @@
             this.canvasProps.ctx.lineWidth = 1;
             // this.canvasProps.ctx.strokeRect()
             this.canvasProps.ctx.rect(left, top, width, height);
+            this.canvasProps.ctx.fillRect(left,top,width,height);
             this.canvasProps.ctx.stroke();
 
         },

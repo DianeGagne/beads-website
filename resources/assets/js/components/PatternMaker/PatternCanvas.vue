@@ -44,24 +44,11 @@
         data: function () {
             return {
                 //Read only from the pattern
-                beadPalette: SavedPattern.palette,
-                updatableMatrix: SavedPattern.beadMatrix,
-                patternValues: SavedPattern.patternValues,
-                actionBarValues: SavedPattern.actionBarValues,
                 history: null,
                 canvasProps: {
                     canvas: null,
                     ctx: null,
                     canvasReady: false,
-                },
-                //The current display settings as calculated when drawing a grid
-                displayProps: {
-                    beadWidth: 1,
-                    beadHeight: 1,
-                    topOffset: 0,
-                    leftOffset: 0,
-                    rightOffset: 0,
-                    bottomOffset: 0,
                 },
                 //Keep track of the current & previous mouse position
                 mouseProps: {
@@ -118,32 +105,35 @@
             }),
             ...mapGetters({
                 bead: "pattern/colorAtLocation",
+                getFromPixels : "brickPattern/getBeadFromPixels",
+                isInPattern: "brickPattern/isLocationInPattern",
+                beadToDraw: "currentBead/value",
             }),
-            mouseIsInPattern: function () {
-                return this.mouseY > this.locations.topOffset
-                    && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
-                    && this.mouseX > this.locations.leftOffset
-                    && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
-
-            },
-            mouseRow: function () {
-                if (!this.mouseIsInPattern)
-                    return null;
-                for (let index in this.locations.rowStarts) {
-                    if (this.mouseY < this.locations.rowStarts[index]) {
-                        return index - 1;
-                    }
-                }
-            },
-            mouseColumn: function () {
-                if (!this.mouseIsInPattern)
-                    return null;
-                for (let index in this.locations.columnStarts) {
-                    if (this.mouseX < this.locations.columnStarts[index]) {
-                        return index - 1;
-                    }
-                }
-            },
+            // mouseIsInPattern: function () {
+            //     return this.mouseY > this.locations.topOffset
+            //         && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
+            //         && this.mouseX > this.locations.leftOffset
+            //         && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
+            //
+            // },
+            // mouseRow: function () {
+            //     if (!this.mouseIsInPattern)
+            //         return null;
+            //     for (let index in this.locations.rowStarts) {
+            //         if (this.mouseY < this.locations.rowStarts[index]) {
+            //             return index - 1;
+            //         }
+            //     }
+            // },
+            // mouseColumn: function () {
+            //     if (!this.mouseIsInPattern)
+            //         return null;
+            //     for (let index in this.locations.columnStarts) {
+            //         if (this.mouseX < this.locations.columnStarts[index]) {
+            //             return index - 1;
+            //         }
+            //     }
+            // },
             mouseX: function () {
                 let offsetLeft = 0;
                 if (this.canvasProps.canvas) {
@@ -186,57 +176,59 @@
                     this.$store.commit('brickPattern/setCanvasHeight', this.canvasProps.canvas.clientHeight);
                 });
             },
-            //
-            // start: function (event) {
-            //     this.canvasProps.ctx.beginPath();
-            //
-            //     this.mouseProps.prevX = this.mouseProps.currX;
-            //     this.mouseProps.prevY = this.mouseProps.currY;
-            //
-            //     if (event.ctrlKey) {
-            //         this.drag = true;
-            //     }
-            //     if (!this.drag) {
-            //         this.lastState = JSON.stringify(this.updatableMatrix);
-            //         this.mouseProps.drawing = true;
-            //         this.mouseProps.currX = event.clientX;
-            //         this.mouseProps.currY = event.clientY;
-            //     }
-            // },
-            // move: function (event) {
-            //     if (this.mouseProps.drawing) {
-            //         this.mouseProps.currX = event.clientX;
-            //         this.mouseProps.currY = event.clientY;
-            //     }
-            //
-            //     if (this.drag) {
-            //         if (this.zoomChild != null) {
-            //             this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
-            //             this.prevX = this.currX;
-            //             this.prevY = this.currY;
-            //         }
-            //     }
-            // },
-            // finishMove: function (event) {
-            //     this.mouseProps.drawing = false;
-            //     this.mouseProps.drag = false;
-            // },
-            // drawBead: function () {
-            //     if (!this.mouseIsInPattern || !this.mouseProps.drawing) {
-            //         return;
-            //     }
-            //
-            //     let beadToDraw = this.$store.getters['currentBead/value'];
-            //
-            //     let patternUpdateObject = {};
-            //     patternUpdateObject.bead = beadToDraw;
-            //
-            //     let column = this.mouseColumn;
-            //     let row = this.mouseRow;
-            //     patternUpdateObject.locations = [{x: column, y: row}];
-            //
-            //     this.$store.commit('pattern/setBeads', patternUpdateObject);
-            // },
+
+
+
+            start: function (event) {
+                this.canvasProps.ctx.beginPath();
+
+                this.mouseProps.prevX = this.mouseProps.currX;
+                this.mouseProps.prevY = this.mouseProps.currY;
+
+                if (event.ctrlKey) {
+                    this.drag = true;
+                }
+                if (!this.drag) {
+                    this.lastState = JSON.stringify(this.updatableMatrix);
+                    this.mouseProps.drawing = true;
+                    // this.mouseProps.currX = event.clientX;
+                    // this.mouseProps.currY = event.clientY;
+                    this.drawBead();
+                }
+            },
+            move: function (event) {
+                if (this.mouseProps.drawing) {
+                    this.mouseProps.currX = event.clientX;
+                    this.mouseProps.currY = event.clientY;
+                    this.drawBead();
+                }
+
+                if (this.drag) {
+                    if (this.zoomChild != null) {
+                        this.zoomChild.changePan(this.currX - this.prevX, this.currY - this.prevY);
+                        this.prevX = this.currX;
+                        this.prevY = this.currY;
+                    }
+                }
+            },
+            finishMove: function (event) {
+                this.mouseProps.drawing = false;
+                this.mouseProps.drag = false;
+            },
+            drawBead: function () {
+                let location = {'x':this.mouseX, 'y':this.mouseY};
+                if (!this.isInPattern(location) || !this.mouseProps.drawing) {
+                    return;
+                }
+
+                let beadPosition = this.getFromPixels(location);
+                let patternUpdateObject = {};
+                patternUpdateObject.bead = this.beadToDraw;
+
+                patternUpdateObject.locations = [{x: beadPosition.column, y: beadPosition.row}];
+
+                this.$store.commit('pattern/setBeads', patternUpdateObject);
+            },
             // save: function () {
             //     axios.post('/pattern/save', {
             //         'actionBarValues': this.actionBarValues,

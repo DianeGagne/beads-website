@@ -21,7 +21,7 @@ const mutations = {
     setCanvasWidth(state, width) {
         state.canvasWidth = width;
     },
-    setCanvasHeight(state, height){
+    setCanvasHeight(state, height) {
         state.canvasHeight = height;
     },
 
@@ -41,14 +41,14 @@ const mutations = {
     }
 };
 const getters = {
-    canvasWidth(state){
+    canvasWidth(state) {
         return state.canvasWidth;
     },
-    heightLimited(state, getters, rootState){
+    heightLimited(state, getters, rootState) {
         let proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
         let proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
 
-        return  proportionHeightCovered > proportionWidthCovered;
+        return proportionHeightCovered > proportionWidthCovered;
     },
 
     beadHeight(state, getters, rootState) {
@@ -102,15 +102,48 @@ const getters = {
         let baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
         return baseOffset + state.pan.horizontal + 0.5;
     },
+    horizontalEndOfPattern(state, getters, rootState) {
+        return getters.leftOffset + (getters.beadWidth * rootState.pattern.columns);
+    },
     topOffset(state, getters) {
         let baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
         return baseOffset + state.pan.vertical + 0.5;
     },
+    verticalEndOfPattern(state, getters, rootState) {
+        return getters.topOffset + (getters.beadHeight * rootState.pattern.rows);
+    },
     beadTop: (state, getters) => (location) => {
         return (location.x - 1) * getters.beadHeight + getters.topOffset;
     },
-    beadLeft: (state,getters) => location => {
+    beadLeft: (state, getters) => location => {
         return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+    },
+
+    //given a location (x,y) determine if the pixels are within the beaded pattern or outside of it
+    isLocationInPattern: (state, getters) => location => {
+        //check the location is within the pattern
+        if (location.x < getters.leftOffset)
+            return false;
+        if (location.y < getters.topOffset)
+            return false;
+        if (location.x > getters.horizontalEndOfPattern)
+            return false;
+        if (location.y > getters.verticalEndOfPattern)
+            return false;
+
+        return true;
+    },
+    //get given a location in pixels (x,y) and return a location of the bead (row, column),
+    //or return null if not in the pattern
+    getBeadFromPixels: (state, getters) => location => {
+        console.log('getBeadFromPixels');
+        console.log(location);
+        if(getters.isLocationInPattern) {
+            //it is in the pattern - get the column
+            let column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
+            let row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+            return {'column': column, 'row': row};
+        }
     },
 };
 
