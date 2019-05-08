@@ -7,42 +7,115 @@ const state = {
     bottomOffset: 0,
     pixelHeight: 0,
     pixelWidth: 0,
-
     canvasWidth: 100,
-
-
+    canvasHeight: 100,
     pan: {
         horizontal: 0,
         vertical: 0,
     },
     scaleFactor: 1,
-
+    beadAspect: 1,
 };
 
 const mutations = {
     setCanvasWidth(state, width) {
         state.canvasWidth = width;
     },
+    setCanvasHeight(state, height){
+        state.canvasHeight = height;
+    },
+
     /**
      * set the pan in the form {horizontal: 1, vertical: 1}
      * @param state
      * @param width
      */
     setPan(state, width) {
+    },
+
+    //determine if the pattern goes all the way to the height edges or the width edges.
+    //To display the entire pattern on the screen as large as possible one must be true
+    //NOTE: this currently assumes beads are a 1:1 ratio height:width - this is true for delica beads
+    setHeightLimited(state) {
 
     }
 };
 const getters = {
-    canvasWidth(state, getters) {
+    canvasWidth(state){
         return state.canvasWidth;
     },
-    rowHeight(state, getters) {
+    heightLimited(state, getters, rootState){
+        console.log(rootState);
+        let proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
+        let proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
 
+        console.log('height covered '+proportionHeightCovered);
+        console.log('width covered '+proportionWidthCovered);
+
+        return  proportionHeightCovered > proportionWidthCovered;
     },
-    columnWidth(state, getters) {
 
+    beadHeight(state, getters, rootState) {
+        let baseBeadHeight = 1;
+
+        //If our pattern takes up more vertical space on our screen than horizontal
+        if (getters.heightLimited) {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            let smallestOffsetPossible = (state.canvasHeight % rootState.pattern.rows) / 2;
+
+            //Calculate the bead size - based on the smallest offsets possible & the current zoom
+            baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
+        } else {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * state.beadAspect)) / 2;
+
+            let baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
+            baseBeadHeight = baseBeadWidth / state.beadAspect;
+        }
+
+        return baseBeadHeight * state.scaleFactor;
     },
+    beadWidth(state, getters, rootState) {
+        let baseBeadHeight = 1;
+        let baseBeadWidth = 1;
+        //If our pattern takes up more vertical space on our screen than horizontal
+        if (getters.heightLimited) {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            let smallestOffsetPossible = (state.canvasHeight % rootState.pattern.rows) / 2;
 
+            //Calculate the bead size - based on the smallest offsets possible & the current zoom
+            baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
+            baseBeadWidth = baseBeadHeight * state.beadAspect;
+        } else {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * state.beadAspect)) / 2;
+
+            baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
+        }
+
+        //apply the scale factor to the bead size
+        return baseBeadWidth * state.scaleFactor;
+    },
+    totalPatternWidth(state, getters, rootState) {
+        return getters.beadWidth * rootState.pattern.columns;
+    },
+    totalPatternHeight(state, getters, rootState) {
+        return getters.beadHeight * rootState.pattern.rows;
+    },
+    leftOffset(state, getters, rootState) {
+        let baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
+        return baseOffset + state.pan.horizontal;
+    },
+    topOffset(state, getters) {
+        let baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
+        return baseOffset + state.pan.vertical;
+    },
+    beadTop: (state, getters) => (location) => {
+        return (location.x - 1) * getters.beadHeight + getters.topOffset;
+    },
+    beadLeft: (state,getters) => location => {
+        return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+    },
 };
 
 export default {
@@ -51,3 +124,4 @@ export default {
     mutations,
     getters,
 }
+

@@ -41,32 +41,28 @@
             }
         },
         computed: {
-            //determine if we need to redraw due to the pan/zoom
-            panZoom: function () {
-                return (SavedPattern.pan.horizontal + SavedPattern.pan.vertical) * SavedPattern.scaleFactor;
-            },
-            beadCountHeight: function() {
-                return this.$store.getters['pattern/height'];
-            },
-            beadCountWidth: function() {
-                return this.$store.getters['pattern/width']
-            },
-            //the aspect multiple of a bead is always 1 for the height
-            aspectPatternHeight: function () {
-                return this.$store.getters['pattern/height'];
-            },
-            //if we are working with not-square beads multiply by the aspect to get the size across
-            aspectPatternWidth: function () {
-                return this.$store.getters['pattern/width'] * this.beadAspect;
-            },
-            //determine if the pattern goes all the way to the height edges or the width edges.
+            // beadCountHeight: function() {
+            //     return this.$store.getters['pattern/height'];
+            // },
+            // beadCountWidth: function() {
+            //     return this.$store.getters['pattern/width']
+            // },
+            // //the aspect multiple of a bead is always 1 for the height
+            // aspectPatternHeight: function () {
+            //     return this.$store.getters['pattern/height'];
+            // },
+            // //if we are working with not-square beads multiply by the aspect to get the size across
+            // aspectPatternWidth: function () {
+            //     return this.$store.getters['pattern/width'] * this.beadAspect;
+            // },
+            // //determine if the pattern goes all the way to the height edges or the width edges.
             //To display the entire pattern on the screen as large as possible one must be true
-            heightLimited: function () {
-                let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
-                let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
-
-                return proportionHeightCovered > proportionWidthCovered;
-            },
+            // heightLimited: function () {
+            //     let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
+            //     let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
+            //
+            //     return proportionHeightCovered > proportionWidthCovered;
+            // },
             //Determine how tall each bead is on the screen
             displayBeadHeight: function () {
                 let baseBeadHeight = 1;
@@ -204,6 +200,7 @@
             'canvasWidth': {
                 handler: function () {
                     this.$store.commit('brickPattern/setCanvasWidth', this.canvasWidth);
+                    this.$store.commit('brickPattern/setCanvasHeight', this.canvasHeight);
 //                    this.drawNewGrid();
                 }
             },

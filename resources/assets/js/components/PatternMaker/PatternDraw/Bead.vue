@@ -24,25 +24,31 @@
             ...mapGetters({
 //                bead: state => state.pattern.colorAtLocation({'x': this.column, 'y': this.row})
                 bead: "pattern/colorAtLocation",
-                canvasWidth: "brickPattern/canvasWidth"
+                canvasWidth: "brickPattern/canvasWidth",
+                beadHeight: "brickPattern/beadHeight",
+                beadWidth: "brickPattern/beadWidth",
+                beadTop: "brickPattern/beadTop",
+                beadLeft: "brickPattern/beadLeft"
             }),
-            canvasSize: function() {
-                return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
-            },
+            // canvasSize: function() {
+            //     return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
+            // },
             location: function() {
-                return {'x': this.column, 'y': this.row};
+                return {'x': this.row, 'y': this.column};
             }
         },
         methods: {
             drawBead: function () {
-                let left = CanvasLocations.columnStarts[this.column -1];
-                let top = CanvasLocations.rowStarts[this.row -1];
-                let height = CanvasLocations.rowHeight;
-                let width = CanvasLocations.columnWidth;
+                let left = this.beadLeft(this.location);
+                let top = this.beadTop(this.location);
+                let height = this.beadHeight;
+                let width = this.beadWidth;
 
-                this.canvasProps.ctx.fillStyle = this.bead(location);
+                this.canvasProps.ctx.fillStyle = this.bead(this.location);
                 this.canvasProps.ctx.strokeStyle = '#990000';
-                this.canvasProps.ctx.fillRect(left, top, width, height);
+                this.canvasProps.ctx.lineWidth = 1;
+                // this.canvasProps.ctx.strokeRect()
+                this.canvasProps.ctx.rect(left, top, width, height);
                 this.canvasProps.ctx.stroke();
             },
         },

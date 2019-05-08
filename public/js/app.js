@@ -45899,35 +45899,118 @@ var state = {
     bottomOffset: 0,
     pixelHeight: 0,
     pixelWidth: 0,
-
     canvasWidth: 100,
-
+    canvasHeight: 100,
     pan: {
         horizontal: 0,
         vertical: 0
     },
-    scaleFactor: 1
-
+    scaleFactor: 1,
+    beadAspect: 1
 };
 
 var mutations = {
     setCanvasWidth: function setCanvasWidth(state, width) {
         state.canvasWidth = width;
     },
+    setCanvasHeight: function setCanvasHeight(state, height) {
+        state.canvasHeight = height;
+    },
+
 
     /**
      * set the pan in the form {horizontal: 1, vertical: 1}
      * @param state
      * @param width
      */
-    setPan: function setPan(state, width) {}
+    setPan: function setPan(state, width) {},
+
+
+    //determine if the pattern goes all the way to the height edges or the width edges.
+    //To display the entire pattern on the screen as large as possible one must be true
+    //NOTE: this currently assumes beads are a 1:1 ratio height:width - this is true for delica beads
+    setHeightLimited: function setHeightLimited(state) {}
 };
 var getters = {
-    canvasWidth: function canvasWidth(state, getters) {
+    canvasWidth: function canvasWidth(state) {
         return state.canvasWidth;
     },
-    rowHeight: function rowHeight(state, getters) {},
-    columnWidth: function columnWidth(state, getters) {}
+    heightLimited: function heightLimited(state, getters, rootState) {
+        console.log(rootState);
+        var proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
+        var proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
+
+        console.log('height covered ' + proportionHeightCovered);
+        console.log('width covered ' + proportionWidthCovered);
+
+        return proportionHeightCovered > proportionWidthCovered;
+    },
+    beadHeight: function beadHeight(state, getters, rootState) {
+        var baseBeadHeight = 1;
+
+        //If our pattern takes up more vertical space on our screen than horizontal
+        if (getters.heightLimited) {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            var smallestOffsetPossible = state.canvasHeight % rootState.pattern.rows / 2;
+
+            //Calculate the bead size - based on the smallest offsets possible & the current zoom
+            baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
+        } else {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            var _smallestOffsetPossible = state.canvasWidth % (rootState.pattern.columns * state.beadAspect) / 2;
+
+            var baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
+            baseBeadHeight = baseBeadWidth / state.beadAspect;
+        }
+
+        return baseBeadHeight * state.scaleFactor;
+    },
+    beadWidth: function beadWidth(state, getters, rootState) {
+        var baseBeadHeight = 1;
+        var baseBeadWidth = 1;
+        //If our pattern takes up more vertical space on our screen than horizontal
+        if (getters.heightLimited) {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            var smallestOffsetPossible = state.canvasHeight % rootState.pattern.rows / 2;
+
+            //Calculate the bead size - based on the smallest offsets possible & the current zoom
+            baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
+            baseBeadWidth = baseBeadHeight * state.beadAspect;
+        } else {
+            //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
+            var _smallestOffsetPossible2 = state.canvasWidth % (rootState.pattern.columns * state.beadAspect) / 2;
+
+            baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible2) / (rootState.pattern.columns * state.beadAspect);
+        }
+
+        //apply the scale factor to the bead size
+        return baseBeadWidth * state.scaleFactor;
+    },
+    totalPatternWidth: function totalPatternWidth(state, getters, rootState) {
+        return getters.beadWidth * rootState.pattern.columns;
+    },
+    totalPatternHeight: function totalPatternHeight(state, getters, rootState) {
+        return getters.beadHeight * rootState.pattern.rows;
+    },
+    leftOffset: function leftOffset(state, getters, rootState) {
+        var baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
+        return baseOffset + state.pan.horizontal;
+    },
+    topOffset: function topOffset(state, getters) {
+        var baseOffset = (state.canvasHeight - getters.totalPatternHeight) / 2;
+        return baseOffset + state.pan.vertical;
+    },
+
+    beadTop: function beadTop(state, getters) {
+        return function (location) {
+            return (location.x - 1) * getters.beadHeight + getters.topOffset;
+        };
+    },
+    beadLeft: function beadLeft(state, getters) {
+        return function (location) {
+            return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+        };
+    }
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -49980,32 +50063,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     computed: {
-        //determine if we need to redraw due to the pan/zoom
-        panZoom: function panZoom() {
-            return (__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal + __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical) * __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor;
-        },
-        beadCountHeight: function beadCountHeight() {
-            return this.$store.getters['pattern/height'];
-        },
-        beadCountWidth: function beadCountWidth() {
-            return this.$store.getters['pattern/width'];
-        },
-        //the aspect multiple of a bead is always 1 for the height
-        aspectPatternHeight: function aspectPatternHeight() {
-            return this.$store.getters['pattern/height'];
-        },
-        //if we are working with not-square beads multiply by the aspect to get the size across
-        aspectPatternWidth: function aspectPatternWidth() {
-            return this.$store.getters['pattern/width'] * this.beadAspect;
-        },
-        //determine if the pattern goes all the way to the height edges or the width edges.
+        // beadCountHeight: function() {
+        //     return this.$store.getters['pattern/height'];
+        // },
+        // beadCountWidth: function() {
+        //     return this.$store.getters['pattern/width']
+        // },
+        // //the aspect multiple of a bead is always 1 for the height
+        // aspectPatternHeight: function () {
+        //     return this.$store.getters['pattern/height'];
+        // },
+        // //if we are working with not-square beads multiply by the aspect to get the size across
+        // aspectPatternWidth: function () {
+        //     return this.$store.getters['pattern/width'] * this.beadAspect;
+        // },
+        // //determine if the pattern goes all the way to the height edges or the width edges.
         //To display the entire pattern on the screen as large as possible one must be true
-        heightLimited: function heightLimited() {
-            var proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
-            var proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
-
-            return proportionHeightCovered > proportionWidthCovered;
-        },
+        // heightLimited: function () {
+        //     let proportionHeightCovered = this.aspectPatternHeight / this.canvasHeight;
+        //     let proportionWidthCovered = this.aspectPatternWidth / this.canvasWidth;
+        //
+        //     return proportionHeightCovered > proportionWidthCovered;
+        // },
         //Determine how tall each bead is on the screen
         displayBeadHeight: function displayBeadHeight() {
             var baseBeadHeight = 1;
@@ -50142,6 +50221,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'canvasWidth': {
             handler: function handler() {
                 this.$store.commit('brickPattern/setCanvasWidth', this.canvasWidth);
+                this.$store.commit('brickPattern/setCanvasHeight', this.canvasHeight);
                 //                    this.drawNewGrid();
             }
         },
@@ -50398,25 +50478,31 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapGetters */])({
         //                bead: state => state.pattern.colorAtLocation({'x': this.column, 'y': this.row})
         bead: "pattern/colorAtLocation",
-        canvasWidth: "brickPattern/canvasWidth"
+        canvasWidth: "brickPattern/canvasWidth",
+        beadHeight: "brickPattern/beadHeight",
+        beadWidth: "brickPattern/beadWidth",
+        beadTop: "brickPattern/beadTop",
+        beadLeft: "brickPattern/beadLeft"
     }), {
-        canvasSize: function canvasSize() {
-            return __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowHeight * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowStarts * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnWidth * __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnStarts;
-        },
+        // canvasSize: function() {
+        //     return CanvasLocations.rowHeight * CanvasLocations.rowStarts * CanvasLocations.columnWidth * CanvasLocations.columnStarts;
+        // },
         location: function location() {
-            return { 'x': this.column, 'y': this.row };
+            return { 'x': this.row, 'y': this.column };
         }
     }),
     methods: {
         drawBead: function drawBead() {
-            var left = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnStarts[this.column - 1];
-            var top = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowStarts[this.row - 1];
-            var height = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].rowHeight;
-            var width = __WEBPACK_IMPORTED_MODULE_0__StoredData_CanvasLocations_js__["a" /* default */].columnWidth;
+            var left = this.beadLeft(this.location);
+            var top = this.beadTop(this.location);
+            var height = this.beadHeight;
+            var width = this.beadWidth;
 
-            this.canvasProps.ctx.fillStyle = this.bead(location);
+            this.canvasProps.ctx.fillStyle = this.bead(this.location);
             this.canvasProps.ctx.strokeStyle = '#990000';
-            this.canvasProps.ctx.fillRect(left, top, width, height);
+            this.canvasProps.ctx.lineWidth = 1;
+            // this.canvasProps.ctx.strokeRect()
+            this.canvasProps.ctx.rect(left, top, width, height);
             this.canvasProps.ctx.stroke();
         }
     },
