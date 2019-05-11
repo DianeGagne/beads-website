@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development webpack --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "cross-env NODE_ENV=production webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "devDependencies": {
+    "axios": "^0.16.2",
+    "bootstrap-sass": "^3.3.7",
+    "jquery": "^3.1.1",
+    "laravel-mix": "^1.0",
+    "lodash": "^4.17.4",
+    "vue": "^2.1.10",
+    "vue-resize-handle": "^1.0.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
+    "babel-preset-stage-0": "^6.24.1",
+    "vue-color": "^2.2.2",
+    "vue-js-modal": "^1.3.4",
+    "vue-nav-tabs": "^0.5.0",
+    "vue-resize": "^0.4.4",
+    "vue-resize-directive": "^1.0.0",
+    "vue-scroll": "^2.0.3",
+    "vue-select": "github:sagalbot/vue-select",
+    "vuex": "^3.0.1",
+    "webpack": "^3.12.0"
+  }
+}
