@@ -45,10 +45,10 @@ const getters = {
         return state.canvasWidth;
     },
     heightLimited(state, getters, rootState) {
-        let proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
-        let proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
+        let proportionHeightCovered = rootState.pattern.columns / state.canvasHeight;
+        let proportionWidthCovered = rootState.pattern.rows / state.canvasWidth;
 
-        return proportionHeightCovered > proportionWidthCovered;
+        return proportionHeightCovered < proportionWidthCovered;
     },
 
     beadHeight(state, getters, rootState) {
@@ -113,10 +113,10 @@ const getters = {
         return getters.topOffset + (getters.beadHeight * rootState.pattern.rows);
     },
     beadTop: (state, getters) => (location) => {
-        return (location.x - 1) * getters.beadHeight + getters.topOffset;
+        return (location.y - 1) * getters.beadHeight + getters.topOffset;
     },
     beadLeft: (state, getters) => location => {
-        return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+        return (location.x - 1) * getters.beadWidth + getters.leftOffset;
     },
 
     //given a location (x,y) determine if the pixels are within the beaded pattern or outside of it
@@ -142,6 +142,7 @@ const getters = {
             //it is in the pattern - get the column
             let column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
             let row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+            console.log({'column': column, 'row': row});
             return {'column': column, 'row': row};
         }
     },

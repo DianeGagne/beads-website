@@ -6,12 +6,15 @@ const state = {
 
 const mutations = {
     createInitialPattern(state) {
+        state.beadMatrix = [];
+
         for (let i = 0; i < state.columns; i++) {
             state.beadMatrix.push([]);
-            for (let j = 0; j < state.height; j++) {
-                state.beadMatrix[i].push({});
+            for (let j = 0; j < state.rows; j++) {
+                state.beadMatrix[i].push({'color': '#999999'});
             }
         }
+        console.log(state.beadMatrix);
     },
 
     //this will only add or remove rows from the bottom of the pattern
@@ -60,12 +63,16 @@ const mutations = {
     },
 
     /**Assume the beadLocationArray takes the form of an object (ex):
-        beadLocationArray = {bead={color:#FFFFFF, key:12}, locations=[{x=1,y=1},{x=2,y=1},{x=3,y=1}])
+     beadLocationArray = {bead={color:#FFFFFF, key:12}, locations=[{x=1,y=1},{x=2,y=1},{x=3,y=1}])
      **/
     setBeads(state, beadLocationsArray) {
         let locations = beadLocationsArray.locations;
-        for(let locationIndex in locations){
-            state.beadMatrix[locations[locationIndex].x][locations[locationIndex].y] = beadLocationsArray.bead;
+        for (let locationIndex in locations) {
+            let indexX = locations[locationIndex].x;
+            let indexY = locations[locationIndex].y;
+            let yArray = state.beadMatrix[indexX];
+
+            yArray.splice(indexY, 1, beadLocationsArray.bead);
         }
     },
 
@@ -75,9 +82,7 @@ const getters = {
     //get just the color from the pattern at the bead location
     //pass the location in the form {x=1,y=2}
     colorAtLocation: state => location => {
-        if(state.beadMatrix[location.x] && state.beadMatrix[location.x][location.y])
-            return state.beadMatrix[location.x][location.y].color;
-        return '#ffffff';
+                return state.beadMatrix[location.x - 1][location.y - 1].color;
     },
     width(state, getters) {
         return state.columns;

@@ -25,7 +25,6 @@
 </template>
 <script>
 
-    import SavedPattern from '../../StoredData/PatternValues.js';
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
     import {getInternetExplorerVersion} from '../../../../../node_modules/vue-resize/src/utils/compatibility'
 

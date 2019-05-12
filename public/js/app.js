@@ -46868,12 +46868,15 @@ var state = {
 
 var mutations = {
     createInitialPattern: function createInitialPattern(state) {
+        state.beadMatrix = [];
+
         for (var i = 0; i < state.columns; i++) {
             state.beadMatrix.push([]);
-            for (var j = 0; j < state.height; j++) {
-                state.beadMatrix[i].push({});
+            for (var j = 0; j < state.rows; j++) {
+                state.beadMatrix[i].push({ 'color': '#999999' });
             }
         }
+        console.log(state.beadMatrix);
     },
 
 
@@ -46925,12 +46928,16 @@ var mutations = {
 
 
     /**Assume the beadLocationArray takes the form of an object (ex):
-        beadLocationArray = {bead={color:#FFFFFF, key:12}, locations=[{x=1,y=1},{x=2,y=1},{x=3,y=1}])
+     beadLocationArray = {bead={color:#FFFFFF, key:12}, locations=[{x=1,y=1},{x=2,y=1},{x=3,y=1}])
      **/
     setBeads: function setBeads(state, beadLocationsArray) {
         var locations = beadLocationsArray.locations;
         for (var locationIndex in locations) {
-            state.beadMatrix[locations[locationIndex].x][locations[locationIndex].y] = beadLocationsArray.bead;
+            var indexX = locations[locationIndex].x;
+            var indexY = locations[locationIndex].y;
+            var yArray = state.beadMatrix[indexX];
+
+            yArray.splice(indexY, 1, beadLocationsArray.bead);
         }
     }
 };
@@ -46940,8 +46947,7 @@ var getters = {
     //pass the location in the form {x=1,y=2}
     colorAtLocation: function colorAtLocation(state) {
         return function (location) {
-            if (state.beadMatrix[location.x] && state.beadMatrix[location.x][location.y]) return state.beadMatrix[location.x][location.y].color;
-            return '#ffffff';
+            return state.beadMatrix[location.x - 1][location.y - 1].color;
         };
     },
     width: function width(state, getters) {
@@ -47013,10 +47019,10 @@ var getters = {
         return state.canvasWidth;
     },
     heightLimited: function heightLimited(state, getters, rootState) {
-        var proportionHeightCovered = rootState.pattern.rows / state.canvasHeight;
-        var proportionWidthCovered = rootState.pattern.columns / state.canvasWidth;
+        var proportionHeightCovered = rootState.pattern.columns / state.canvasHeight;
+        var proportionWidthCovered = rootState.pattern.rows / state.canvasWidth;
 
-        return proportionHeightCovered > proportionWidthCovered;
+        return proportionHeightCovered < proportionWidthCovered;
     },
     beadHeight: function beadHeight(state, getters, rootState) {
         var baseBeadHeight = 1;
@@ -47082,12 +47088,12 @@ var getters = {
 
     beadTop: function beadTop(state, getters) {
         return function (location) {
-            return (location.x - 1) * getters.beadHeight + getters.topOffset;
+            return (location.y - 1) * getters.beadHeight + getters.topOffset;
         };
     },
     beadLeft: function beadLeft(state, getters) {
         return function (location) {
-            return (location.y - 1) * getters.beadWidth + getters.leftOffset;
+            return (location.x - 1) * getters.beadWidth + getters.leftOffset;
         };
     },
 
@@ -47113,6 +47119,7 @@ var getters = {
                 //it is in the pattern - get the column
                 var column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
                 var row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+                console.log({ 'column': column, 'row': row });
                 return { 'column': column, 'row': row };
             }
         };
@@ -49630,11 +49637,10 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(96);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(5);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -49668,18 +49674,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
-
 var isIE = void 0;
 
 function initCompat() {
     if (!initCompat.init) {
         initCompat.init = true;
-        isIE = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_resize_src_utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
+        isIE = Object(__WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_utils_compatibility__["a" /* getInternetExplorerVersion */])() !== -1;
     }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: { ResizeObserver: __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_components_ResizeObserver_vue___default.a },
+    components: { ResizeObserver: __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue___default.a },
     data: function data() {
         return {
             //Read only from the pattern
@@ -49740,14 +49745,14 @@ function initCompat() {
         this.removeResizeHandlers();
         window.removeEventListener('resize', this.onResize());
     },
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["c" /* mapState */])({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["c" /* mapState */])({
         rows: function rows(state) {
             return state.pattern.rows;
         },
         columns: function columns(state) {
             return state.pattern.columns;
         }
-    }), Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["b" /* mapGetters */])({
+    }), Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapGetters */])({
         bead: "pattern/colorAtLocation",
         getFromPixels: "brickPattern/getBeadFromPixels",
         isInPattern: "brickPattern/isLocationInPattern",
@@ -50524,22 +50529,36 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         beadLeft: "brickPattern/beadLeft"
     }), {
         location: function location() {
-            return { 'x': this.row, 'y': this.column };
+            return { 'x': this.column, 'y': this.row };
+        },
+        color: function color() {
+            return this.bead(this.location);
         }
     }),
     render: function render() {
+        console.log('render');
         var left = this.beadLeft(this.location);
         var top = this.beadTop(this.location);
         var height = this.beadHeight;
         var width = this.beadWidth;
 
-        this.canvasProps.ctx.fillStyle = this.bead(this.location);
-        this.canvasProps.ctx.strokeStyle = '#990000';
-        this.canvasProps.ctx.lineWidth = 1;
-        // this.canvasProps.ctx.strokeRect()
-        this.canvasProps.ctx.rect(left, top, width, height);
-        this.canvasProps.ctx.fillRect(left, top, width, height);
-        this.canvasProps.ctx.stroke();
+        if (this.canvasProps.ctx) {
+            this.canvasProps.ctx.fillStyle = this.color;
+            this.canvasProps.ctx.strokeStyle = '#990000';
+            this.canvasProps.ctx.lineWidth = 1;
+            // this.canvasProps.ctx.strokeRect()
+            this.canvasProps.ctx.rect(left, top, width, height);
+            this.canvasProps.ctx.fillRect(left, top, width, height);
+            this.canvasProps.ctx.stroke();
+        } else {
+            console.log('no ctx yet');
+        }
+    },
+
+    watch: {
+        color: function color() {
+            // this.$forceUpdate();
+        }
     }
 });
 
