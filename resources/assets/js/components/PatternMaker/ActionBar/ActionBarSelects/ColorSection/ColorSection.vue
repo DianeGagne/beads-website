@@ -3,27 +3,27 @@
         <vue-tabs>
             <v-tab title="All">
                 <div class="colorpicker">
-                    <color-picker v-for="child in childrenColors" key="colorInfo.key"
+                    <color-picker v-for="child in childrenColors"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Finishes">
                 <select multiple :on-change=findFinishes :value.sync="selected" :options="finishOptions"></select>
                 <div class="colorpicker">
-                    <color-picker v-for="child in finishColors" key="colorInfo.key"
+                    <color-picker v-for="child in finishColors"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Colors">
                 <slider-picker v-model="colors" style="width:auto;"/>
                 <div class="colorpicker">
-                    <color-picker v-for="child in colorColors" key="colorInfo.key"
+                    <color-picker v-for="child in colorColors"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
             <v-tab title="Palette">
                 <div class="colorpicker">
-                    <color-picker v-for="child in paletteColors" key="colorInfo.key"
+                    <color-picker v-for="child in paletteColors"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>

@@ -46876,7 +46876,6 @@ var mutations = {
                 state.beadMatrix[i].push({ 'color': '#999999' });
             }
         }
-        console.log(state.beadMatrix);
     },
 
 
@@ -46947,7 +46946,9 @@ var getters = {
     //pass the location in the form {x=1,y=2}
     colorAtLocation: function colorAtLocation(state) {
         return function (location) {
-            return state.beadMatrix[location.x - 1][location.y - 1].color;
+            if (state.beadMatrix.length != 0) {
+                return state.beadMatrix[location.x - 1][location.y - 1].color;
+            }
         };
     },
     width: function width(state, getters) {
@@ -47113,13 +47114,10 @@ var getters = {
     //or return null if not in the pattern
     getBeadFromPixels: function getBeadFromPixels(state, getters) {
         return function (location) {
-            console.log('getBeadFromPixels');
-            console.log(location);
             if (getters.isLocationInPattern) {
                 //it is in the pattern - get the column
                 var column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
                 var row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
-                console.log({ 'column': column, 'row': row });
                 return { 'column': column, 'row': row };
             }
         };
@@ -48529,10 +48527,7 @@ var render = function() {
               "div",
               { staticClass: "colorpicker" },
               _vm._l(_vm.childrenColors, function(child) {
-                return _c("color-picker", {
-                  key: "colorInfo.key",
-                  attrs: { info: child }
-                })
+                return _c("color-picker", { attrs: { info: child } })
               }),
               1
             )
@@ -48557,10 +48552,7 @@ var render = function() {
               "div",
               { staticClass: "colorpicker" },
               _vm._l(_vm.finishColors, function(child) {
-                return _c("color-picker", {
-                  key: "colorInfo.key",
-                  attrs: { info: child }
-                })
+                return _c("color-picker", { attrs: { info: child } })
               }),
               1
             )
@@ -48585,10 +48577,7 @@ var render = function() {
                 "div",
                 { staticClass: "colorpicker" },
                 _vm._l(_vm.colorColors, function(child) {
-                  return _c("color-picker", {
-                    key: "colorInfo.key",
-                    attrs: { info: child }
-                  })
+                  return _c("color-picker", { attrs: { info: child } })
                 }),
                 1
               )
@@ -48601,10 +48590,7 @@ var render = function() {
               "div",
               { staticClass: "colorpicker" },
               _vm._l(_vm.paletteColors, function(child) {
-                return _c("color-picker", {
-                  key: "colorInfo.key",
-                  attrs: { info: child }
-                })
+                return _c("color-picker", { attrs: { info: child } })
               }),
               1
             )
@@ -49674,6 +49660,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 var isIE = void 0;
 
 function initCompat() {
@@ -49699,14 +49686,7 @@ function initCompat() {
                 currX: null,
                 currY: null,
                 drawing: false
-            },
-            //The bounds of the selected Bead
-            beadProps: {
-                xIndex: null,
-                yIndex: null
-            },
-            height: 10,
-            width: 10
+            }
         };
     },
 
@@ -49758,31 +49738,6 @@ function initCompat() {
         isInPattern: "brickPattern/isLocationInPattern",
         beadToDraw: "currentBead/value"
     }), {
-        // mouseIsInPattern: function () {
-        //     return this.mouseY > this.locations.topOffset
-        //         && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
-        //         && this.mouseX > this.locations.leftOffset
-        //         && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
-        //
-        // },
-        // mouseRow: function () {
-        //     if (!this.mouseIsInPattern)
-        //         return null;
-        //     for (let index in this.locations.rowStarts) {
-        //         if (this.mouseY < this.locations.rowStarts[index]) {
-        //             return index - 1;
-        //         }
-        //     }
-        // },
-        // mouseColumn: function () {
-        //     if (!this.mouseIsInPattern)
-        //         return null;
-        //     for (let index in this.locations.columnStarts) {
-        //         if (this.mouseX < this.locations.columnStarts[index]) {
-        //             return index - 1;
-        //         }
-        //     }
-        // },
         mouseX: function mouseX() {
             var offsetLeft = 0;
             if (this.canvasProps.canvas) {
@@ -50536,7 +50491,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
     }),
     render: function render() {
-        console.log('render');
         var left = this.beadLeft(this.location);
         var top = this.beadTop(this.location);
         var height = this.beadHeight;
@@ -50544,14 +50498,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         if (this.canvasProps.ctx) {
             this.canvasProps.ctx.fillStyle = this.color;
-            this.canvasProps.ctx.strokeStyle = '#990000';
+            this.canvasProps.ctx.strokeStyle = '#333333';
             this.canvasProps.ctx.lineWidth = 1;
             // this.canvasProps.ctx.strokeRect()
             this.canvasProps.ctx.rect(left, top, width, height);
             this.canvasProps.ctx.fillRect(left, top, width, height);
             this.canvasProps.ctx.stroke();
-        } else {
-            console.log('no ctx yet');
         }
     },
 

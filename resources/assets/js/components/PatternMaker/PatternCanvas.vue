@@ -28,7 +28,8 @@
     import ResizeObserver from "../../../../../node_modules/vue-resize/src/components/ResizeObserver.vue";
     import {getInternetExplorerVersion} from '../../../../../node_modules/vue-resize/src/utils/compatibility'
 
-    import { mapState, mapGetters } from 'vuex';
+    import {mapState, mapGetters} from 'vuex';
+
     let isIE;
 
     function initCompat() {
@@ -55,13 +56,6 @@
                     currY: null,
                     drawing: false,
                 },
-                //The bounds of the selected Bead
-                beadProps: {
-                    xIndex: null,
-                    yIndex: null,
-                },
-                height: 10,
-                width: 10,
             }
         },
 
@@ -104,35 +98,10 @@
             }),
             ...mapGetters({
                 bead: "pattern/colorAtLocation",
-                getFromPixels : "brickPattern/getBeadFromPixels",
+                getFromPixels: "brickPattern/getBeadFromPixels",
                 isInPattern: "brickPattern/isLocationInPattern",
                 beadToDraw: "currentBead/value",
             }),
-            // mouseIsInPattern: function () {
-            //     return this.mouseY > this.locations.topOffset
-            //         && this.mouseY < (this.locations.topOffset + this.locations.pixelHeight)
-            //         && this.mouseX > this.locations.leftOffset
-            //         && this.mouseX < (this.locations.leftOffset + this.locations.pixelWidth);
-            //
-            // },
-            // mouseRow: function () {
-            //     if (!this.mouseIsInPattern)
-            //         return null;
-            //     for (let index in this.locations.rowStarts) {
-            //         if (this.mouseY < this.locations.rowStarts[index]) {
-            //             return index - 1;
-            //         }
-            //     }
-            // },
-            // mouseColumn: function () {
-            //     if (!this.mouseIsInPattern)
-            //         return null;
-            //     for (let index in this.locations.columnStarts) {
-            //         if (this.mouseX < this.locations.columnStarts[index]) {
-            //             return index - 1;
-            //         }
-            //     }
-            // },
             mouseX: function () {
                 let offsetLeft = 0;
                 if (this.canvasProps.canvas) {
@@ -177,7 +146,6 @@
             },
 
 
-
             start: function (event) {
                 this.canvasProps.ctx.beginPath();
 
@@ -215,7 +183,7 @@
                 this.mouseProps.drag = false;
             },
             drawBead: function () {
-                let location = {'x':this.mouseX, 'y':this.mouseY};
+                let location = {'x': this.mouseX, 'y': this.mouseY};
                 if (!this.isInPattern(location) || !this.mouseProps.drawing) {
                     return;
                 }

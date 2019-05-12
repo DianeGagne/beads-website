@@ -30,7 +30,6 @@
             },
         },
         render() {
-            console.log('render');
             let left = this.beadLeft(this.location);
             let top = this.beadTop(this.location);
             let height = this.beadHeight;
@@ -38,14 +37,12 @@
 
             if(this.canvasProps.ctx) {
                 this.canvasProps.ctx.fillStyle = this.color;
-                this.canvasProps.ctx.strokeStyle = '#990000';
+                this.canvasProps.ctx.strokeStyle = '#333333';
                 this.canvasProps.ctx.lineWidth = 1;
                 // this.canvasProps.ctx.strokeRect()
                 this.canvasProps.ctx.rect(left, top, width, height);
                 this.canvasProps.ctx.fillRect(left, top, width, height);
                 this.canvasProps.ctx.stroke();
-            }else{
-                console.log('no ctx yet');
             }
         },
         watch: {

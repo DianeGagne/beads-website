@@ -14,7 +14,6 @@ const mutations = {
                 state.beadMatrix[i].push({'color': '#999999'});
             }
         }
-        console.log(state.beadMatrix);
     },
 
     //this will only add or remove rows from the bottom of the pattern
@@ -82,7 +81,9 @@ const getters = {
     //get just the color from the pattern at the bead location
     //pass the location in the form {x=1,y=2}
     colorAtLocation: state => location => {
-                return state.beadMatrix[location.x - 1][location.y - 1].color;
+        if(state.beadMatrix.length != 0) {
+            return state.beadMatrix[location.x - 1][location.y - 1].color;
+        }
     },
     width(state, getters) {
         return state.columns;

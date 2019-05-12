@@ -136,13 +136,10 @@ const getters = {
     //get given a location in pixels (x,y) and return a location of the bead (row, column),
     //or return null if not in the pattern
     getBeadFromPixels: (state, getters) => location => {
-        console.log('getBeadFromPixels');
-        console.log(location);
         if(getters.isLocationInPattern) {
             //it is in the pattern - get the column
             let column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
             let row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
-            console.log({'column': column, 'row': row});
             return {'column': column, 'row': row};
         }
     },
