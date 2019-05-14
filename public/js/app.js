@@ -48455,18 +48455,44 @@ var defaultProps = {
             colorColors: [],
             selected: null,
             finishOptions: [],
-            paletteColors: []
+            paletteColors: [],
+            totalBeads: 70
         };
     },
     mounted: function mounted() {
+        this.scrollAll();
         this.replace();
     },
 
+    computed: {
+
+        beadsSubset: function beadsSubset() {
+            return this.childrenColors.slice(0, this.totalBeads);
+        }
+    },
+
     methods: {
+        scrollAll: function scrollAll() {
+            var _this = this;
+
+            var element = document.getElementById('color-section');
+            element.onscroll = function () {
+                console.log('called onscroll');
+                console.log(element.scrollTop);
+                var bottomOfWindow = element.scrollTop + 50 >= element.offsetHeight;
+
+                if (bottomOfWindow) {
+                    if (_this.totalBeads < _this.childrenColors.length + 10) {
+                        _this.totalBeads += 10;
+                    } else {
+                        _this.totalBeads = _this.childrenColors.length;
+                    }
+                }
+            };
+        },
         replace: function replace() {
             var self = this;
             axios.get('/beads/all').then(function (response) {
-                console.log(response);
                 self.childrenColors = response.data;
             });
 
@@ -48526,7 +48552,7 @@ var render = function() {
             _c(
               "div",
               { staticClass: "colorpicker" },
-              _vm._l(_vm.childrenColors, function(child) {
+              _vm._l(_vm.beadsSubset, function(child) {
                 return _c("color-picker", { attrs: { info: child } })
               }),
               1
@@ -49773,15 +49799,11 @@ function initCompat() {
         },
 
         onResize: function onResize() {
-            var _this2 = this;
-
             this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
             this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-            this.$nextTick(function () {
-                _this2.$store.commit('brickPattern/setCanvasWidth', _this2.canvasProps.canvas.clientWidth);
-                _this2.$store.commit('brickPattern/setCanvasHeight', _this2.canvasProps.canvas.clientHeight);
-            });
+            this.$store.commit('brickPattern/setCanvasWidth', this.canvasProps.canvas.clientWidth);
+            this.$store.commit('brickPattern/setCanvasHeight', this.canvasProps.canvas.clientHeight);
         },
 
         start: function start(event) {
@@ -50498,10 +50520,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         if (this.canvasProps.ctx) {
             this.canvasProps.ctx.fillStyle = this.color;
-            this.canvasProps.ctx.strokeStyle = '#333333';
-            this.canvasProps.ctx.lineWidth = 1;
+            // this.canvasProps.ctx.strokeStyle = '#333333';
+            // this.canvasProps.ctx.lineWidth = 1;
             // this.canvasProps.ctx.strokeRect()
-            this.canvasProps.ctx.rect(left, top, width, height);
+            // this.canvasProps.ctx.rect(left, top, width, height);
             this.canvasProps.ctx.fillRect(left, top, width, height);
             this.canvasProps.ctx.stroke();
         }

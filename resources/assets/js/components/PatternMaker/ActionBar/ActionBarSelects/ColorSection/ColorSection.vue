@@ -3,7 +3,7 @@
         <vue-tabs>
             <v-tab title="All">
                 <div class="colorpicker">
-                    <color-picker v-for="child in childrenColors"
+                    <color-picker v-for="child in beadsSubset"
                                   v-bind:info="child"></color-picker>
                 </div>
             </v-tab>
@@ -50,17 +50,41 @@
                 selected: null,
                 finishOptions: [],
                 paletteColors: [],
+                totalBeads: 70,
             }
         },
         mounted() {
+            this.scrollAll();
             this.replace();
         },
+        computed: {
+
+            beadsSubset: function () {
+                return this.childrenColors.slice(0, this.totalBeads);
+            }
+        },
+
         methods: {
+            scrollAll: function () {
+                let element = document.getElementById('color-section');
+                element.onscroll = () => {
+                    console.log('called onscroll');
+                    console.log(element.scrollTop);
+                    let bottomOfWindow = element.scrollTop + 50 >= element.offsetHeight;
+
+                    if (bottomOfWindow) {
+                        if(this.totalBeads < this.childrenColors.length + 10) {
+                            this.totalBeads += 10;
+                        }else{
+                            this.totalBeads = this.childrenColors.length;
+                        }
+                    }
+                }
+            },
             replace: function () {
                 let self = this;
                 axios.get('/beads/all')
                     .then(function (response) {
-                        console.log(response);
                         self.childrenColors = response.data;
                     });
 

@@ -139,10 +139,8 @@
                 this.canvasProps.canvas.width = this.canvasProps.canvas.clientWidth;
                 this.canvasProps.canvas.height = this.canvasProps.canvas.clientHeight;
 
-                this.$nextTick(() => {
                     this.$store.commit('brickPattern/setCanvasWidth', this.canvasProps.canvas.clientWidth);
                     this.$store.commit('brickPattern/setCanvasHeight', this.canvasProps.canvas.clientHeight);
-                });
             },
 
 
