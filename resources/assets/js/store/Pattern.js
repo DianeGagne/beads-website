@@ -1,6 +1,6 @@
 const state = {
-    rows: 5,
-    columns: 30,
+    rows: 100,
+    columns: 100,
     beadMatrix: [],
 };
 
@@ -9,9 +9,9 @@ const mutations = {
         state.beadMatrix = [];
 
         for (let i = 0; i < state.columns; i++) {
-            state.beadMatrix.push([]);
+            state.beadMatrix[i] = [];
             for (let j = 0; j < state.rows; j++) {
-                state.beadMatrix[i].push({'color': '#999999'});
+                state.beadMatrix[i][j] = {'color': '#999999'};
             }
         }
     },
@@ -82,7 +82,7 @@ const getters = {
     //pass the location in the form {x=1,y=2}
     colorAtLocation: state => location => {
         if(state.beadMatrix.length != 0) {
-            return state.beadMatrix[location.x - 1][location.y - 1].color;
+            return state.beadMatrix[location.x][location.y].color;
         }
     },
     width(state, getters) {

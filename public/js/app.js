@@ -2362,7 +2362,8 @@ Vue.component('undo', __webpack_require__(91));
 Vue.component('pattern-canvas', __webpack_require__(94));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 // Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
-Vue.component('bead', __webpack_require__(104));
+// Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
+Vue.component('draw-beads', __webpack_require__(129));
 
 Vue.component('pattern-name', __webpack_require__(106));
 Vue.component('pattern-type', __webpack_require__(109));
@@ -46861,8 +46862,8 @@ var getters = {
 
 "use strict";
 var state = {
-    rows: 5,
-    columns: 30,
+    rows: 100,
+    columns: 100,
     beadMatrix: []
 };
 
@@ -46871,9 +46872,9 @@ var mutations = {
         state.beadMatrix = [];
 
         for (var i = 0; i < state.columns; i++) {
-            state.beadMatrix.push([]);
+            state.beadMatrix[i] = [];
             for (var j = 0; j < state.rows; j++) {
-                state.beadMatrix[i].push({ 'color': '#999999' });
+                state.beadMatrix[i][j] = { 'color': '#999999' };
             }
         }
     },
@@ -46947,7 +46948,7 @@ var getters = {
     colorAtLocation: function colorAtLocation(state) {
         return function (location) {
             if (state.beadMatrix.length != 0) {
-                return state.beadMatrix[location.x - 1][location.y - 1].color;
+                return state.beadMatrix[location.x][location.y].color;
             }
         };
     },
@@ -47089,12 +47090,12 @@ var getters = {
 
     beadTop: function beadTop(state, getters) {
         return function (location) {
-            return (location.y - 1) * getters.beadHeight + getters.topOffset;
+            return location.y * getters.beadHeight + getters.topOffset;
         };
     },
     beadLeft: function beadLeft(state, getters) {
         return function (location) {
-            return (location.x - 1) * getters.beadWidth + getters.leftOffset;
+            return location.x * getters.beadWidth + getters.leftOffset;
         };
     },
 
@@ -49674,12 +49675,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 
@@ -50375,27 +50370,9 @@ var render = function() {
       on: { notify: _vm.onResize }
     },
     [
-      _vm._l(_vm.columns, function(column) {
-        return _c(
-          "div",
-          _vm._l(_vm.rows, function(row) {
-            return _c(
-              "div",
-              [
-                _c("bead", {
-                  attrs: {
-                    column: column,
-                    row: row,
-                    canvasProps: _vm.canvasProps
-                  }
-                })
-              ],
-              1
-            )
-          }),
-          0
-        )
-      }),
+      _c("draw-beads", { attrs: { canvasProps: _vm.canvasProps } }, [
+        _vm._v("\n        >")
+      ]),
       _vm._v(" "),
       _c("canvas", {
         staticStyle: { width: "100%", height: "100%" },
@@ -50414,7 +50391,7 @@ var render = function() {
         }
       })
     ],
-    2
+    1
   )
 }
 var staticRenderFns = []
@@ -50428,115 +50405,8 @@ if (false) {
 }
 
 /***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(105)
-/* template */
-var __vue_template__ = null
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/Bead.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-a75ae4d6", Component.options)
-  } else {
-    hotAPI.reload("data-v-a75ae4d6", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 105 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        column: {
-            type: Number
-        },
-        row: {
-            type: Number
-        },
-        canvasProps: {
-            type: Object
-        }
-    },
-
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        bead: "pattern/colorAtLocation",
-        beadHeight: "brickPattern/beadHeight",
-        beadWidth: "brickPattern/beadWidth",
-        beadTop: "brickPattern/beadTop",
-        beadLeft: "brickPattern/beadLeft"
-    }), {
-        location: function location() {
-            return { 'x': this.column, 'y': this.row };
-        },
-        color: function color() {
-            return this.bead(this.location);
-        }
-    }),
-    render: function render() {
-        var left = this.beadLeft(this.location);
-        var top = this.beadTop(this.location);
-        var height = this.beadHeight;
-        var width = this.beadWidth;
-
-        if (this.canvasProps.ctx) {
-            this.canvasProps.ctx.fillStyle = this.color;
-            // this.canvasProps.ctx.strokeStyle = '#333333';
-            // this.canvasProps.ctx.lineWidth = 1;
-            // this.canvasProps.ctx.strokeRect()
-            // this.canvasProps.ctx.rect(left, top, width, height);
-            this.canvasProps.ctx.fillRect(left, top, width, height);
-            this.canvasProps.ctx.stroke();
-        }
-    },
-
-    watch: {
-        color: function color() {
-            // this.$forceUpdate();
-        }
-    }
-});
-
-/***/ }),
+/* 104 */,
+/* 105 */,
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51180,6 +51050,129 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 119 */,
+/* 120 */,
+/* 121 */,
+/* 122 */,
+/* 123 */,
+/* 124 */,
+/* 125 */,
+/* 126 */,
+/* 127 */,
+/* 128 */,
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(130)
+/* template */
+var __vue_template__ = null
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/DrawBeads.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-75c60e6c", Component.options)
+  } else {
+    hotAPI.reload("data-v-75c60e6c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 130 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        canvasProps: {
+            type: Object
+        }
+    },
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
+        pattern: "pattern/fullPattern",
+        bead: "pattern/colorAtLocation",
+        beadHeight: "brickPattern/beadHeight",
+        beadWidth: "brickPattern/beadWidth",
+        beadTop: "brickPattern/beadTop",
+        beadLeft: "brickPattern/beadLeft"
+
+    }), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
+        rows: function rows(state) {
+            return state.pattern.rows;
+        },
+        columns: function columns(state) {
+            return state.pattern.columns;
+        }
+    }), {
+        color: function color(location) {
+            console.log(location);
+            return this.bead(location);
+        }
+    }),
+    render: function render() {
+        var column = void 0;
+        var row = void 0;
+        var pattern = this.pattern;
+        for (column = 0; column < this.columns; column++) {
+            for (row = 0; row < this.rows; row++) {
+
+                var left = this.beadLeft(location);
+                var top = this.beadTop(location);
+                var height = this.beadHeight;
+                var width = this.beadWidth;
+
+                if (this.canvasProps.ctx) {
+                    this.canvasProps.ctx.fillStyle = pattern[column][row].color;
+                    // this.canvasProps.ctx.fillStyle = '#999999';
+                    // this.canvasProps.ctx.strokeStyle = '#333333';
+                    // this.canvasProps.ctx.lineWidth = 1;
+                    // this.canvasProps.ctx.strokeRect()
+                    // this.canvasProps.ctx.rect(left, top, width, height);
+                    this.canvasProps.ctx.fillRect(left, top, width, height);
+                }
+                if (this.canvasProps.ctx) this.canvasProps.ctx.stroke();
+            }
+        }
+    }
+});
 
 /***/ })
 /******/ ]);

@@ -113,10 +113,10 @@ const getters = {
         return getters.topOffset + (getters.beadHeight * rootState.pattern.rows);
     },
     beadTop: (state, getters) => (location) => {
-        return (location.y - 1) * getters.beadHeight + getters.topOffset;
+        return (location.y) * getters.beadHeight + getters.topOffset;
     },
     beadLeft: (state, getters) => location => {
-        return (location.x - 1) * getters.beadWidth + getters.leftOffset;
+        return (location.x) * getters.beadWidth + getters.leftOffset;
     },
 
     //given a location (x,y) determine if the pixels are within the beaded pattern or outside of it

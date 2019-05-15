@@ -3,15 +3,9 @@
          style="border: 1px solid black; height: 100%"
          @notify="onResize">
 
-        <div v-for="column in columns">
-            <div v-for="row in rows">
-                <bead
-                        :column="column"
-                        :row="row"
-                        :canvasProps="canvasProps">
-                </bead>
-            </div>
-        </div>
+        <draw-beads
+                :canvasProps="canvasProps">
+            ></draw-beads>
 
         <canvas
                 id="canvas" style="width:100%; height:100%;"

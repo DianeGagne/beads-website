@@ -73,7 +73,8 @@ Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSele
 Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 // Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
-Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
+// Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
+Vue.component('draw-beads', require('./components/PatternMaker/PatternDraw/DrawBeads.vue'));
 
 Vue.component('pattern-name', require('./components/PatternMaker/PatternValues/PatternName.vue'));
 Vue.component('pattern-type', require('./components/PatternMaker/PatternValues/PatternType.vue'));
