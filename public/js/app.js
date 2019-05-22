@@ -49826,8 +49826,8 @@ function initCompat() {
             if (!this.drag) {
                 this.lastState = JSON.stringify(this.updatableMatrix);
                 this.mouseProps.drawing = true;
-                // this.mouseProps.currX = event.clientX;
-                // this.mouseProps.currY = event.clientY;
+                this.mouseProps.currX = event.clientX;
+                this.mouseProps.currY = event.clientY;
                 this.drawBead();
             }
         },
