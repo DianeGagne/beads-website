@@ -1,5 +1,5 @@
 <script>
-    import {mapGetters, mapState} from 'vuex';
+    import {mapGetters, mapState, mapMutations} from 'vuex';
 
     export default {
         props: {
@@ -10,20 +10,18 @@
 
         computed: {
             ...mapGetters({
-                pattern: "pattern/fullPattern",
-                bead: "pattern/colorAtLocation",
                 beadHeight: "brickPattern/beadHeight",
                 beadWidth: "brickPattern/beadWidth",
                 beadTop: "brickPattern/beadTop",
-                beadLeft: "brickPattern/beadLeft"
-
+                beadLeft: "brickPattern/beadLeft",
             }),
             ...mapState({
                 rows: state => state.pattern.rows,
-                columns: state => state.pattern.columns
+                columns: state => state.pattern.columns,
+                pattern: state => state.pattern.beadMatrix,
+                updatedBeads: state => state.pattern.updatedLocations,
             }),
             color: function(location) {
-                console.log(location);
                 return this.bead(location);
             },
         },
@@ -34,6 +32,7 @@
             for(column = 0; column < this.columns; column++) {
                 for (row = 0; row < this.rows; row++) {
 
+                    let location = {'x': column, 'y': row};
                     let left = this.beadLeft(location);
                     let top = this.beadTop(location);
                     let height = this.beadHeight;
@@ -49,11 +48,35 @@
                         this.canvasProps.ctx.fillRect(left, top, width, height);
 
                     }
-                    if(this.canvasProps.ctx)
-                    this.canvasProps.ctx.stroke();
+
                 }
             }
+            if(this.canvasProps.ctx) {
+                this.canvasProps.ctx.stroke();
+            }
         },
+        watch: {
+            updatedBeads: function() {
+                let allUpdates = this.updatedBeads;
+                for (let nextUpdateIndex in allUpdates)
+                {
+                    if(!allUpdates.hasOwnProperty(nextUpdateIndex))
+                        continue;
+                    let nextUpdate = allUpdates[nextUpdateIndex];
+                    if(nextUpdate.handled === true)
+                        continue;
+                    this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
+                    let left = this.beadLeft(nextUpdate.location[0]);
+                    let top = this.beadTop(nextUpdate.location[0]);
+                    let height = this.beadHeight;
+                    let width = this.beadWidth;
+
+                    this.canvasProps.ctx.fillRect(left, top, width, height);
+                    //must use this method instead of mapMutations because we have a path and a parameter
+                    this.$store.commit('pattern/handleUpdate', nextUpdateIndex);
+                }
+            }
+        }
     }
 
 </script>

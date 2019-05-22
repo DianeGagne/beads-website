@@ -2363,7 +2363,7 @@ Vue.component('pattern-canvas', __webpack_require__(94));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 // Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
 // Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
-Vue.component('draw-beads', __webpack_require__(129));
+Vue.component('draw-beads', __webpack_require__(104));
 
 Vue.component('pattern-name', __webpack_require__(106));
 Vue.component('pattern-type', __webpack_require__(109));
@@ -46862,19 +46862,27 @@ var getters = {
 
 "use strict";
 var state = {
-    rows: 100,
-    columns: 100,
-    beadMatrix: []
+    rows: 5,
+    columns: 30,
+    beadMatrix: [],
+    updatedLocations: []
 };
 
 var mutations = {
+    handleUpdate: function handleUpdate(state, index) {
+        state.updatedLocations[index].handled = true;
+
+        if (state.updatedLocations.length > 50) {
+            state.updatedLocations.splice(20, state.updatedLocations.length);
+        }
+    },
     createInitialPattern: function createInitialPattern(state) {
         state.beadMatrix = [];
 
         for (var i = 0; i < state.columns; i++) {
             state.beadMatrix[i] = [];
             for (var j = 0; j < state.rows; j++) {
-                state.beadMatrix[i][j] = { 'color': '#999999' };
+                state.beadMatrix[i][j] = { 'color': '#999999', 'key': 0 };
             }
         }
     },
@@ -46935,9 +46943,14 @@ var mutations = {
         for (var locationIndex in locations) {
             var indexX = locations[locationIndex].x;
             var indexY = locations[locationIndex].y;
-            var yArray = state.beadMatrix[indexX];
 
-            yArray.splice(indexY, 1, beadLocationsArray.bead);
+            //check if the update needs to be applied
+            var oldBead = state.beadMatrix[indexX][indexY].key;
+            if (oldBead !== beadLocationsArray.bead.key) {
+                console.log('still updating ' + oldBead + ' ' + beadLocationsArray.bead.key);
+                state.beadMatrix[indexX][indexY] = beadLocationsArray.bead;
+                state.updatedLocations.push({ 'location': locations, 'bead': beadLocationsArray.bead, 'handled': false });
+            }
         }
     }
 };
@@ -50405,8 +50418,144 @@ if (false) {
 }
 
 /***/ }),
-/* 104 */,
-/* 105 */,
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(105)
+/* template */
+var __vue_template__ = null
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/DrawBeads.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-75c60e6c", Component.options)
+  } else {
+    hotAPI.reload("data-v-75c60e6c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 105 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        canvasProps: {
+            type: Object
+        }
+    },
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
+        beadHeight: "brickPattern/beadHeight",
+        beadWidth: "brickPattern/beadWidth",
+        beadTop: "brickPattern/beadTop",
+        beadLeft: "brickPattern/beadLeft"
+    }), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
+        rows: function rows(state) {
+            return state.pattern.rows;
+        },
+        columns: function columns(state) {
+            return state.pattern.columns;
+        },
+        pattern: function pattern(state) {
+            return state.pattern.beadMatrix;
+        },
+        updatedBeads: function updatedBeads(state) {
+            return state.pattern.updatedLocations;
+        }
+    }), {
+        color: function color(location) {
+            return this.bead(location);
+        }
+    }),
+    render: function render() {
+        var column = void 0;
+        var row = void 0;
+        var pattern = this.pattern;
+        for (column = 0; column < this.columns; column++) {
+            for (row = 0; row < this.rows; row++) {
+
+                var location = { 'x': column, 'y': row };
+                var left = this.beadLeft(location);
+                var top = this.beadTop(location);
+                var height = this.beadHeight;
+                var width = this.beadWidth;
+
+                if (this.canvasProps.ctx) {
+                    this.canvasProps.ctx.fillStyle = pattern[column][row].color;
+                    // this.canvasProps.ctx.fillStyle = '#999999';
+                    // this.canvasProps.ctx.strokeStyle = '#333333';
+                    // this.canvasProps.ctx.lineWidth = 1;
+                    // this.canvasProps.ctx.strokeRect()
+                    // this.canvasProps.ctx.rect(left, top, width, height);
+                    this.canvasProps.ctx.fillRect(left, top, width, height);
+                }
+            }
+        }
+        if (this.canvasProps.ctx) {
+            this.canvasProps.ctx.stroke();
+        }
+    },
+
+    watch: {
+        updatedBeads: function updatedBeads() {
+            var allUpdates = this.updatedBeads;
+            for (var nextUpdateIndex in allUpdates) {
+                if (!allUpdates.hasOwnProperty(nextUpdateIndex)) continue;
+                var nextUpdate = allUpdates[nextUpdateIndex];
+                if (nextUpdate.handled === true) continue;
+                this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
+                var left = this.beadLeft(nextUpdate.location[0]);
+                var top = this.beadTop(nextUpdate.location[0]);
+                var height = this.beadHeight;
+                var width = this.beadWidth;
+
+                this.canvasProps.ctx.fillRect(left, top, width, height);
+                //must use this method instead of mapMutations because we have a path and a parameter
+                this.$store.commit('pattern/handleUpdate', nextUpdateIndex);
+            }
+        }
+    }
+});
+
+/***/ }),
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51050,129 +51199,6 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(130)
-/* template */
-var __vue_template__ = null
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternMaker/PatternDraw/DrawBeads.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-75c60e6c", Component.options)
-  } else {
-    hotAPI.reload("data-v-75c60e6c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 130 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        canvasProps: {
-            type: Object
-        }
-    },
-
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        pattern: "pattern/fullPattern",
-        bead: "pattern/colorAtLocation",
-        beadHeight: "brickPattern/beadHeight",
-        beadWidth: "brickPattern/beadWidth",
-        beadTop: "brickPattern/beadTop",
-        beadLeft: "brickPattern/beadLeft"
-
-    }), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
-        rows: function rows(state) {
-            return state.pattern.rows;
-        },
-        columns: function columns(state) {
-            return state.pattern.columns;
-        }
-    }), {
-        color: function color(location) {
-            console.log(location);
-            return this.bead(location);
-        }
-    }),
-    render: function render() {
-        var column = void 0;
-        var row = void 0;
-        var pattern = this.pattern;
-        for (column = 0; column < this.columns; column++) {
-            for (row = 0; row < this.rows; row++) {
-
-                var left = this.beadLeft(location);
-                var top = this.beadTop(location);
-                var height = this.beadHeight;
-                var width = this.beadWidth;
-
-                if (this.canvasProps.ctx) {
-                    this.canvasProps.ctx.fillStyle = pattern[column][row].color;
-                    // this.canvasProps.ctx.fillStyle = '#999999';
-                    // this.canvasProps.ctx.strokeStyle = '#333333';
-                    // this.canvasProps.ctx.lineWidth = 1;
-                    // this.canvasProps.ctx.strokeRect()
-                    // this.canvasProps.ctx.rect(left, top, width, height);
-                    this.canvasProps.ctx.fillRect(left, top, width, height);
-                }
-                if (this.canvasProps.ctx) this.canvasProps.ctx.stroke();
-            }
-        }
-    }
-});
 
 /***/ })
 /******/ ]);

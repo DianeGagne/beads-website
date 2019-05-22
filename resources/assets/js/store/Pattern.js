@@ -1,17 +1,26 @@
 const state = {
-    rows: 100,
-    columns: 100,
+    rows: 5,
+    columns: 30,
     beadMatrix: [],
+    updatedLocations: [],
 };
 
 const mutations = {
+    handleUpdate(state, index) {
+        state.updatedLocations[index].handled = true;
+
+        if(state.updatedLocations.length > 50){
+            state.updatedLocations.splice(20, state.updatedLocations.length);
+        }
+    },
+
     createInitialPattern(state) {
         state.beadMatrix = [];
 
         for (let i = 0; i < state.columns; i++) {
             state.beadMatrix[i] = [];
             for (let j = 0; j < state.rows; j++) {
-                state.beadMatrix[i][j] = {'color': '#999999'};
+                state.beadMatrix[i][j] = {'color': '#999999', 'key': 0};
             }
         }
     },
@@ -69,11 +78,17 @@ const mutations = {
         for (let locationIndex in locations) {
             let indexX = locations[locationIndex].x;
             let indexY = locations[locationIndex].y;
-            let yArray = state.beadMatrix[indexX];
 
-            yArray.splice(indexY, 1, beadLocationsArray.bead);
+            //check if the update needs to be applied
+            let oldBead = state.beadMatrix[indexX][indexY].key;
+            if(oldBead !== beadLocationsArray.bead.key) {
+                console.log('still updating ' + oldBead + ' ' + beadLocationsArray.bead.key);
+                state.beadMatrix[indexX][indexY] = beadLocationsArray.bead;
+                state.updatedLocations.push({'location': locations, 'bead': beadLocationsArray.bead, 'handled': false});
+            }
         }
     },
+
 
 };
 const getters = {
