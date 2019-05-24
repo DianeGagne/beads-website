@@ -46863,7 +46863,7 @@ var getters = {
 "use strict";
 var state = {
     rows: 5,
-    columns: 30,
+    columns: 10,
     beadMatrix: [],
     updatedLocations: []
 };
@@ -46999,6 +46999,8 @@ var state = {
     pixelWidth: 0,
     canvasWidth: 100,
     canvasHeight: 100,
+    beadWidth: 25,
+    beadHeight: 25,
     pan: {
         horizontal: 0,
         vertical: 0
@@ -47006,7 +47008,6 @@ var state = {
     scaleFactor: 1,
     beadAspect: 1
 };
-
 var mutations = {
     setCanvasWidth: function setCanvasWidth(state, width) {
         state.canvasWidth = width;
@@ -47014,7 +47015,22 @@ var mutations = {
     setCanvasHeight: function setCanvasHeight(state, height) {
         state.canvasHeight = height;
     },
-
+    panLeft: function panLeft(state) {
+        state.pan.horizontal = state.pan.horizontal - state.beadWidth;
+    },
+    panRight: function panRight(state) {
+        state.pan.horizontal = state.pan.horizontal + state.beadWidth;
+    },
+    panUp: function panUp(state) {
+        state.pan.vertical = state.pan.vertical - state.beadHeight;
+    },
+    panDown: function panDown(state) {
+        state.pan.vertical = state.pan.vertical + state.beadHeight;
+    },
+    panCenter: function panCenter(state) {
+        state.pan.horizontal = 0;
+        state.pan.vertical = 0;
+    },
 
     /**
      * set the pan in the form {horizontal: 1, vertical: 1}
@@ -49315,7 +49331,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
 //
 //
 //
@@ -49340,60 +49355,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            panTotals: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan
-        };
-    },
     created: function created() {
         var vm = this;
         window.addEventListener('keydown', function (event) {
             if (event.keyCode === 40) {
-                vm.panDown();
+                vm.down();
             }
             if (event.keyCode === 38) {
-                vm.panUp();
+                vm.up();
             }
             if (event.keyCode === 37) {
-                vm.panLeft();
+                vm.left();
             }
             if (event.keyCode === 39) {
-                vm.panRight();
+                vm.right();
             }
         });
     },
-    mounted: function mounted() {},
-
     methods: {
-        panLeft: function panLeft() {
-            this.panTotals.horizontal -= 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
-            console.log(__WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"]);
+        left: function left() {
+            this.$store.commit('brickPattern/panLeft');
         },
-        panRight: function panRight() {
-            this.panTotals.horizontal += 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
+        right: function right() {
+            this.$store.commit('brickPattern/panRight');
         },
-        panUp: function panUp() {
-            this.panTotals.vertical -= 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
+        up: function up() {
+            this.$store.commit('brickPattern/panUp');
         },
-        panDown: function panDown() {
-            this.panTotals.vertical += 25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
+        down: function down() {
+            this.$store.commit('brickPattern/panDown');
         },
-        panCenter: function panCenter() {
-            this.panTotals.vertical = 0;
-            this.panTotals.horizontal = 0;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.horizontal = this.panTotals.horizontal;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].pan.vertical = this.panTotals.vertical;
+        center: function center() {
+            this.$store.commit('brickPattern/panCenter');
         }
     }
 });
@@ -49415,7 +49410,7 @@ var render = function() {
             {
               staticClass: "btn btn-sm btn-default",
               attrs: { id: "pan-up" },
-              on: { click: _vm.panUp }
+              on: { click: _vm.up }
             },
             [_c("span", { staticClass: "glyphicon glyphicon-arrow-up" })]
           )
@@ -49427,7 +49422,7 @@ var render = function() {
             {
               staticClass: "btn btn-sm btn-default",
               attrs: { id: "pan-left" },
-              on: { click: _vm.panLeft }
+              on: { click: _vm.left }
             },
             [_c("span", { staticClass: "glyphicon glyphicon-arrow-left" })]
           ),
@@ -49437,7 +49432,7 @@ var render = function() {
             {
               staticClass: "btn btn-sm btn-default",
               attrs: { id: "pan-center" },
-              on: { click: _vm.panCenter }
+              on: { click: _vm.center }
             },
             [_c("span", { staticClass: "glyphicon glyphicon-record" })]
           ),
@@ -49447,7 +49442,7 @@ var render = function() {
             {
               staticClass: "btn btn-sm btn-default",
               attrs: { id: "pan-right" },
-              on: { click: _vm.panRight }
+              on: { click: _vm.right }
             },
             [_c("span", { staticClass: "glyphicon glyphicon-arrow-right" })]
           )
@@ -49459,7 +49454,7 @@ var render = function() {
             {
               staticClass: "btn btn-sm btn-default",
               attrs: { id: "pan-down" },
-              on: { click: _vm.panDown }
+              on: { click: _vm.down }
             },
             [_c("span", { staticClass: "glyphicon glyphicon-arrow-down" })]
           )
@@ -50499,6 +50494,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         updatedBeads: function updatedBeads(state) {
             return state.pattern.updatedLocations;
+        },
+        canvasWidth: function canvasWidth(state) {
+            return state.brickPattern.canvasWidth;
+        },
+        canvasHeight: function canvasHeight(state) {
+            return state.brickPattern.canvasHeight;
         }
     }), {
         color: function color(location) {
@@ -50506,19 +50507,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
     }),
     render: function render() {
-        var column = void 0;
-        var row = void 0;
-        var pattern = this.pattern;
-        for (column = 0; column < this.columns; column++) {
-            for (row = 0; row < this.rows; row++) {
+        //ensure the canvas is clear first
+        if (this.canvasProps.ctx) {
+            this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-                var location = { 'x': column, 'y': row };
-                var left = this.beadLeft(location);
-                var top = this.beadTop(location);
-                var height = this.beadHeight;
-                var width = this.beadWidth;
+            var column = void 0;
+            var row = void 0;
+            var pattern = this.pattern;
+            for (column = 0; column < this.columns; column++) {
+                for (row = 0; row < this.rows; row++) {
 
-                if (this.canvasProps.ctx) {
+                    var location = { 'x': column, 'y': row };
+                    var left = this.beadLeft(location);
+                    var top = this.beadTop(location);
+                    var height = this.beadHeight;
+                    var width = this.beadWidth;
+
                     this.canvasProps.ctx.fillStyle = pattern[column][row].color;
                     // this.canvasProps.ctx.fillStyle = '#999999';
                     // this.canvasProps.ctx.strokeStyle = '#333333';
@@ -50528,8 +50532,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     this.canvasProps.ctx.fillRect(left, top, width, height);
                 }
             }
-        }
-        if (this.canvasProps.ctx) {
             this.canvasProps.ctx.stroke();
         }
     },

@@ -9,6 +9,8 @@ const state = {
     pixelWidth: 0,
     canvasWidth: 100,
     canvasHeight: 100,
+    beadWidth: 25,
+    beadHeight: 25,
     pan: {
         horizontal: 0,
         vertical: 0,
@@ -16,7 +18,6 @@ const state = {
     scaleFactor: 1,
     beadAspect: 1,
 };
-
 const mutations = {
     setCanvasWidth(state, width) {
         state.canvasWidth = width;
@@ -25,6 +26,26 @@ const mutations = {
         state.canvasHeight = height;
     },
 
+    panLeft(state) {
+        state.pan.horizontal = state.pan.horizontal - state.beadWidth;
+    },
+
+    panRight(state){
+        state.pan.horizontal = state.pan.horizontal + state.beadWidth;
+    },
+
+    panUp(state){
+        state.pan.vertical = state.pan.vertical - state.beadHeight;
+    },
+
+    panDown(state){
+        state.pan.vertical = state.pan.vertical + state.beadHeight;
+    },
+
+    panCenter(state){
+        state.pan.horizontal = 0;
+        state.pan.vertical = 0;
+    },
     /**
      * set the pan in the form {horizontal: 1, vertical: 1}
      * @param state
@@ -32,6 +53,7 @@ const mutations = {
      */
     setPan(state, width) {
     },
+
 
     //determine if the pattern goes all the way to the height edges or the width edges.
     //To display the entire pattern on the screen as large as possible one must be true

@@ -20,50 +20,50 @@
                 columns: state => state.pattern.columns,
                 pattern: state => state.pattern.beadMatrix,
                 updatedBeads: state => state.pattern.updatedLocations,
+                canvasWidth: state => state.brickPattern.canvasWidth,
+                canvasHeight: state => state.brickPattern.canvasHeight,
             }),
-            color: function(location) {
+            color: function (location) {
                 return this.bead(location);
             },
         },
         render() {
-            let column;
-            let row;
-            let pattern = this.pattern;
-            for(column = 0; column < this.columns; column++) {
-                for (row = 0; row < this.rows; row++) {
+            //ensure the canvas is clear first
+            if (this.canvasProps.ctx) {
+                this.canvasProps.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-                    let location = {'x': column, 'y': row};
-                    let left = this.beadLeft(location);
-                    let top = this.beadTop(location);
-                    let height = this.beadHeight;
-                    let width = this.beadWidth;
+                let column;
+                let row;
+                let pattern = this.pattern;
+                for (column = 0; column < this.columns; column++) {
+                    for (row = 0; row < this.rows; row++) {
 
-                    if (this.canvasProps.ctx) {
+                        let location = {'x': column, 'y': row};
+                        let left = this.beadLeft(location);
+                        let top = this.beadTop(location);
+                        let height = this.beadHeight;
+                        let width = this.beadWidth;
+
                         this.canvasProps.ctx.fillStyle = pattern[column][row].color;
-                         // this.canvasProps.ctx.fillStyle = '#999999';
+                        // this.canvasProps.ctx.fillStyle = '#999999';
                         // this.canvasProps.ctx.strokeStyle = '#333333';
                         // this.canvasProps.ctx.lineWidth = 1;
                         // this.canvasProps.ctx.strokeRect()
                         // this.canvasProps.ctx.rect(left, top, width, height);
                         this.canvasProps.ctx.fillRect(left, top, width, height);
-
                     }
-
                 }
-            }
-            if(this.canvasProps.ctx) {
                 this.canvasProps.ctx.stroke();
             }
         },
         watch: {
-            updatedBeads: function() {
+            updatedBeads: function () {
                 let allUpdates = this.updatedBeads;
-                for (let nextUpdateIndex in allUpdates)
-                {
-                    if(!allUpdates.hasOwnProperty(nextUpdateIndex))
+                for (let nextUpdateIndex in allUpdates) {
+                    if (!allUpdates.hasOwnProperty(nextUpdateIndex))
                         continue;
                     let nextUpdate = allUpdates[nextUpdateIndex];
-                    if(nextUpdate.handled === true)
+                    if (nextUpdate.handled === true)
                         continue;
                     this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
                     let left = this.beadLeft(nextUpdate.location[0]);

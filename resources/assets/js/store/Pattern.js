@@ -1,6 +1,6 @@
 const state = {
     rows: 5,
-    columns: 30,
+    columns: 10,
     beadMatrix: [],
     updatedLocations: [],
 };

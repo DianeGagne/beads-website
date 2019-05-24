@@ -3,19 +3,19 @@
         <div class="pan-section" id="pan">
             <div class="buttons">
                 <div id="up">
-                    <button id="pan-up" class="btn btn-sm btn-default" @click="panUp"><span
+                    <button id="pan-up" class="btn btn-sm btn-default" @click="up"><span
                             class="glyphicon glyphicon-arrow-up"></span></button>
                 </div>
                 <div id="across">
-                    <button id="pan-left" class="btn btn-sm btn-default" @click="panLeft"><span
+                    <button id="pan-left" class="btn btn-sm btn-default" @click="left"><span
                             class="glyphicon glyphicon-arrow-left"></span></button>
-                    <button id="pan-center" class="btn btn-sm btn-default" @click="panCenter"><span
+                    <button id="pan-center" class="btn btn-sm btn-default" @click="center"><span
                             class="glyphicon glyphicon-record"></span></button>
-                    <button id="pan-right" class="btn btn-sm btn-default" @click="panRight"><span
+                    <button id="pan-right" class="btn btn-sm btn-default" @click="right"><span
                             class="glyphicon glyphicon-arrow-right"></span></button>
                 </div>
                 <div id="down">
-                    <button id="pan-down" class="btn btn-sm btn-default" @click="panDown"><span
+                    <button id="pan-down" class="btn btn-sm btn-default" @click="down"><span
                             class="glyphicon glyphicon-arrow-down"></span></button>
                 </div>
             </div>
@@ -23,59 +23,39 @@
     </div>
 </template>
 <script>
-    import SavedPattern from '../../../../StoredData/PatternValues.js';
     export default {
-        data: function () {
-            return {
-                panTotals: SavedPattern.pan,
-            }
-        },
         created: function () {
-            var vm = this;
+            let vm = this;
             window.addEventListener('keydown', function (event) {
                 if (event.keyCode === 40) {
-                    vm.panDown();
+                    vm.down();
                 }
                 if (event.keyCode === 38) {
-                    vm.panUp();
+                    vm.up();
                 }
                 if (event.keyCode === 37) {
-                    vm.panLeft();
+                    vm.left();
                 }
                 if (event.keyCode === 39) {
-                    vm.panRight();
+                    vm.right();
                 }
             });
         },
-        mounted() {
-        },
         methods: {
-            panLeft: function () {
-                this.panTotals.horizontal -= 25;
-                SavedPattern.pan.horizontal = this.panTotals.horizontal;
-                SavedPattern.pan.vertical = this.panTotals.vertical;
-                console.log(SavedPattern);
+            left: function () {
+                this.$store.commit('brickPattern/panLeft');
             },
-            panRight: function () {
-                this.panTotals.horizontal += 25;
-                SavedPattern.pan.horizontal = this.panTotals.horizontal;
-                SavedPattern.pan.vertical = this.panTotals.vertical;
+            right: function () {
+                this.$store.commit('brickPattern/panRight');
             },
-            panUp: function () {
-                this.panTotals.vertical -= 25;
-                SavedPattern.pan.horizontal = this.panTotals.horizontal;
-                SavedPattern.pan.vertical = this.panTotals.vertical;
+            up: function () {
+                this.$store.commit('brickPattern/panUp');
             },
-            panDown: function () {
-                this.panTotals.vertical += 25;
-                SavedPattern.pan.horizontal = this.panTotals.horizontal;
-                SavedPattern.pan.vertical = this.panTotals.vertical;
+            down: function () {
+                this.$store.commit('brickPattern/panDown');
             },
-            panCenter: function () {
-                this.panTotals.vertical = 0;
-                this.panTotals.horizontal = 0;
-                SavedPattern.pan.horizontal = this.panTotals.horizontal;
-                SavedPattern.pan.vertical = this.panTotals.vertical;
+            center: function () {
+                this.$store.commit('brickPattern/panCenter');
             },
         },
     }
