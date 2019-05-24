@@ -47038,6 +47038,15 @@ var mutations = {
      * @param width
      */
     setPan: function setPan(state, width) {},
+    zoomIn: function zoomIn(state) {
+        state.scaleFactor = state.scaleFactor + .25;
+    },
+    zoomOut: function zoomOut(state) {
+        state.scaleFactor = state.scaleFactor - .25;
+    },
+    zoomDefault: function zoomDefault(state) {
+        state.scaleFactor = 1;
+    },
 
 
     //determine if the pattern goes all the way to the height edges or the width edges.
@@ -49159,7 +49168,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
 //
 //
 //
@@ -49173,14 +49181,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            scaleFactor: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor
-        };
-    },
     mounted: function mounted() {
         var vm = this;
         window.addEventListener('keydown', function (event) {
@@ -49203,22 +49205,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         zoomIn: function zoomIn() {
-            this.scaleFactor += .25;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
+            this.$store.commit('brickPattern/zoomIn');
         },
         zoomOut: function zoomOut() {
-            if (!this.scaleFactor == 0) {
-                this.scaleFactor -= .25;
-                __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
-            }
+            this.$store.commit('brickPattern/zoomOut');
         },
         resetZoom: function resetZoom() {
-            this.scaleFactor = 1;
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].scaleFactor = this.scaleFactor;
-        },
-        handleScroll: function handleScroll(event) {
-            if (event.deltaY > 0) this.zoomOut();else this.zoomIn();
+            this.$store.commit('brickPattern/zoomDefault');
         }
+
     }
 });
 

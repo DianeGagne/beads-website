@@ -54,6 +54,15 @@ const mutations = {
     setPan(state, width) {
     },
 
+    zoomIn(state){
+    state.scaleFactor = state.scaleFactor + .25;
+    },
+    zoomOut(state){
+        state.scaleFactor = state.scaleFactor - .25;
+    },
+    zoomDefault(state){
+        state.scaleFactor = 1;
+    },
 
     //determine if the pattern goes all the way to the height edges or the width edges.
     //To display the entire pattern on the screen as large as possible one must be true

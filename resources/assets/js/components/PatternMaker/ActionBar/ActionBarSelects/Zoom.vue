@@ -12,15 +12,9 @@
     </div>
 </template>
 <script>
-    import SavedPattern from '../../../../StoredData/PatternValues.js';
     export default {
-        data: function () {
-            return {
-                scaleFactor: SavedPattern.scaleFactor,
-            }
-        },
         mounted() {
-            var vm = this;
+            let vm = this;
             window.addEventListener('keydown', function (event) {
                 if (event.keyCode === 32) {
                     vm.resetZoom();
@@ -43,25 +37,15 @@
         },
         methods: {
             zoomIn: function () {
-                this.scaleFactor += .25;
-                SavedPattern.scaleFactor = this.scaleFactor;
+                this.$store.commit('brickPattern/zoomIn');
             },
             zoomOut: function () {
-                if (!this.scaleFactor == 0) {
-                    this.scaleFactor -= .25;
-                    SavedPattern.scaleFactor = this.scaleFactor;
-                }
+                this.$store.commit('brickPattern/zoomOut');
             },
             resetZoom: function () {
-                this.scaleFactor = 1;
-                SavedPattern.scaleFactor = this.scaleFactor;
+                this.$store.commit('brickPattern/zoomDefault');
             },
-            handleScroll: function (event) {
-                if (event.deltaY > 0)
-                    this.zoomOut();
-                else
-                    this.zoomIn();
-            },
+
         }
     }
 </script>
