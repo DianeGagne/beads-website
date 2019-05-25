@@ -18,7 +18,7 @@ class CreatePattern extends Migration
             $table->integer('height');
             $table->integer('width');
             $table->string('bead_type');
-            $table->text('jsonPattern');
+            $table->text('svg_image');
             $table->timestamps();
         });
     }

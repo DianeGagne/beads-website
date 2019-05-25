@@ -68,8 +68,6 @@
             scrollAll: function () {
                 let element = document.getElementById('color-section');
                 element.onscroll = () => {
-                    console.log('called onscroll');
-                    console.log(element.scrollTop);
                     let bottomOfWindow = element.scrollTop + 50 >= element.offsetHeight;
 
                     if (bottomOfWindow) {

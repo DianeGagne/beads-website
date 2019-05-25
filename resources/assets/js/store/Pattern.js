@@ -190,6 +190,13 @@ const getters = {
     fullPattern(state, getters) {
         return state.beadMatrix;
     },
+    patternJSON(state, getters){
+        return {
+            'height': state.rows,
+            'width': state.columns,
+            'pattern': state.beadMatrix,
+        };
+    }
 };
 
 export default {

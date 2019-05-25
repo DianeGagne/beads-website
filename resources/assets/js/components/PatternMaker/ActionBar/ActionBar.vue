@@ -7,7 +7,7 @@
             <selected-bead></selected-bead>
             <resize></resize>
 
-           <undo></undo>
+            <undo></undo>
             <rotate></rotate>
 
             <hr>
@@ -15,10 +15,16 @@
                 <pan ref="panControl"></pan>
                 <zoom ref="zoomControl"></zoom>
             </div>
+
+            <button id="save" class="btn btn-default" @click="save">SAVE</button>
         </div>
+
+
     </div>
 </template>
 <script>
+    import {mapGetters} from 'vuex';
+
     export default {
 
         data: function () {
@@ -26,7 +32,22 @@
                 menuWidth: 0,
             }
         },
-
-
+        computed: {
+            ...mapGetters({
+                patternJSON: "pattern/patternJSON",
+            }),
+        },
+        methods: {
+            save: function () {
+                let returnPattern = this.patternJSON;
+                axios.post('/pattern/save', {
+                    returnPattern
+                }).then(function (response) {
+                    console.log(response);
+                }).catch(function (response) {
+                    console.log(response);
+                })
+            },
+        }
     }
 </script>

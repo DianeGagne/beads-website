@@ -2,11 +2,15 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property int height
+ * @property int width
+ * @property string svg_image
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int $id
  */
 class Patterns extends Model
@@ -15,5 +19,5 @@ class Patterns extends Model
         'width',
         'height',
         'bead_type',
-        'jsonPattern'];
+        'svg_image',];
 }

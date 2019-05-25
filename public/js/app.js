@@ -484,46 +484,6 @@ module.exports = {
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SavedPattern = function SavedPattern() {
-    _classCallCheck(this, SavedPattern);
-
-    this.patternValues = {
-        patternName: 'New Pattern',
-        beadType: {
-            name: 'delica',
-            beadAspect: 1,
-            beadWidth: 1.96,
-            beadHeight: 1.96,
-            beadWeight: .030
-        },
-        stitchType: {
-            name: 'brick'
-        }
-
-    };
-
-    //Display values for the pan and zoom
-    this.pan = {
-        horizontal: 0,
-        vertical: 0
-    };
-    this.scaleFactor = 1;
-
-    this.updateCanvas = false;
-
-    this.palette = null;
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (new SavedPattern());
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports) {
 
 var g;
@@ -550,107 +510,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(1);
-var normalizeHeaderName = __webpack_require__(25);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(8);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(8);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
-
-/***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1672,7 +1532,147 @@ var index_esm = {
 /* harmony default export */ __webpack_exports__["a"] = (index_esm);
 
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SavedPattern = function SavedPattern() {
+    _classCallCheck(this, SavedPattern);
+
+    this.patternValues = {
+        patternName: 'New Pattern',
+        beadType: {
+            name: 'delica',
+            beadAspect: 1,
+            beadWidth: 1.96,
+            beadHeight: 1.96,
+            beadWeight: .030
+        },
+        stitchType: {
+            name: 'brick'
+        }
+
+    };
+
+    //Display values for the pan and zoom
+    this.pan = {
+        horizontal: 0,
+        vertical: 0
+    };
+    this.scaleFactor = 1;
+
+    this.updateCanvas = false;
+
+    this.palette = null;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (new SavedPattern());
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(1);
+var normalizeHeaderName = __webpack_require__(25);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(8);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(8);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 6 */
@@ -2252,8 +2252,8 @@ function getInternetExplorerVersion () {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-__webpack_require__(2);
-module.exports = __webpack_require__(118);
+__webpack_require__(4);
+module.exports = __webpack_require__(121);
 
 
 /***/ }),
@@ -2269,7 +2269,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_nav_tabs_themes_vue_tabs_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_js_modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_js_modal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store_currentBead__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_Pattern__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__store_BrickPattern__ = __webpack_require__(53);
@@ -2357,19 +2357,19 @@ Vue.component('selected-bead', __webpack_require__(79));
 Vue.component('rotate', __webpack_require__(82));
 Vue.component('zoom', __webpack_require__(85));
 Vue.component('pan', __webpack_require__(88));
-Vue.component('resize', __webpack_require__(126));
-Vue.component('undo', __webpack_require__(91));
+Vue.component('resize', __webpack_require__(91));
+Vue.component('undo', __webpack_require__(94));
 
-Vue.component('pattern-canvas', __webpack_require__(94));
+Vue.component('pattern-canvas', __webpack_require__(97));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
 // Vue.component('brick-bead-calc', require('./components/PatternMaker/PatternDraw/Brick/BrickBeadCalc.vue'));
 // Vue.component('bead', require('./components/PatternMaker/PatternDraw/Bead.vue'));
-Vue.component('draw-beads', __webpack_require__(104));
+Vue.component('draw-beads', __webpack_require__(107));
 
-Vue.component('pattern-name', __webpack_require__(106));
-Vue.component('pattern-type', __webpack_require__(109));
-Vue.component('bead-type', __webpack_require__(112));
-Vue.component('pattern-size', __webpack_require__(115));
+Vue.component('pattern-name', __webpack_require__(109));
+Vue.component('pattern-type', __webpack_require__(112));
+Vue.component('bead-type', __webpack_require__(115));
+Vue.component('pattern-size', __webpack_require__(118));
 
 var patternObject = new Vue({
     el: '#pattern',
@@ -19552,7 +19552,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(18)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(18)(module)))
 
 /***/ }),
 /* 18 */
@@ -32789,7 +32789,7 @@ module.exports = __webpack_require__(22);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(6);
 var Axios = __webpack_require__(24);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 
 /**
  * Create an instance of Axios
@@ -32872,7 +32872,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(33);
 var dispatchRequest = __webpack_require__(34);
@@ -33404,7 +33404,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(35);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -45602,7 +45602,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(42).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(42).setImmediate))
 
 /***/ }),
 /* 42 */
@@ -45672,7 +45672,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 43 */
@@ -45865,7 +45865,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
 
 /***/ }),
 /* 44 */
@@ -47053,6 +47053,13 @@ var getters = {
     },
     fullPattern: function fullPattern(state, getters) {
         return state.beadMatrix;
+    },
+    patternJSON: function patternJSON(state, getters) {
+        return {
+            'height': state.rows,
+            'width': state.columns,
+            'pattern': state.beadMatrix
+        };
     }
 };
 
@@ -48194,6 +48201,9 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -48214,6 +48224,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -48221,8 +48237,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             menuWidth: 0
         };
+    },
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
+        patternJSON: "pattern/patternJSON"
+    })),
+    methods: {
+        save: function save() {
+            var returnPattern = this.patternJSON;
+            axios.post('/pattern/save', {
+                returnPattern: returnPattern
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (response) {
+                console.log(response);
+            });
+        }
     }
-
 });
 
 /***/ }),
@@ -48274,6 +48304,16 @@ var render = function() {
               _c("zoom", { ref: "zoomControl" })
             ],
             1
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default",
+              attrs: { id: "save" },
+              on: { click: _vm.save }
+            },
+            [_vm._v("SAVE")]
           )
         ],
         1
@@ -48599,8 +48639,6 @@ var defaultProps = {
 
             var element = document.getElementById('color-section');
             element.onscroll = function () {
-                console.log('called onscroll');
-                console.log(element.scrollTop);
                 var bottomOfWindow = element.scrollTop + 50 >= element.offsetHeight;
 
                 if (bottomOfWindow) {
@@ -49577,6 +49615,149 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
+Component.options.__file = "resources/assets/js/components/PatternMaker/ActionBar/ActionBarSelects/Resize.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-14ece733", Component.options)
+  } else {
+    hotAPI.reload("data-v-14ece733", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
+        rows: function rows(state) {
+            return state.pattern.rows;
+        },
+        columns: function columns(state) {
+            return state.pattern.columns;
+        }
+    })),
+    methods: {
+        updateWidth: function updateWidth(event) {
+            var value = event.target.value;
+
+            //ensure we are entering a value
+            if (isNaN(value)) return;
+
+            var intValue = parseInt(value, 10);
+
+            if (intValue < 1 || intValue > 1000) return;
+
+            this.$store.commit('pattern/setWidth', intValue);
+        },
+        updateHeight: function updateHeight(event) {
+            var value = event.target.value;
+
+            //ensure we are entering a value
+            if (isNaN(value)) return;
+
+            var intValue = parseInt(value, 10);
+
+            if (intValue < 1 || intValue > 1000) return;
+
+            this.$store.commit('pattern/setHeight', intValue);
+        }
+    }
+});
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "resize" } }, [
+    _c("div", { staticStyle: { display: "flex" } }, [
+      _c("div", { staticClass: "resize-section" }, [
+        _c("input", {
+          attrs: { type: "number", min: "1" },
+          domProps: { value: _vm.columns },
+          on: { input: _vm.updateWidth }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          attrs: { type: "number", min: "1" },
+          domProps: { value: _vm.rows },
+          on: { input: _vm.updateHeight }
+        })
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-14ece733", module.exports)
+  }
+}
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(95)
+/* template */
+var __vue_template__ = __webpack_require__(96)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
 Component.options.__file = "resources/assets/js/components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue"
 
 /* hot reload */
@@ -49599,7 +49780,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 92 */
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49633,7 +49814,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 93 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49684,15 +49865,15 @@ if (false) {
 }
 
 /***/ }),
-/* 94 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(95)
+var __vue_script__ = __webpack_require__(98)
 /* template */
-var __vue_template__ = __webpack_require__(103)
+var __vue_template__ = __webpack_require__(106)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49731,15 +49912,15 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 95 */
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue__ = __webpack_require__(99);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__node_modules_vue_resize_src_components_ResizeObserver_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_resize_src_utils_compatibility__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(3);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -49990,19 +50171,19 @@ function initCompat() {
 });
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(97)
+  __webpack_require__(100)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(101)
+var __vue_script__ = __webpack_require__(104)
 /* template */
-var __vue_template__ = __webpack_require__(102)
+var __vue_template__ = __webpack_require__(105)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50041,17 +50222,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(98);
+var content = __webpack_require__(101);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(99)("70e5fb42", content, false, {});
+var update = __webpack_require__(102)("70e5fb42", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -50067,7 +50248,7 @@ if(false) {
 }
 
 /***/ }),
-/* 98 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(12)(false);
@@ -50081,7 +50262,7 @@ exports.push([module.i, "\n.resize-observer[data-v-2391076a] {\n\tposition: abso
 
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -50100,7 +50281,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(100)
+var listToStyles = __webpack_require__(103)
 
 /*
 type StyleObject = {
@@ -50309,7 +50490,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports) {
 
 /**
@@ -50342,7 +50523,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50417,7 +50598,7 @@ function initCompat() {
 });
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50440,7 +50621,7 @@ if (false) {
 }
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50491,13 +50672,13 @@ if (false) {
 }
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(105)
+var __vue_script__ = __webpack_require__(108)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -50538,12 +50719,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -50642,15 +50823,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(107)
+var __vue_script__ = __webpack_require__(110)
 /* template */
-var __vue_template__ = __webpack_require__(108)
+var __vue_template__ = __webpack_require__(111)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50689,12 +50870,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
 //
 //
 //
@@ -50723,7 +50904,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50767,15 +50948,15 @@ if (false) {
 }
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(110)
+var __vue_script__ = __webpack_require__(113)
 /* template */
-var __vue_template__ = __webpack_require__(111)
+var __vue_template__ = __webpack_require__(114)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50814,12 +50995,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
 //
 //
 //
@@ -50859,7 +51040,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50917,15 +51098,15 @@ if (false) {
 }
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(113)
+var __vue_script__ = __webpack_require__(116)
 /* template */
-var __vue_template__ = __webpack_require__(114)
+var __vue_template__ = __webpack_require__(117)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50964,12 +51145,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
 //
 //
 //
@@ -51015,7 +51196,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -51068,15 +51249,15 @@ if (false) {
 }
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(116)
+var __vue_script__ = __webpack_require__(119)
 /* template */
-var __vue_template__ = __webpack_require__(117)
+var __vue_template__ = __webpack_require__(120)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -51115,12 +51296,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
 //
 //
 //
@@ -51187,7 +51368,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -51281,160 +51462,10 @@ if (false) {
 }
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(127)
-/* template */
-var __vue_template__ = __webpack_require__(128)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/PatternMaker/ActionBar/ActionBarSelects/Resize.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-14ece733", Component.options)
-  } else {
-    hotAPI.reload("data-v-14ece733", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 127 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
-        rows: function rows(state) {
-            return state.pattern.rows;
-        },
-        columns: function columns(state) {
-            return state.pattern.columns;
-        }
-    })),
-    methods: {
-        updateWidth: function updateWidth(event) {
-            var value = event.target.value;
-
-            //ensure we are entering a value
-            if (isNaN(value)) return;
-
-            var intValue = parseInt(value, 10);
-
-            if (intValue < 1 || intValue > 1000) return;
-
-            this.$store.commit('pattern/setWidth', intValue);
-        },
-        updateHeight: function updateHeight(event) {
-            var value = event.target.value;
-
-            //ensure we are entering a value
-            if (isNaN(value)) return;
-
-            var intValue = parseInt(value, 10);
-
-            if (intValue < 1 || intValue > 1000) return;
-
-            this.$store.commit('pattern/setHeight', intValue);
-        }
-    }
-});
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "resize" } }, [
-    _c("div", { staticStyle: { display: "flex" } }, [
-      _c("div", { staticClass: "resize-section" }, [
-        _c("input", {
-          attrs: { type: "number", min: "1" },
-          domProps: { value: _vm.columns },
-          on: { input: _vm.updateWidth }
-        }),
-        _vm._v(" "),
-        _c("input", {
-          attrs: { type: "number", min: "1" },
-          domProps: { value: _vm.rows },
-          on: { input: _vm.updateHeight }
-        })
-      ])
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-14ece733", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

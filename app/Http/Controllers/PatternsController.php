@@ -11,7 +11,8 @@ namespace App\Http\Controllers;
 use App\Patterns;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Input;
-
+use SVG\SVG;
+use SVG\Nodes\Shapes\SVGRect;
 
 class PatternsController extends BaseController
 {
@@ -24,14 +25,38 @@ class PatternsController extends BaseController
 
     public function savePattern()
     {
-        $patternInfo = Input::all();
+        $patternInfo = Input::all()['returnPattern'];
 
         $pattern = new Patterns();
         $pattern->width = $patternInfo['width'];
         $pattern->height = $patternInfo['height'];
-        $pattern->bead_type = $patternInfo['bead_type'];
-        $pattern->jsonPattern = json_encode($patternInfo['jsonPattern']);
+        $pattern->bead_type = 'delica';
+
+        $patternMatrix = $patternInfo['pattern'];
+
+        //Create a svg of the pattern
+        $image = new SVG($pattern->width * 10, $pattern->height * 10);
+        $doc = $image->getDocument();
+
+        foreach($patternMatrix as $rowIndex => $row){
+            foreach($row as $columnIndex => $bead){
+                $square = new SVGRect($rowIndex * 10, $columnIndex * 10, 10, 10);
+                $square->setStyle('fill', $bead['color']);
+                $doc->addChild($square);
+            }
+        }
+
+        $pattern->svg_image = $image;
         $pattern->save();
+
+        //this creates the svg image
+//        header('Content-Type: image/svg+xml');
+//        echo $image;
+
+        //this creates the png image
+//        $rasterImage = $image->toRasterImage($pattern->width * 10, $pattern->height * 10);
+//        header('Content-Type: image/png');
+//        imagepng($rasterImage, 'output.png', 10);
     }
 
     public function drawPattern()
