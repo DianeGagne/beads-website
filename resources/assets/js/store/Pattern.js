@@ -90,10 +90,57 @@ const mutations = {
     },
 
     rotateLeft(state){
+        //initialize an empty array
+        let newArray = [];
 
+        let newColumns = state.rows;
+        let newRows = state.columns;
+
+        //initialize an empty matrix
+        for(let currentColumn = 0; currentColumn < newColumns; currentColumn++)
+        {
+            newArray[currentColumn] = [];
+        }
+
+        for ( let currentColumn = 0; currentColumn<newColumns; currentColumn++) {
+            for (let currentRow = 0; currentRow < newRows; currentRow++) {
+                newArray[currentColumn][currentRow] = state.beadMatrix[state.columns - 1 - currentRow][currentColumn];
+            }
+        }
+
+        state.beadMatrix = newArray;
+        let currentColumns = state.columns;
+        state.columns = state.rows;
+        state.rows = currentColumns;
+
+        state.updatedLocations.push({'action': 'rotateLeft', 'handled': false});
     },
     rotateRight(state){
 
+        //initialize an empty array
+        let newArray = [];
+
+        let newColumns = state.rows;
+        let newRows = state.columns;
+
+        //initialize an empty matrix
+        for(let currentColumn = 0; currentColumn < newColumns; currentColumn++)
+        {
+            newArray[currentColumn] = [];
+        }
+
+        for ( let currentColumn = 0; currentColumn<newColumns; currentColumn++) {
+            for (let currentRow = 0; currentRow < newRows; currentRow++) {
+                newArray[currentColumn][currentRow] = state.beadMatrix[currentRow][state.rows - 1 - currentColumn];
+            }
+        }
+
+        state.beadMatrix = newArray;
+        let currentColumns = state.columns;
+        state.columns = state.rows;
+        state.rows = currentColumns;
+
+        state.updatedLocations.push({'action': 'rotateRight', 'handled': false});
     },
     flipX(state){
         let movingArray = [];

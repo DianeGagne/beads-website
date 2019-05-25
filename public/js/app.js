@@ -46953,8 +46953,57 @@ var mutations = {
             }
         }
     },
-    rotateLeft: function rotateLeft(state) {},
-    rotateRight: function rotateRight(state) {},
+    rotateLeft: function rotateLeft(state) {
+        //initialize an empty array
+        var newArray = [];
+
+        var newColumns = state.rows;
+        var newRows = state.columns;
+
+        //initialize an empty matrix
+        for (var currentColumn = 0; currentColumn < newColumns; currentColumn++) {
+            newArray[currentColumn] = [];
+        }
+
+        for (var _currentColumn = 0; _currentColumn < newColumns; _currentColumn++) {
+            for (var currentRow = 0; currentRow < newRows; currentRow++) {
+                newArray[_currentColumn][currentRow] = state.beadMatrix[state.columns - 1 - currentRow][_currentColumn];
+            }
+        }
+
+        state.beadMatrix = newArray;
+        var currentColumns = state.columns;
+        state.columns = state.rows;
+        state.rows = currentColumns;
+
+        state.updatedLocations.push({ 'action': 'rotateLeft', 'handled': false });
+    },
+    rotateRight: function rotateRight(state) {
+
+        //initialize an empty array
+        var newArray = [];
+
+        var newColumns = state.rows;
+        var newRows = state.columns;
+
+        //initialize an empty matrix
+        for (var currentColumn = 0; currentColumn < newColumns; currentColumn++) {
+            newArray[currentColumn] = [];
+        }
+
+        for (var _currentColumn2 = 0; _currentColumn2 < newColumns; _currentColumn2++) {
+            for (var currentRow = 0; currentRow < newRows; currentRow++) {
+                newArray[_currentColumn2][currentRow] = state.beadMatrix[currentRow][state.rows - 1 - _currentColumn2];
+            }
+        }
+
+        state.beadMatrix = newArray;
+        var currentColumns = state.columns;
+        state.columns = state.rows;
+        state.rows = currentColumns;
+
+        state.updatedLocations.push({ 'action': 'rotateRight', 'handled': false });
+    },
     flipX: function flipX(state) {
         var movingArray = [];
 
@@ -50574,7 +50623,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
                     this.canvasProps.ctx.fillRect(left, top, width, height);
                 }
-                if (nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY') {
+                if (nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY' || nextUpdate.action === 'rotateLeft' || nextUpdate.action === 'rotateRight') {
                     this.$forceUpdate();
                 }
                 //must use this method instead of mapMutations because we have a path and a parameter

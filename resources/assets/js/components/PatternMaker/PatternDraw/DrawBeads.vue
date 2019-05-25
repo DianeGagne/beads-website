@@ -75,7 +75,10 @@
 
                         this.canvasProps.ctx.fillRect(left, top, width, height);
                     }
-                    if(nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY'){
+                    if(nextUpdate.action === 'flipX'
+                        || nextUpdate.action === 'flipY'
+                        || nextUpdate.action === 'rotateLeft'
+                        || nextUpdate.action === 'rotateRight'){
                         this.$forceUpdate();
                     }
                     //must use this method instead of mapMutations because we have a path and a parameter
