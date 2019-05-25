@@ -21,16 +21,16 @@
 
         methods: {
             rotateLeft: function () {
-                Event.fire('rotateLeft');
+                this.$store.commit('pattern/rotateLeft');
             },
             rotateRight: function () {
-                Event.fire('rotateRight');
+                this.$store.commit('pattern/rotateRight');
             },
             flipX: function () {
-                Event.fire('flipX');
+                this.$store.commit('pattern/flipX');
             },
             flipY: function () {
-                Event.fire('flipY');
+                this.$store.commit('pattern/flipY');
             },
         },
     }

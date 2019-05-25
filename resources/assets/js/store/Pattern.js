@@ -84,11 +84,41 @@ const mutations = {
             if(oldBead !== beadLocationsArray.bead.key) {
                 console.log('still updating ' + oldBead + ' ' + beadLocationsArray.bead.key);
                 state.beadMatrix[indexX][indexY] = beadLocationsArray.bead;
-                state.updatedLocations.push({'location': locations, 'bead': beadLocationsArray.bead, 'handled': false});
+                state.updatedLocations.push({'action': 'drawBead', 'location': locations, 'bead': beadLocationsArray.bead, 'handled': false});
             }
         }
     },
 
+    rotateLeft(state){
+
+    },
+    rotateRight(state){
+
+    },
+    flipX(state){
+        let movingArray = [];
+
+        for (let i = 0; i < state.columns /2 ; i++) {
+            movingArray = state.beadMatrix[i];
+            state.beadMatrix[i] = state.beadMatrix[state.columns - i - 1];
+            state.beadMatrix[state.columns - i -1] = movingArray;
+        }
+
+        state.updatedLocations.push({'action': 'flipX', 'handled': false});
+    },
+    flipY(state){
+        let movingValue;
+
+        for (let i = 0; i < state.columns; i++) {
+            for (let j = 0; j < state.rows /2; j++) {
+                movingValue = state.beadMatrix[i][j];
+                state.beadMatrix[i][j] = state.beadMatrix[i][state.rows - j - 1];
+                state.beadMatrix[i][state.rows - j - 1] = movingValue;
+            }
+        }
+
+        state.updatedLocations.push({'action': 'flipY', 'handled': false});
+    },
 
 };
 const getters = {

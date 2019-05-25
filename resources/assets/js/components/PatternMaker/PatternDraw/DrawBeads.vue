@@ -65,13 +65,19 @@
                     let nextUpdate = allUpdates[nextUpdateIndex];
                     if (nextUpdate.handled === true)
                         continue;
-                    this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
-                    let left = this.beadLeft(nextUpdate.location[0]);
-                    let top = this.beadTop(nextUpdate.location[0]);
-                    let height = this.beadHeight;
-                    let width = this.beadWidth;
 
-                    this.canvasProps.ctx.fillRect(left, top, width, height);
+                    if(nextUpdate.action === 'drawBead') {
+                        this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
+                        let left = this.beadLeft(nextUpdate.location[0]);
+                        let top = this.beadTop(nextUpdate.location[0]);
+                        let height = this.beadHeight;
+                        let width = this.beadWidth;
+
+                        this.canvasProps.ctx.fillRect(left, top, width, height);
+                    }
+                    if(nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY'){
+                        this.$forceUpdate();
+                    }
                     //must use this method instead of mapMutations because we have a path and a parameter
                     this.$store.commit('pattern/handleUpdate', nextUpdateIndex);
                 }

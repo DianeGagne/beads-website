@@ -46949,9 +46949,35 @@ var mutations = {
             if (oldBead !== beadLocationsArray.bead.key) {
                 console.log('still updating ' + oldBead + ' ' + beadLocationsArray.bead.key);
                 state.beadMatrix[indexX][indexY] = beadLocationsArray.bead;
-                state.updatedLocations.push({ 'location': locations, 'bead': beadLocationsArray.bead, 'handled': false });
+                state.updatedLocations.push({ 'action': 'drawBead', 'location': locations, 'bead': beadLocationsArray.bead, 'handled': false });
             }
         }
+    },
+    rotateLeft: function rotateLeft(state) {},
+    rotateRight: function rotateRight(state) {},
+    flipX: function flipX(state) {
+        var movingArray = [];
+
+        for (var i = 0; i < state.columns / 2; i++) {
+            movingArray = state.beadMatrix[i];
+            state.beadMatrix[i] = state.beadMatrix[state.columns - i - 1];
+            state.beadMatrix[state.columns - i - 1] = movingArray;
+        }
+
+        state.updatedLocations.push({ 'action': 'flipX', 'handled': false });
+    },
+    flipY: function flipY(state) {
+        var movingValue = void 0;
+
+        for (var i = 0; i < state.columns; i++) {
+            for (var j = 0; j < state.rows / 2; j++) {
+                movingValue = state.beadMatrix[i][j];
+                state.beadMatrix[i][j] = state.beadMatrix[i][state.rows - j - 1];
+                state.beadMatrix[i][state.rows - j - 1] = movingValue;
+            }
+        }
+
+        state.updatedLocations.push({ 'action': 'flipY', 'handled': false });
     }
 };
 var getters = {
@@ -49026,16 +49052,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         rotateLeft: function rotateLeft() {
-            Event.fire('rotateLeft');
+            this.$store.commit('pattern/rotateLeft');
         },
         rotateRight: function rotateRight() {
-            Event.fire('rotateRight');
+            this.$store.commit('pattern/rotateRight');
         },
         flipX: function flipX() {
-            Event.fire('flipX');
+            this.$store.commit('pattern/flipX');
         },
         flipY: function flipY() {
-            Event.fire('flipY');
+            this.$store.commit('pattern/flipY');
         }
     }
 });
@@ -50538,13 +50564,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 if (!allUpdates.hasOwnProperty(nextUpdateIndex)) continue;
                 var nextUpdate = allUpdates[nextUpdateIndex];
                 if (nextUpdate.handled === true) continue;
-                this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
-                var left = this.beadLeft(nextUpdate.location[0]);
-                var top = this.beadTop(nextUpdate.location[0]);
-                var height = this.beadHeight;
-                var width = this.beadWidth;
 
-                this.canvasProps.ctx.fillRect(left, top, width, height);
+                if (nextUpdate.action === 'drawBead') {
+                    this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
+                    var left = this.beadLeft(nextUpdate.location[0]);
+                    var top = this.beadTop(nextUpdate.location[0]);
+                    var height = this.beadHeight;
+                    var width = this.beadWidth;
+
+                    this.canvasProps.ctx.fillRect(left, top, width, height);
+                }
+                if (nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY') {
+                    this.$forceUpdate();
+                }
                 //must use this method instead of mapMutations because we have a path and a parameter
                 this.$store.commit('pattern/handleUpdate', nextUpdateIndex);
             }
