@@ -68,6 +68,7 @@ Vue.component('selected-bead', require('./components/PatternMaker/ActionBar/Acti
 Vue.component('rotate', require('./components/PatternMaker/ActionBar/ActionBarSelects/Rotate.vue'));
 Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSelects/Zoom.vue'));
 Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelects/Pan.vue'));
+Vue.component('resize', require('./components/PatternMaker/ActionBar/ActionBarSelects/Resize.vue'));
 Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue'));
 
 Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));

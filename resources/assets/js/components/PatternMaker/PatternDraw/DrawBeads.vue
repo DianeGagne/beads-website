@@ -1,5 +1,5 @@
 <script>
-    import {mapGetters, mapState, mapMutations} from 'vuex';
+    import {mapGetters, mapState} from 'vuex';
 
     export default {
         props: {
@@ -66,7 +66,7 @@
                     if (nextUpdate.handled === true)
                         continue;
 
-                    if(nextUpdate.action === 'drawBead') {
+                    if (nextUpdate.action === 'drawBead') {
                         this.canvasProps.ctx.fillStyle = nextUpdate.bead.color;
                         let left = this.beadLeft(nextUpdate.location[0]);
                         let top = this.beadTop(nextUpdate.location[0]);
@@ -75,10 +75,11 @@
 
                         this.canvasProps.ctx.fillRect(left, top, width, height);
                     }
-                    if(nextUpdate.action === 'flipX'
+                    if (nextUpdate.action === 'flipX'
                         || nextUpdate.action === 'flipY'
                         || nextUpdate.action === 'rotateLeft'
-                        || nextUpdate.action === 'rotateRight'){
+                        || nextUpdate.action === 'rotateRight'
+                        || nextUpdate.action === 'resize') {
                         this.$forceUpdate();
                     }
                     //must use this method instead of mapMutations because we have a path and a parameter

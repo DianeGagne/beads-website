@@ -27,12 +27,11 @@ const mutations = {
 
     //this will only add or remove rows from the bottom of the pattern
     setHeight(state, newHeight) {
-        if (newHeight > state.rows) {
-            let rowsToAdd = newHeight - state.rows;
 
+        if (newHeight+0 > state.rows+0) {
             for (let i = 0; i < state.columns; i++) {
-                for (let j = 0; j < rowsToAdd; j++) {
-                    state.beadMatrix[i].push({});
+                for (let j = state.rows; j < newHeight; j++) {
+                    state.beadMatrix[i][j] = {'color': '#999999', 'key': 0};
                 }
             }
         }
@@ -46,17 +45,19 @@ const mutations = {
                 }
             }
         }
+
+        state.rows = newHeight;
+        state.updatedLocations.push({'action': 'resize', 'handled': false});
     },
 
     //this will add or remove columns from the right side of the pattern
     setWidth(state, newWidth) {
         if (newWidth > state.columns) {
-            let rowsToAdd = newWidth - state.columns;
 
-            for (let i = 0; i < rowsToAdd; i++) {
-                state.beadMatrix.push([]);
-                for (let j = rowsToAdd; j < state.rows; j++) {
-                    state.beadMatrix[i].push({});
+            for (let i = state.columns; i < newWidth; i++) {
+                state.beadMatrix[i] = [];
+                for (let j = 0; j < state.rows; j++) {
+                    state.beadMatrix[i][j] = {'color': '#999999', 'key': 0};
                 }
             }
         }
@@ -64,10 +65,13 @@ const mutations = {
         if (newWidth < state.columns) {
             let rowsToRemove = state.columns - newWidth;
 
-            for (let i = 0; i < rowsToAdd; i++) {
+            for (let i = 0; i < rowsToRemove; i++) {
                 state.beadMatrix.pop();
             }
         }
+
+        state.columns = newWidth;
+        state.updatedLocations.push({'action': 'resize', 'handled': false});
     },
 
     /**Assume the beadLocationArray takes the form of an object (ex):

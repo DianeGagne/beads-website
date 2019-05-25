@@ -2357,6 +2357,7 @@ Vue.component('selected-bead', __webpack_require__(79));
 Vue.component('rotate', __webpack_require__(82));
 Vue.component('zoom', __webpack_require__(85));
 Vue.component('pan', __webpack_require__(88));
+Vue.component('resize', __webpack_require__(126));
 Vue.component('undo', __webpack_require__(91));
 
 Vue.component('pattern-canvas', __webpack_require__(94));
@@ -46890,12 +46891,11 @@ var mutations = {
 
     //this will only add or remove rows from the bottom of the pattern
     setHeight: function setHeight(state, newHeight) {
-        if (newHeight > state.rows) {
-            var _rowsToAdd = newHeight - state.rows;
 
+        if (newHeight + 0 > state.rows + 0) {
             for (var i = 0; i < state.columns; i++) {
-                for (var j = 0; j < _rowsToAdd; j++) {
-                    state.beadMatrix[i].push({});
+                for (var j = state.rows; j < newHeight; j++) {
+                    state.beadMatrix[i][j] = { 'color': '#999999', 'key': 0 };
                 }
             }
         }
@@ -46909,18 +46909,20 @@ var mutations = {
                 }
             }
         }
+
+        state.rows = newHeight;
+        state.updatedLocations.push({ 'action': 'resize', 'handled': false });
     },
 
 
     //this will add or remove columns from the right side of the pattern
     setWidth: function setWidth(state, newWidth) {
         if (newWidth > state.columns) {
-            var _rowsToAdd2 = newWidth - state.columns;
 
-            for (var i = 0; i < _rowsToAdd2; i++) {
-                state.beadMatrix.push([]);
-                for (var j = _rowsToAdd2; j < state.rows; j++) {
-                    state.beadMatrix[i].push({});
+            for (var i = state.columns; i < newWidth; i++) {
+                state.beadMatrix[i] = [];
+                for (var j = 0; j < state.rows; j++) {
+                    state.beadMatrix[i][j] = { 'color': '#999999', 'key': 0 };
                 }
             }
         }
@@ -46928,10 +46930,13 @@ var mutations = {
         if (newWidth < state.columns) {
             var rowsToRemove = state.columns - newWidth;
 
-            for (var _i2 = 0; _i2 < rowsToAdd; _i2++) {
+            for (var _i2 = 0; _i2 < rowsToRemove; _i2++) {
                 state.beadMatrix.pop();
             }
         }
+
+        state.columns = newWidth;
+        state.updatedLocations.push({ 'action': 'resize', 'handled': false });
     },
 
 
@@ -48208,6 +48213,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -48250,6 +48256,8 @@ var render = function() {
           _c("color-section"),
           _vm._v(" "),
           _c("selected-bead"),
+          _vm._v(" "),
+          _c("resize"),
           _vm._v(" "),
           _c("undo"),
           _vm._v(" "),
@@ -50623,7 +50631,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
                     this.canvasProps.ctx.fillRect(left, top, width, height);
                 }
-                if (nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY' || nextUpdate.action === 'rotateLeft' || nextUpdate.action === 'rotateRight') {
+                if (nextUpdate.action === 'flipX' || nextUpdate.action === 'flipY' || nextUpdate.action === 'rotateLeft' || nextUpdate.action === 'rotateRight' || nextUpdate.action === 'resize') {
                     this.$forceUpdate();
                 }
                 //must use this method instead of mapMutations because we have a path and a parameter
@@ -51277,6 +51285,156 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 119 */,
+/* 120 */,
+/* 121 */,
+/* 122 */,
+/* 123 */,
+/* 124 */,
+/* 125 */,
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(127)
+/* template */
+var __vue_template__ = __webpack_require__(128)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/PatternMaker/ActionBar/ActionBarSelects/Resize.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-14ece733", Component.options)
+  } else {
+    hotAPI.reload("data-v-14ece733", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 127 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(5);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])({
+        rows: function rows(state) {
+            return state.pattern.rows;
+        },
+        columns: function columns(state) {
+            return state.pattern.columns;
+        }
+    })),
+    methods: {
+        updateWidth: function updateWidth(event) {
+            var value = event.target.value;
+
+            //ensure we are entering a value
+            if (isNaN(value)) return;
+
+            var intValue = parseInt(value, 10);
+
+            if (intValue < 1 || intValue > 1000) return;
+
+            this.$store.commit('pattern/setWidth', intValue);
+        },
+        updateHeight: function updateHeight(event) {
+            var value = event.target.value;
+
+            //ensure we are entering a value
+            if (isNaN(value)) return;
+
+            var intValue = parseInt(value, 10);
+
+            if (intValue < 1 || intValue > 1000) return;
+
+            this.$store.commit('pattern/setHeight', intValue);
+        }
+    }
+});
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "resize" } }, [
+    _c("div", { staticStyle: { display: "flex" } }, [
+      _c("div", { staticClass: "resize-section" }, [
+        _c("input", {
+          attrs: { type: "number", min: "1" },
+          domProps: { value: _vm.columns },
+          on: { input: _vm.updateWidth }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          attrs: { type: "number", min: "1" },
+          domProps: { value: _vm.rows },
+          on: { input: _vm.updateHeight }
+        })
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-14ece733", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
