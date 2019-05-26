@@ -47129,7 +47129,9 @@ var mutations = {
         state.scaleFactor = state.scaleFactor + .25;
     },
     zoomOut: function zoomOut(state) {
-        state.scaleFactor = state.scaleFactor - .25;
+        if (state.scaleFactor > .25) {
+            state.scaleFactor = state.scaleFactor - .25;
+        }
     },
     zoomDefault: function zoomDefault(state) {
         state.scaleFactor = 1;

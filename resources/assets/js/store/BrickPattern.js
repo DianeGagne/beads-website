@@ -30,19 +30,19 @@ const mutations = {
         state.pan.horizontal = state.pan.horizontal - state.beadWidth;
     },
 
-    panRight(state){
+    panRight(state) {
         state.pan.horizontal = state.pan.horizontal + state.beadWidth;
     },
 
-    panUp(state){
+    panUp(state) {
         state.pan.vertical = state.pan.vertical - state.beadHeight;
     },
 
-    panDown(state){
+    panDown(state) {
         state.pan.vertical = state.pan.vertical + state.beadHeight;
     },
 
-    panCenter(state){
+    panCenter(state) {
         state.pan.horizontal = 0;
         state.pan.vertical = 0;
     },
@@ -54,13 +54,15 @@ const mutations = {
     setPan(state, width) {
     },
 
-    zoomIn(state){
-    state.scaleFactor = state.scaleFactor + .25;
+    zoomIn(state) {
+        state.scaleFactor = state.scaleFactor + .25;
     },
-    zoomOut(state){
-        state.scaleFactor = state.scaleFactor - .25;
+    zoomOut(state) {
+        if(state.scaleFactor > .25) {
+            state.scaleFactor = state.scaleFactor - .25;
+        }
     },
-    zoomDefault(state){
+    zoomDefault(state) {
         state.scaleFactor = 1;
     },
 
@@ -167,7 +169,7 @@ const getters = {
     //get given a location in pixels (x,y) and return a location of the bead (row, column),
     //or return null if not in the pattern
     getBeadFromPixels: (state, getters) => location => {
-        if(getters.isLocationInPattern) {
+        if (getters.isLocationInPattern) {
             //it is in the pattern - get the column
             let column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
             let row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
