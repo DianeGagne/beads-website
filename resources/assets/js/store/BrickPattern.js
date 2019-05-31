@@ -17,6 +17,8 @@ const state = {
     },
     scaleFactor: 1,
     beadAspect: 1,
+    patternType: 'peyote',
+
 };
 const mutations = {
     setCanvasWidth(state, width) {
@@ -58,12 +60,16 @@ const mutations = {
         state.scaleFactor = state.scaleFactor + .25;
     },
     zoomOut(state) {
-        if(state.scaleFactor > .25) {
+        if (state.scaleFactor > .25) {
             state.scaleFactor = state.scaleFactor - .25;
         }
     },
     zoomDefault(state) {
         state.scaleFactor = 1;
+    },
+
+    setPatternType(state, type) {
+        state.patternType = type;
     },
 
     //determine if the pattern goes all the way to the height edges or the width edges.
@@ -129,7 +135,13 @@ const getters = {
         return getters.beadWidth * rootState.pattern.columns;
     },
     totalPatternHeight(state, getters, rootState) {
-        return getters.beadHeight * rootState.pattern.rows;
+        let defaultHeight = getters.beadHeight * rootState.pattern.rows;
+        switch (state.patternType) {
+            case "peyote":
+                return defaultHeight + getters.beadHeight / 2;
+            default:
+                return defaultHeight;
+        }
     },
     leftOffset(state, getters, rootState) {
         let baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
@@ -143,13 +155,22 @@ const getters = {
         return baseOffset + state.pan.vertical + 0.5;
     },
     verticalEndOfPattern(state, getters, rootState) {
-        return getters.topOffset + (getters.beadHeight * rootState.pattern.rows);
-    },
-    beadTop: (state, getters) => (location) => {
-        return (location.y) * getters.beadHeight + getters.topOffset;
+        return getters.topOffset + getters.totalPatternHeight;
     },
     beadLeft: (state, getters) => location => {
         return (location.x) * getters.beadWidth + getters.leftOffset;
+    },
+    beadTop: (state, getters) => (location) => {
+        let defaultTop = (location.y) * getters.beadHeight + getters.topOffset;
+        switch (state.patternType) {
+            case "peyote":
+                if (location.x % 2)
+                    return defaultTop + getters.beadHeight / 2;
+                else
+                    return defaultTop;
+            default:
+                return defaultTop;
+        }
     },
 
     //given a location (x,y) determine if the pixels are within the beaded pattern or outside of it
@@ -172,7 +193,18 @@ const getters = {
         if (getters.isLocationInPattern) {
             //it is in the pattern - get the column
             let column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
-            let row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+            let row;
+            switch (state.patternType) {
+                case "peyote":
+                    if (column % 2) {
+                        row = Math.floor((location.y - getters.topOffset - getters.beadHeight / 2) / getters.beadHeight);
+                        break;
+                    }
+                default:
+                    row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+
+            }
+
             return {'column': column, 'row': row};
         }
     },

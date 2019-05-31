@@ -2359,6 +2359,7 @@ Vue.component('zoom', __webpack_require__(85));
 Vue.component('pan', __webpack_require__(88));
 Vue.component('resize', __webpack_require__(91));
 Vue.component('undo', __webpack_require__(94));
+// Vue.component('pattern-type', require('./components/PatternMaker/ActionBar/ActionBarSelects/PatternType.vue'));
 
 Vue.component('pattern-canvas', __webpack_require__(97));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));
@@ -47093,7 +47094,9 @@ var state = {
         vertical: 0
     },
     scaleFactor: 1,
-    beadAspect: 1
+    beadAspect: 1,
+    patternType: 'peyote'
+
 };
 var mutations = {
     setCanvasWidth: function setCanvasWidth(state, width) {
@@ -47135,6 +47138,9 @@ var mutations = {
     },
     zoomDefault: function zoomDefault(state) {
         state.scaleFactor = 1;
+    },
+    setPatternType: function setPatternType(state, type) {
+        state.patternType = type;
     },
 
 
@@ -47198,7 +47204,13 @@ var getters = {
         return getters.beadWidth * rootState.pattern.columns;
     },
     totalPatternHeight: function totalPatternHeight(state, getters, rootState) {
-        return getters.beadHeight * rootState.pattern.rows;
+        var defaultHeight = getters.beadHeight * rootState.pattern.rows;
+        switch (state.patternType) {
+            case "peyote":
+                return defaultHeight + getters.beadHeight / 2;
+            default:
+                return defaultHeight;
+        }
     },
     leftOffset: function leftOffset(state, getters, rootState) {
         var baseOffset = (state.canvasWidth - getters.totalPatternWidth) / 2;
@@ -47212,17 +47224,23 @@ var getters = {
         return baseOffset + state.pan.vertical + 0.5;
     },
     verticalEndOfPattern: function verticalEndOfPattern(state, getters, rootState) {
-        return getters.topOffset + getters.beadHeight * rootState.pattern.rows;
+        return getters.topOffset + getters.totalPatternHeight;
     },
 
-    beadTop: function beadTop(state, getters) {
-        return function (location) {
-            return location.y * getters.beadHeight + getters.topOffset;
-        };
-    },
     beadLeft: function beadLeft(state, getters) {
         return function (location) {
             return location.x * getters.beadWidth + getters.leftOffset;
+        };
+    },
+    beadTop: function beadTop(state, getters) {
+        return function (location) {
+            var defaultTop = location.y * getters.beadHeight + getters.topOffset;
+            switch (state.patternType) {
+                case "peyote":
+                    if (location.x % 2) return defaultTop + getters.beadHeight / 2;else return defaultTop;
+                default:
+                    return defaultTop;
+            }
         };
     },
 
@@ -47245,7 +47263,18 @@ var getters = {
             if (getters.isLocationInPattern) {
                 //it is in the pattern - get the column
                 var column = Math.floor((location.x - getters.leftOffset) / getters.beadWidth);
-                var row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+                var row = void 0;
+                switch (state.patternType) {
+                    case "peyote":
+                        if (column % 2) {
+                            row = Math.floor((location.y - getters.topOffset - getters.beadHeight / 2) / getters.beadHeight);
+                            break;
+                        }
+                    default:
+                        row = Math.floor((location.y - getters.topOffset) / getters.beadHeight);
+
+                }
+
                 return { 'column': column, 'row': row };
             }
         };
@@ -48230,6 +48259,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -48288,6 +48319,8 @@ var render = function() {
           _c("color-section"),
           _vm._v(" "),
           _c("selected-bead"),
+          _vm._v(" "),
+          _c("pattern-type"),
           _vm._v(" "),
           _c("resize"),
           _vm._v(" "),
@@ -51002,7 +51035,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
 //
 //
 //
@@ -51013,15 +51046,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+
+    computed: {
+        patternType: {
+            get: function get() {
+                return this.$store.state.brickPattern.patternType;
+            },
+            set: function set(value) {
+                this.$store.commit('brickPattern/setPatternType', value);
+            }
+        }
+    },
     data: function data() {
         return {
-            selectedStitchType: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.stitchType,
-            selected: this.selectedStitchType.name,
             types: {
                 brick: {
                     name: 'brick',
@@ -51035,8 +51076,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     methods: {
-        changedType: function changedType() {
-            Event.fire('stitchType', this.types[this.selectedStitchType]);
+        changedType: function changedType(e) {
+            console.log('called change type');
+            console.log(e);
+            this.$store.commit('pattern/setPatternType', 'brick');
         }
     }
 });
@@ -51049,45 +51092,44 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "pattern-type" } },
-    [
-      _c("label", [_vm._v("Stitch Type")]),
-      _vm._v(" "),
+  return _c("div", { attrs: { id: "pattern-type" } }, [
+    _c("label", [_vm._v("Stitch Type")]),
+    _vm._v(" "),
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.patternType,
+            expression: "patternType"
+          }
+        ],
+        on: {
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.patternType = $event.target.multiple
+              ? $$selectedVal
+              : $$selectedVal[0]
+          }
+        }
+      },
       _vm._l(_vm.types, function(type) {
-        return _c("div", [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selected,
-                expression: "selected"
-              }
-            ],
-            attrs: { type: "radio" },
-            domProps: {
-              value: type.name,
-              checked: _vm._q(_vm.selected, type.name)
-            },
-            on: {
-              change: [
-                function($event) {
-                  _vm.selected = type.name
-                },
-                function($event) {
-                  return _vm.changedType()
-                }
-              ]
-            }
-          }),
-          _vm._v("\n        " + _vm._s(type.displayName) + "\n    ")
+        return _c("option", { domProps: { value: type.name } }, [
+          _vm._v("\n            " + _vm._s(type.displayName) + "\n        ")
         ])
-      })
-    ],
-    2
-  )
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

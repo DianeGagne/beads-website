@@ -70,6 +70,7 @@ Vue.component('zoom', require('./components/PatternMaker/ActionBar/ActionBarSele
 Vue.component('pan', require('./components/PatternMaker/ActionBar/ActionBarSelects/Pan.vue'));
 Vue.component('resize', require('./components/PatternMaker/ActionBar/ActionBarSelects/Resize.vue'));
 Vue.component('undo', require('./components/PatternMaker/ActionBar/ActionBarSelects/Undo.vue'));
+// Vue.component('pattern-type', require('./components/PatternMaker/ActionBar/ActionBarSelects/PatternType.vue'));
 
 Vue.component('pattern-canvas', require('./components/PatternMaker/PatternCanvas.vue'));
 // Vue.component('draw-brick-lines', require('./components/PatternMaker/PatternDraw/Brick/DrawBrickLines.vue'));

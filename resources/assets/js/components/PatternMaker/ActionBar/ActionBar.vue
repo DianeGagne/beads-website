@@ -5,6 +5,8 @@
         <div class="actionBarSelects">
             <color-section></color-section>
             <selected-bead></selected-bead>
+
+            <pattern-type></pattern-type>
             <resize></resize>
 
             <undo></undo>

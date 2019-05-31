@@ -1,22 +1,30 @@
 <template>
     <div id="pattern-type">
         <label>Stitch Type</label>
-        <div v-for="type in types">
-            <input type="radio"
-                   :value=type.name
-                   v-model="selected"
-                   v-on:change="changedType()">
-            {{type.displayName}}
-        </div>
+        <select v-model="patternType">
+            <option v-for="type in types" v-bind:value="type.name">
+                {{type.displayName}}
+            </option>
+        </select>
     </div>
 </template>
 <script>
-    import SavedPattern from '../../../StoredData/PatternValues.js';
+    import {mapState} from 'vuex';
+
     export default {
+
+        computed: {
+            patternType: {
+                get() {
+                    return this.$store.state.brickPattern.patternType;
+                },
+                set(value){
+                    this.$store.commit('brickPattern/setPatternType', value);
+                }
+            }
+        },
         data: function () {
             return {
-                selectedStitchType: SavedPattern.patternValues.stitchType,
-                selected: this.selectedStitchType.name,
                 types: {
                     brick: {
                         name: 'brick',
@@ -24,14 +32,17 @@
                     },
                     peyote: {
                         name: 'peyote',
-                        displayName : 'Peyote',
+                        displayName: 'Peyote',
                     },
                 },
             }
         },
         methods: {
-            changedType: function () {
-                Event.fire('stitchType', this.types[this.selectedStitchType]);
+            changedType: function (e)
+            {
+                console.log('called change type');
+                console.log(e);
+                this.$store.commit('pattern/setPatternType', 'brick');
             }
         },
     }
