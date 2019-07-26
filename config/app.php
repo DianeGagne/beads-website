@@ -179,10 +179,12 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        Weidner\Goutte\GoutteServiceProvider::class,
+
     ],
 
     /*
-    |--------------------------------------------------------------------------
+    |<div class="\"product-container\"" itemscope itemtype="\"https:\/\/schema.org\/Product\"">--------------------------------------------------------------------------
     | Class Aliases
     |--------------------------------------------------------------------------
     |
@@ -222,13 +224,14 @@ return [
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,
         'Schema' => Illuminate\Support\Facades\Schema::class,
-        'Session' => Illuminate\Support\Facades\Session::class,
+         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Goutte' => Weidner\Goutte\GoutteFacade::class,
     ],
 
 ];

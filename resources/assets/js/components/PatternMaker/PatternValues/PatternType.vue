@@ -9,10 +9,7 @@
     </div>
 </template>
 <script>
-    import {mapState} from 'vuex';
-
     export default {
-
         computed: {
             patternType: {
                 get() {
@@ -35,14 +32,6 @@
                         displayName: 'Peyote',
                     },
                 },
-            }
-        },
-        methods: {
-            changedType: function (e)
-            {
-                console.log('called change type');
-                console.log(e);
-                this.$store.commit('pattern/setPatternType', 'brick');
             }
         },
     }

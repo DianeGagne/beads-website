@@ -16,8 +16,8 @@ const state = {
         vertical: 0,
     },
     scaleFactor: 1,
-    beadAspect: 1,
-    patternType: 'peyote',
+    patternType: 'brick',
+    beadType: 'delica',
 
 };
 const mutations = {
@@ -72,14 +72,17 @@ const mutations = {
         state.patternType = type;
     },
 
-    //determine if the pattern goes all the way to the height edges or the width edges.
-    //To display the entire pattern on the screen as large as possible one must be true
-    //NOTE: this currently assumes beads are a 1:1 ratio height:width - this is true for delica beads
-    setHeightLimited(state) {
-
-    }
+    setBeadType(state, type) {
+        state.beadType = type;
+    },
 };
 const getters = {
+    getAspect(state) {
+      if(state.beadType === 'delica')
+          return 1;
+      if(state.beadType === 'round')
+          return 0.6;
+    },
     canvasWidth(state) {
         return state.canvasWidth;
     },
@@ -87,7 +90,7 @@ const getters = {
         let proportionHeightCovered = rootState.pattern.columns / state.canvasHeight;
         let proportionWidthCovered = rootState.pattern.rows / state.canvasWidth;
 
-        return proportionHeightCovered < proportionWidthCovered;
+        return proportionHeightCovered > proportionWidthCovered;
     },
 
     beadHeight(state, getters, rootState) {
@@ -102,10 +105,10 @@ const getters = {
             baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
         } else {
             //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * state.beadAspect)) / 2;
+            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * getters.getAspect)) / 2;
 
-            let baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
-            baseBeadHeight = baseBeadWidth / state.beadAspect;
+            let baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * getters.getAspect);
+            baseBeadHeight = baseBeadWidth / getters.getAspect;
         }
 
         return baseBeadHeight * state.scaleFactor;
@@ -120,12 +123,12 @@ const getters = {
 
             //Calculate the bead size - based on the smallest offsets possible & the current zoom
             baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
-            baseBeadWidth = baseBeadHeight * state.beadAspect;
+            baseBeadWidth = baseBeadHeight * getters.getAspect;
         } else {
             //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * state.beadAspect)) / 2;
+            let smallestOffsetPossible = (state.canvasWidth % (rootState.pattern.columns * getters.getAspect)) / 2;
 
-            baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
+            baseBeadWidth = (state.canvasWidth - smallestOffsetPossible) / (rootState.pattern.columns * getters.getAspect);
         }
 
         //apply the scale factor to the bead size

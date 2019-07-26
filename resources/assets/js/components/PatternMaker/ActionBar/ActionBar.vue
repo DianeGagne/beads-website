@@ -6,6 +6,7 @@
             <color-section></color-section>
             <selected-bead></selected-bead>
 
+            <bead-type></bead-type>
             <pattern-type></pattern-type>
             <resize></resize>
 

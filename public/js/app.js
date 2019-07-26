@@ -47094,8 +47094,8 @@ var state = {
         vertical: 0
     },
     scaleFactor: 1,
-    beadAspect: 1,
-    patternType: 'peyote'
+    patternType: 'brick',
+    beadType: 'delica'
 
 };
 var mutations = {
@@ -47142,14 +47142,15 @@ var mutations = {
     setPatternType: function setPatternType(state, type) {
         state.patternType = type;
     },
-
-
-    //determine if the pattern goes all the way to the height edges or the width edges.
-    //To display the entire pattern on the screen as large as possible one must be true
-    //NOTE: this currently assumes beads are a 1:1 ratio height:width - this is true for delica beads
-    setHeightLimited: function setHeightLimited(state) {}
+    setBeadType: function setBeadType(state, type) {
+        state.beadType = type;
+    }
 };
 var getters = {
+    getAspect: function getAspect(state) {
+        if (state.beadType === 'delica') return 1;
+        if (state.beadType === 'round') return 0.6;
+    },
     canvasWidth: function canvasWidth(state) {
         return state.canvasWidth;
     },
@@ -47157,7 +47158,7 @@ var getters = {
         var proportionHeightCovered = rootState.pattern.columns / state.canvasHeight;
         var proportionWidthCovered = rootState.pattern.rows / state.canvasWidth;
 
-        return proportionHeightCovered < proportionWidthCovered;
+        return proportionHeightCovered > proportionWidthCovered;
     },
     beadHeight: function beadHeight(state, getters, rootState) {
         var baseBeadHeight = 1;
@@ -47171,10 +47172,10 @@ var getters = {
             baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
         } else {
             //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-            var _smallestOffsetPossible = state.canvasWidth % (rootState.pattern.columns * state.beadAspect) / 2;
+            var _smallestOffsetPossible = state.canvasWidth % (rootState.pattern.columns * getters.getAspect) / 2;
 
-            var baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible) / (rootState.pattern.columns * state.beadAspect);
-            baseBeadHeight = baseBeadWidth / state.beadAspect;
+            var baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible) / (rootState.pattern.columns * getters.getAspect);
+            baseBeadHeight = baseBeadWidth / getters.getAspect;
         }
 
         return baseBeadHeight * state.scaleFactor;
@@ -47189,12 +47190,12 @@ var getters = {
 
             //Calculate the bead size - based on the smallest offsets possible & the current zoom
             baseBeadHeight = (state.canvasHeight - smallestOffsetPossible) / rootState.pattern.rows;
-            baseBeadWidth = baseBeadHeight * state.beadAspect;
+            baseBeadWidth = baseBeadHeight * getters.getAspect;
         } else {
             //get the remainder after evenly dividing the number of beads into the canvas & divide by 2 - so its evenly distributed on the top and bottom
-            var _smallestOffsetPossible2 = state.canvasWidth % (rootState.pattern.columns * state.beadAspect) / 2;
+            var _smallestOffsetPossible2 = state.canvasWidth % (rootState.pattern.columns * getters.getAspect) / 2;
 
-            baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible2) / (rootState.pattern.columns * state.beadAspect);
+            baseBeadWidth = (state.canvasWidth - _smallestOffsetPossible2) / (rootState.pattern.columns * getters.getAspect);
         }
 
         //apply the scale factor to the bead size
@@ -48261,6 +48262,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -48319,6 +48321,8 @@ var render = function() {
           _c("color-section"),
           _vm._v(" "),
           _c("selected-bead"),
+          _vm._v(" "),
+          _c("bead-type"),
           _vm._v(" "),
           _c("pattern-type"),
           _vm._v(" "),
@@ -51035,7 +51039,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
 //
 //
 //
@@ -51046,11 +51049,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-
     computed: {
         patternType: {
             get: function get() {
@@ -51074,13 +51074,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
         };
-    },
-    methods: {
-        changedType: function changedType(e) {
-            console.log('called change type');
-            console.log(e);
-            this.$store.commit('pattern/setPatternType', 'brick');
-        }
     }
 });
 
@@ -51194,7 +51187,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__ = __webpack_require__(4);
 //
 //
 //
@@ -51205,13 +51197,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    computed: {
+        beadType: {
+            get: function get() {
+                return this.$store.state.brickPattern.beadType;
+            },
+            set: function set(value) {
+                this.$store.commit('brickPattern/setBeadType', value);
+                // this.$store.commit('brickPattern.setBeadType', value);
+            }
+        }
+    },
     data: function data() {
         return {
-            selected: __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType.name,
             types: {
                 delica: {
                     beadAspect: 1, // The number to multiple the width to get the height
@@ -51231,11 +51231,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
         };
-    },
-    methods: {
-        changedType: function changedType() {
-            __WEBPACK_IMPORTED_MODULE_0__StoredData_PatternValues_js__["default"].patternValues.beadType = this.types[this.selected];
-        }
     }
 });
 
@@ -51247,40 +51242,44 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "bead-type" } },
-    [
-      _c("label", [_vm._v("Bead type")]),
-      _vm._v(" "),
+  return _c("div", { attrs: { id: "bead-type" } }, [
+    _c("label", [_vm._v("Bead type")]),
+    _vm._v(" "),
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.beadType,
+            expression: "beadType"
+          }
+        ],
+        on: {
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.beadType = $event.target.multiple
+              ? $$selectedVal
+              : $$selectedVal[0]
+          }
+        }
+      },
       _vm._l(_vm.types, function(type) {
-        return _c("div", [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selected,
-                expression: "selected"
-              }
-            ],
-            attrs: { type: "radio" },
-            domProps: {
-              value: type.name,
-              checked: _vm._q(_vm.selected, type.name)
-            },
-            on: {
-              change: function($event) {
-                _vm.selected = type.name
-              }
-            }
-          }),
+        return _c("option", { domProps: { value: type.name } }, [
           _vm._v("\n        " + _vm._s(type.displayName) + "\n    ")
         ])
-      })
-    ],
-    2
-  )
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
